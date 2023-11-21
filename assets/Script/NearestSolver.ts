@@ -3,7 +3,7 @@ import {Global} from "db://assets/Script/Global";
 import {Draw} from "db://assets/Script/Draw";
 
 
-class Block {
+export class Block {
     public readonly x: number;
     public readonly y: number;
     public readonly isWall: boolean;
@@ -71,6 +71,7 @@ class Block {
         let result = -1;
         this.directions.forEach(direction => {
             let neighbour = this.neighbours[direction];
+            console.log("路径条数",maxRoutesCount);
             if (neighbour.routesCount > maxRoutesCount) {
                 maxRoutesCount = neighbour.routesCount;
                 result = direction;
@@ -80,7 +81,7 @@ class Block {
     }
 }
 
-class Blocks {
+export class Blocks {
     public readonly w: number;
     public readonly h: number;
     private blocks: Block[][]=[];
@@ -202,6 +203,7 @@ export function nearestSolver( x: number, y: number): number {
 export default function nearestAndMoreRoutesSolver(x: number, y: number): number {
     let blocks = new Blocks();
     blocks.calcAllDistances();
+    console.log(blocks)
     let block = blocks.getBlock(x, y);
     return block.direction;
 }

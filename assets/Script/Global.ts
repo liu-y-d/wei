@@ -25,7 +25,7 @@ export class Global {
 
     public tileMap:TileMap = {};
 
-    public defaultObstacleNum = 5;
+    public defaultObstacleNum = 15;
 
     public obstacleCoords:Array<Coord> = new Array<Coord>();
 

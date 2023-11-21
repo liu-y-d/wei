@@ -3,8 +3,8 @@ import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {UITransform} from "cc";
-import {Draw} from "db://assets/Script/Draw";
 import nearestAndMoreRoutesSolver from "db://assets/Script/NearestSolver";
+import {LevelDesign} from "db://assets/Script/LevelDesign";
 
 export class GhostState implements IProcessStateNode {
     readonly key = ProcessStateEnum.ghost;
@@ -44,11 +44,7 @@ export class GhostState implements IProcessStateNode {
                 Global.getInstance().ghostMoving = false;
             }
             this.ghostNode.setPosition(point.x,point.y)
-            if((Global.getInstance().currentGhostVec2.x ==0 && Global.getInstance().currentGhostVec2.y < HexagonManager.HeightCount) ||
-                (Global.getInstance().currentGhostVec2.x < HexagonManager.WidthCount && Global.getInstance().currentGhostVec2.y ==0) ||
-                (Global.getInstance().currentGhostVec2.x ==HexagonManager.WidthCount-1 && Global.getInstance().currentGhostVec2.y < HexagonManager.HeightCount) ||
-                (Global.getInstance().currentGhostVec2.x < HexagonManager.WidthCount && Global.getInstance().currentGhostVec2.y ==HexagonManager.HeightCount-1)
-            ) {
+            if(HexagonManager.isEdge(Global.getInstance().currentGhostVec2)) {
                 this.lose();
             }
         }
@@ -58,18 +54,13 @@ export class GhostState implements IProcessStateNode {
 
 
         let nearHexagonCoords = HexagonManager.getNearbyHexagonCoords();
-        // console.log(nearHexagonCoords)
 
-        nearHexagonCoords = nearHexagonCoords.filter(c=>{
-            return (c.x>=0 && c.x<HexagonManager.WidthCount && c.y>=0 && c.y<HexagonManager.HeightCount);
-        })
-        if (!(nearHexagonCoords&&nearHexagonCoords.length>0)) {
+        let randomIndex = LevelDesign.getInstance().ghostMoveAlgorithms(Global.getInstance().currentGhostVec2.x,Global.getInstance().currentGhostVec2.y);
+        console.log(randomIndex)
+        if (randomIndex == -1) {
             target.win();
             return;
         }
-        // let randomIndex = Math.floor(Math.random() * nearHexagonCoords.length);
-        let randomIndex = nearestAndMoreRoutesSolver(Global.getInstance().currentGhostVec2.x,Global.getInstance().currentGhostVec2.y);
-        console.log(randomIndex)
         let x = nearHexagonCoords[randomIndex].x;
         let y = nearHexagonCoords[randomIndex].y;
         if (!(Global.getInstance().currentGhostVec2.x == Global.getInstance().prevGhostVec2.x && Global.getInstance().currentGhostVec2.y == Global.getInstance().prevGhostVec2.y)) {
@@ -87,9 +78,6 @@ export class GhostState implements IProcessStateNode {
         console.log("你输了")
         Global.getInstance().gameState = GameStateEnum.lose;
     }
-
-
-    nearestAndMore
 
 }
 export enum GhostMessage{

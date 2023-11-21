@@ -8,6 +8,7 @@ import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachine
 import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {GhostMessage} from "db://assets/Script/GhostState";
 import {ObstacleMessage} from "db://assets/Script/ObstacleState";
+import {LevelDesign} from "db://assets/Script/LevelDesign";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -26,6 +27,7 @@ export class GameProcessState implements IProcessStateNode {
         // this.gameCanvas.getChildByName('PlayArea').on(Node.EventType.TOUCH_START,this.onClick,this);
         let gameCtrl = Global.getInstance().gameCanvas.getComponent(GameCtrl);
         this.playAreaInit(gameCtrl)
+        LevelDesign.getInstance().init();
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);
 

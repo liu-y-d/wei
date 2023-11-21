@@ -29,6 +29,7 @@ export class HexagonManager {
     static center:Vec2;
     static hexagonMap;
 
+    static currentNearbyHexagonCoords:Array<Coord>;
     public static calculateWidthAndHeight(totalWidth: number, layout: number) {
 
         if (this.layout === 0) {
@@ -172,12 +173,23 @@ export class HexagonManager {
         let nearbyHexagonCoords:Array<Coord> = new Array<Coord>();
         nearbyHexagonCoords.push(
             {x: point.x + 1, y: point.y},
-            {x: point.x + (point.y&1), y: point.y - 1},
-            {x: point.x - ((point.y&1)==0?1:0), y: point.y - 1},
-            {x: point.x - 1, y: point.y},
+            {x: point.x + (point.y&1), y: point.y + 1},
             {x: point.x - ((point.y&1)==0?1:0), y: point.y + 1},
-            {x: point.x +(point.y&1), y: point.y + 1}
+            {x: point.x - 1, y: point.y},
+            {x: point.x - ((point.y&1)==0?1:0), y: point.y - 1},
+            {x: point.x +(point.y&1), y: point.y - 1}
         );
+        if (!point) {
+            this.currentNearbyHexagonCoords = nearbyHexagonCoords;
+        }
         return nearbyHexagonCoords;
+    }
+
+    public static isEdge(coord:Coord){
+        return (coord.x ==0 && coord.y < HexagonManager.HeightCount) ||
+            (coord.x < HexagonManager.WidthCount && coord.y ==0) ||
+            (coord.x ==HexagonManager.WidthCount-1 && coord.y < HexagonManager.HeightCount) ||
+            (coord.x < HexagonManager.WidthCount && coord.y ==HexagonManager.HeightCount-1);
+        
     }
 }
