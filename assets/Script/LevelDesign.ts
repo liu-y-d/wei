@@ -1,5 +1,8 @@
 import randomSolver from "db://assets/Script/RandomSolver";
 import nearestAndMoreRoutesSolver from "db://assets/Script/NearestSolver";
+import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
+import {HexagonManager} from "db://assets/Script/HexagonManager";
+import {SquareManager} from "db://assets/Script/SquareManager";
 
 export class LevelDesign{
 
@@ -11,6 +14,7 @@ export class LevelDesign{
         return this._instance;
     }
 
+    public shapeManagers:Map<ShapeEnum, ShapeManager> = new Map<ShapeEnum, ShapeManager>();
     /**
      * 当前关卡
      * @private
@@ -30,11 +34,18 @@ export class LevelDesign{
     public showGhostDirection:boolean;
 
     /**
+     * 当前地图布局
+     */
+    public currentShapeEnum:ShapeEnum;
+
+    /**
      * 鬼移动算法
      */
     public ghostMoveAlgorithms:Function = randomSolver;
 
     init(){
+        this.shapeManagers.set(ShapeEnum.SIX, new HexagonManager())
+        this.shapeManagers.set(ShapeEnum.FOUR, new SquareManager())
         if (this.currentLevel % 5 == 0) {
             this.showGhostDirection = false;
             this.difficultyLevel = DifficultyLevelEnum.difficulty;
@@ -43,6 +54,10 @@ export class LevelDesign{
             this.showGhostDirection = true;
             this.difficultyLevel = DifficultyLevelEnum.easy;
         }
+    }
+    getShapeManager():ShapeManager {
+        this.currentShapeEnum = ShapeEnum.FOUR;
+        return this.shapeManagers.get(ShapeEnum.FOUR);
     }
 
 

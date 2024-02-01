@@ -5,6 +5,7 @@ import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {Draw} from "db://assets/Script/Draw";
 import {GhostMessage, GhostState} from "db://assets/Script/GhostState";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
+import {LevelDesign} from "db://assets/Script/LevelDesign";
 
 export class ObstacleState implements IProcessStateNode{
     key: string = ProcessStateEnum.obstacle;
@@ -27,18 +28,23 @@ export class ObstacleState implements IProcessStateNode{
     }
 
     createDefaultObstacle(){
+        Global.getInstance().obstacleCoords = new Array<Coord>();
         let count = 0;
         while(count < Global.getInstance().defaultObstacleNum) {
-            let x = Math.floor(Math.random() * (HexagonManager.WidthCount))
-            let y = Math.floor(Math.random() * (HexagonManager.HeightCount))
+            let x = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().WidthCount))
+            let y = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().HeightCount))
             let tile = Global.getInstance().tileMap[x][y].getComponent(Draw);
-            if ((x == HexagonManager.center.x && y == HexagonManager.center.y) || tile.hasObstacle) {
+            if ((x == LevelDesign.getInstance().getShapeManager().center.x && y == LevelDesign.getInstance().getShapeManager().center.y)
+                || (x == Global.getInstance().predictCoord.x && y == Global.getInstance().predictCoord.y)
+                || tile.hasObstacle) {
                 continue;
             }
             tile.creatorObstacle();
             Global.getInstance().obstacleCoords.push({x,y})
             count++;
         }
+
+
     }
 
     createObstacle(params){

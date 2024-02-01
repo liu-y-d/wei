@@ -9,6 +9,7 @@ import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {GhostMessage} from "db://assets/Script/GhostState";
 import {ObstacleMessage} from "db://assets/Script/ObstacleState";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -22,12 +23,13 @@ export class GameProcessState implements IProcessStateNode {
     }
 
     onInit() {
+
         Global.getInstance().gameCanvas = find('Canvas');
         Global.getInstance().playArea = Global.getInstance().gameCanvas.getChildByName('PlayArea');
         // this.gameCanvas.getChildByName('PlayArea').on(Node.EventType.TOUCH_START,this.onClick,this);
         let gameCtrl = Global.getInstance().gameCanvas.getComponent(GameCtrl);
-        this.playAreaInit(gameCtrl)
         LevelDesign.getInstance().init();
+        this.playAreaInit(gameCtrl)
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);
 
@@ -39,33 +41,41 @@ export class GameProcessState implements IProcessStateNode {
 
     playAreaInit(gameCtrl:GameCtrl) {
         let playArea = Global.getInstance().gameCanvas.getChildByName('PlayArea');
+        console.log(11212)
         playArea.on(Node.EventType.TOUCH_START,this.onClick,this);
         let size: Size= playArea.getComponent(UITransform).contentSize;
-        let listHexagon = HexagonManager.InitMap(size.width,0);
-        for (let hexagon of listHexagon) {
+
+        let shapes = LevelDesign.getInstance().getShapeManager().initMap(size.width);
+        for (let shape of shapes) {
             let tile = instantiate(gameCtrl.tile)
             tile.setSiblingIndex(1);
-            tile.getComponent(Draw).draw(hexagon);
+            tile.getComponent(Draw).draw(shape);
             playArea.addChild(tile);
 
-            if (!Global.getInstance().tileMap[hexagon.x]) {
-                Global.getInstance().tileMap[hexagon.x] = new Array<Node>();
+            if (!Global.getInstance().tileMap[shape.x]) {
+                Global.getInstance().tileMap[shape.x] = new Array<Node>();
             }
-            Global.getInstance().tileMap[hexagon.x].splice(hexagon.y,0,tile);
+            Global.getInstance().tileMap[shape.x].splice(shape.y,0,tile);
         }
 
     }
 
     onClick(event :EventTouch) {
+        console.log(Global.getInstance().gameState)
         if (Global.getInstance().defaultObstacleNum == Global.getInstance().obstacleCoords.length) {
             Global.getInstance().gameState = GameStateEnum.ing;
         }
+        console.log(Global.getInstance().gameState)
+
         if (Global.getInstance().gameState != GameStateEnum.ing) {
             return;
         }
         let vec2= event.getUILocation();
         let vec3 = Global.getInstance().playArea.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(vec2.x,vec2.y,0))
-        let coord = HexagonManager.getHexagon(vec3.x,vec3.y);
+        let coord = LevelDesign.getInstance().getShapeManager().getShape(vec3.x,vec3.y);
+        if (!coord) {
+            return;
+        }
         let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
         if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle) {
             console.log("你傻逼啊")

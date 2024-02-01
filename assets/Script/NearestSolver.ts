@@ -1,6 +1,7 @@
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {Global} from "db://assets/Script/Global";
 import {Draw} from "db://assets/Script/Draw";
+import {LevelDesign} from "db://assets/Script/LevelDesign";
 
 
 export class Block {
@@ -45,7 +46,7 @@ export class Block {
 
     get neighbours(): Block[] {
         if (this._neighbours === undefined) {
-            let neighbours = HexagonManager.getNearbyHexagonCoords({x:this.x, y:this.y});
+            let neighbours = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords({x:this.x, y:this.y});
             this._neighbours = neighbours.map(neighbour => {
                 return this.parent.getBlock(neighbour.x, neighbour.y);
             });
@@ -87,17 +88,18 @@ export class Blocks {
     private blocks: Block[][]=[];
 
     constructor() {
-        this.w = HexagonManager.WidthCount;
+        this.w = LevelDesign.getInstance().getShapeManager().WidthCount;
         if (this.w <= 0) {
             throw new Error("empty blocks");
         }
-        this.h = HexagonManager.HeightCount;
+        this.h = LevelDesign.getInstance().getShapeManager().HeightCount;
         for (let x in Global.getInstance().tileMap) {
             this.blocks[x] = [];
-            for (let i = 0; i < Global.getInstance().tileMap[x].length; i++) {
-                this.blocks[x][i] = new Block(this, parseInt(x), i, Global.getInstance().tileMap[x][i].getComponent(Draw).hasObstacle);
+            if (Global.getInstance().tileMap[x] != null) {
+                for (let i = 0; i < Global.getInstance().tileMap[x].length; i++) {
+                    this.blocks[x][i] = new Block(this, parseInt(x), i, Global.getInstance().tileMap[x][i].getComponent(Draw).hasObstacle);
+                }
             }
-
         }
     }
 
@@ -203,7 +205,6 @@ export function nearestSolver( x: number, y: number): number {
 export default function nearestAndMoreRoutesSolver(x: number, y: number): number {
     let blocks = new Blocks();
     blocks.calcAllDistances();
-    console.log(blocks)
     let block = blocks.getBlock(x, y);
     return block.direction;
 }

@@ -27,9 +27,9 @@ export class Global {
 
     public defaultObstacleNum = 15;
 
-    public obstacleCoords:Array<Coord> = new Array<Coord>();
+    public obstacleCoords:Array<Coord>;
 
-
+    public predictCoord:Coord;
     /**
      * 当前移动坐标
      */
