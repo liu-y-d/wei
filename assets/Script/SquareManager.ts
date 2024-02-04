@@ -2,7 +2,7 @@ import {ShapeEnum, ShapeFactory, ShapeManager} from "db://assets/Script/ShapeMan
 import {Shape} from "db://assets/Script/Shape";
 import {Coord, Global} from "db://assets/Script/Global";
 import {Vec2} from "cc";
-import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 
 export class SquareManager extends ShapeManager{
     shapeEnum:ShapeEnum = ShapeEnum.FOUR;
@@ -63,15 +63,28 @@ export class SquareManager extends ShapeManager{
         if (!point) {
             point = Global.getInstance().currentGhostVec2;
         }
-        // 顶点朝上 奇数行偏移
-        let nearbySquareCoords:Array<Coord> = new Array<Coord>();
 
-        nearbySquareCoords.push(
+        let nearbySquareCoords:Array<Coord> = new Array<Coord>();
+        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
+            nearbySquareCoords.push(
                 {x: point.x, y: point.y + 1},
-                {x: point.x + 1 , y: point.y},
+                {x: point.x + 1, y: point.y+1},
+                {x: point.x + 1, y: point.y},
+                {x: point.x + 1, y: point.y - 1},
+                {x: point.x, y: point.y - 1},
+                {x: point.x - 1, y: point.y -1},
+                {x: point.x - 1, y: point.y},
+                {x: point.x - 1, y: point.y + 1},
+            );
+        }else {
+            nearbySquareCoords.push(
+                {x: point.x, y: point.y + 1},
+                {x: point.x + 1, y: point.y},
                 {x: point.x, y: point.y - 1},
                 {x: point.x - 1, y: point.y},
             );
+        }
+
 
 
         return nearbySquareCoords;

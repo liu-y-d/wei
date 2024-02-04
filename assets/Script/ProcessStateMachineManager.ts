@@ -2,6 +2,9 @@ import {ProcessStateMachine} from "./ProcessStateMachine";
 import {GameProcessState} from "db://assets/Script/GameProcessState";
 import {GhostState} from "db://assets/Script/GhostState";
 import {ObstacleState} from "db://assets/Script/ObstacleState";
+import {LoadProcessState} from "db://assets/Script/LoadProcessState";
+import {LoginProcessState} from "db://assets/Script/LoginProcessState";
+import {MainProcessState} from "db://assets/Script/MainProcessState";
 
 
 /**
@@ -20,6 +23,12 @@ export class ProcessStateMachineManager {
 
     public init():void {
 
+        let loadProcessState = new LoadProcessState();
+        let loginProcessState = new LoginProcessState();
+        this._state_machine.addNode(loadProcessState.key,loadProcessState);
+        let mainProcessState = new MainProcessState();
+        this._state_machine.addNode(mainProcessState.key,mainProcessState);
+        this._state_machine.addNode(loginProcessState.key,loginProcessState);
         let gameProcessState = new GameProcessState();
         this._state_machine.addNode(gameProcessState.key,gameProcessState);
         let ghostState = new GhostState();

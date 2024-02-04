@@ -3,6 +3,7 @@ import nearestAndMoreRoutesSolver from "db://assets/Script/NearestSolver";
 import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {SquareManager} from "db://assets/Script/SquareManager";
+import {Global} from "db://assets/Script/Global";
 
 export class LevelDesign{
 
@@ -15,11 +16,11 @@ export class LevelDesign{
     }
 
     public shapeManagers:Map<ShapeEnum, ShapeManager> = new Map<ShapeEnum, ShapeManager>();
-    /**
-     * 当前关卡
-     * @private
-     */
-    public currentLevel:number = 1;
+    // /**
+    //  * 当前关卡
+    //  * @private
+    //  */
+    // public currentLevel:number = 1;
 
     /**
      * 关卡难度
@@ -27,6 +28,13 @@ export class LevelDesign{
      */
     public difficultyLevel:DifficultyLevelEnum
 
+    public bulletArray:Array<string>;
+
+    public difficultyDetails: { [key in keyof typeof DifficultyLevelEnum]: DifficultyInfo } = {
+        Easy: { bgColor: '#90EE90',fontColor: '#333333', description: '简单' },
+        Medium: { bgColor: '#4682B4',fontColor: '#FFFFFF', description: '普通' },
+        Hard: { bgColor: '#C0392B',fontColor: '#FFFFFF', description: '困难' },
+    };
     /**
      * 显示鬼的行进方向
      * @private
@@ -46,23 +54,57 @@ export class LevelDesign{
     init(){
         this.shapeManagers.set(ShapeEnum.SIX, new HexagonManager())
         this.shapeManagers.set(ShapeEnum.FOUR, new SquareManager())
-        if (this.currentLevel % 5 == 0) {
-            this.showGhostDirection = false;
-            this.difficultyLevel = DifficultyLevelEnum.difficulty;
-            this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
-        }else {
+        this.bulletArray = new Array<string>();
+        if (Global.getInstance().getPlayerInfo().gameLevel % 5 == 0) {
             this.showGhostDirection = true;
-            this.difficultyLevel = DifficultyLevelEnum.easy;
+            this.difficultyLevel = DifficultyLevelEnum.Easy;
+            this.currentShapeEnum = ShapeEnum.FOUR;
+            Global.getInstance().defaultObstacleNum = 10;
+            this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
+        }else {
+            let random = Math.floor(Math.random() * 10);
+            this.showGhostDirection = false;
+            Global.getInstance().defaultObstacleNum = 10;
+            this.difficultyLevel = DifficultyLevelEnum.Hard;
+            if ((random &1) == 1) {
+                this.currentShapeEnum = ShapeEnum.SIX;
+                this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
+                this.bulletArray.push(BulletEnum.SixDirection,BulletEnum.SmartMove)
+            }else {
+                this.currentShapeEnum = ShapeEnum.FOUR;
+                this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
+                this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
+            }
         }
     }
+    getDifficultyInfoByEnum(difficulty: DifficultyLevelEnum): DifficultyInfo | undefined {
+        return this.difficultyDetails[difficulty];
+    }
+    getDifficultyInfo(): DifficultyInfo | undefined {
+        return this.difficultyDetails[DifficultyLevelEnum.Easy];
+    }
     getShapeManager():ShapeManager {
-        this.currentShapeEnum = ShapeEnum.FOUR;
-        return this.shapeManagers.get(ShapeEnum.FOUR);
+        return this.shapeManagers.get(this.currentShapeEnum);
     }
 
 
 }
+interface DifficultyInfo {
+    bgColor: string;
+    fontColor: string;
+    description: string;
+}
+
 export enum DifficultyLevelEnum{
-    easy="简单",
-    difficulty="困难"
+    Easy='Easy',
+    Medium='Medium',
+    Hard='Hard'
+}
+export enum BulletEnum{
+    ShowNext='显示移动预测',
+    FourDirection='四方向移动',
+    SixDirection='六方向移动',
+    EightDirection='八方向移动',
+    RandomMove='随机移动',
+    SmartMove='智能移动',
 }

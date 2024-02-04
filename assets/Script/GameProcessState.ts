@@ -28,7 +28,7 @@ export class GameProcessState implements IProcessStateNode {
         Global.getInstance().playArea = Global.getInstance().gameCanvas.getChildByName('PlayArea');
         // this.gameCanvas.getChildByName('PlayArea').on(Node.EventType.TOUCH_START,this.onClick,this);
         let gameCtrl = Global.getInstance().gameCanvas.getComponent(GameCtrl);
-        LevelDesign.getInstance().init();
+        // LevelDesign.getInstance().init();
         this.playAreaInit(gameCtrl)
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);
@@ -41,11 +41,11 @@ export class GameProcessState implements IProcessStateNode {
 
     playAreaInit(gameCtrl:GameCtrl) {
         let playArea = Global.getInstance().gameCanvas.getChildByName('PlayArea');
-        console.log(11212)
         playArea.on(Node.EventType.TOUCH_START,this.onClick,this);
         let size: Size= playArea.getComponent(UITransform).contentSize;
 
         let shapes = LevelDesign.getInstance().getShapeManager().initMap(size.width);
+        Global.getInstance().tileMap = {};
         for (let shape of shapes) {
             let tile = instantiate(gameCtrl.tile)
             tile.setSiblingIndex(1);
