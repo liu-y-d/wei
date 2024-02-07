@@ -10,6 +10,8 @@ const { ccclass, property } = _decorator;
 export class GameLevel extends Component {
 
     public bulletPool:Node[] = [];
+    private currentBulletIndex = 0;
+    private bufferBulletPool = [];
     start() {
         this.initBulletScreen();
     }
@@ -28,41 +30,64 @@ export class GameLevel extends Component {
     }
     initBulletScreen(){
         // let bullets = LevelDesign.getInstance().bulletArray;
-        let bullets = ["123123","adsfafsdafsd","asdfasdbbhnserywer"];
+        let bullets = ["123123","adsfafsdafsd","asdfasdbbhnserywer","fasdf","fasdvbvv","vvasdrweqr","axcvccvvv"];
         let bulletScreen = find('Canvas').getChildByName('BulletScreen');
+        const ys = [67.94,0,-67.94];
+        let index = 0;
         // 初始化弹幕池
-        for (let i = 0; i < 3; i++) { // 根据需要创建一定数量的备用弹幕节点
+        for (let i = 0; i < bullets.length; i++) { // 根据需要创建一定数量的备用弹幕节点
+            let y = ys[index];
             const node = new Node();
             node.addComponent(BulletNode);
             node.addComponent(UITransform);
             node.addComponent(Label);
+            node.getComponent(Label).string = bullets[i];
             node.getComponent(UITransform).anchorX = 1
-            this.bulletPool.push(node);
             bulletScreen.addChild(node);
-            node.active = false;
-            // node.setSiblingIndex(99999999);
-        }
-        console.log(bulletScreen)
-        let y = 80
-        this.schedule(()=>{
-            for (let i = 0; i < bullets.length; i++) {
-                // 获取一个可用的弹幕节点
-                let bulletNode = this.bulletPool.find((node) => !node.active);
-                if (!bulletNode) {
-                    console.warn('弹幕池已满，无法发送新的弹幕');
-                    return;
-                }
+            node.setPosition(-360, y); // 假设从屏幕左侧滚入
+            this.bulletPool.push(node);
+            node.active = true;
 
-                // 开始滚动
-                bulletNode.getComponent(BulletNode).startScrolling(bullets[i], 720,y);
-                if (y < -80) {
-                    y = 80
-                }else {
-                    y -= 50;
-                }
 
+            if (index >= ys.length) {
+                index = 0;
+            } else {
+                index++;
             }
-        },1);
+        }
+        // let currentBulletGroup = [];
+        // // this.bulletPool[0].active = true;
+        // // console.log(bulletScreen)
+        // let currentBulletGroupIndex = 0;
+        let own = this;
+        own.scheduleOnce(()=>{
+            for (let i = 0; i < own.bulletPool.length; i++) {
+                own.bulletPool[i].active = false;
+            }
+            own.schedule(()=>{
+
+                for (let i = 0; i < bullets.length; i++) {
+                    // console.log(own.bulletPool.find((node) => node.active));
+                    // if (own.bulletPool.find((node) => !node.active)) {
+                    if (own.bufferBulletPool.length < 3) {
+
+                        let bulletNode = own.bulletPool[i];
+                        own.bufferBulletPool.unshift(bulletNode)
+                        bulletNode.getComponent(BulletNode).startScrolling(bullets[i], 720,()=>{
+                            console.log(1)
+                            own.bufferBulletPool.pop()
+                        });
+                    }
+
+                    // }
+                    // if (this.currentBulletIndex >= bullets.length) {
+                    //     this.currentBulletIndex = 0; // 循环使用弹幕文本
+                    // }
+                }
+
+            },1)
+        });
+
 
 
     }
