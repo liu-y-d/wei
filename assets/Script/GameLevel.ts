@@ -1,8 +1,7 @@
 import {_decorator, Component, Graphics, Label,Vec2,Sprite,Color,Node,find,UITransform} from 'cc';
-import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {Global} from "db://assets/Script/Global";
 import {ShapeEnum} from "db://assets/Script/ShapeManager";
-import {BulletNode} from "db://assets/Script/BulletNode";
 
 const { ccclass, property } = _decorator;
 
@@ -10,86 +9,24 @@ const { ccclass, property } = _decorator;
 export class GameLevel extends Component {
 
     public bulletPool:Node[] = [];
-    private currentBulletIndex = 0;
-    private bufferBulletPool = [];
     start() {
-        this.initBulletScreen();
+        this.drawCustomer()
     }
 
     drawCustomer() {
         this.initTitle();
         switch (LevelDesign.getInstance().getShapeManager().shapeEnum) {
             case ShapeEnum.FOUR:
-                this.initShapeFour();
+                if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
+                    this.initShapeFourEightDirection();
+                }else {
+                    this.initShapeFour();
+                }
                 break;
             case ShapeEnum.SIX:
                 this.initShapeSix();
                 break;
         }
-        this.initBulletScreen();
-    }
-    initBulletScreen(){
-        // let bullets = LevelDesign.getInstance().bulletArray;
-        let bullets = ["123123","adsfafsdafsd","asdfasdbbhnserywer","fasdf","fasdvbvv","vvasdrweqr","axcvccvvv"];
-        let bulletScreen = find('Canvas').getChildByName('BulletScreen');
-        const ys = [67.94,0,-67.94];
-        let index = 0;
-        // 初始化弹幕池
-        for (let i = 0; i < bullets.length; i++) { // 根据需要创建一定数量的备用弹幕节点
-            let y = ys[index];
-            const node = new Node();
-            node.addComponent(BulletNode);
-            node.addComponent(UITransform);
-            node.addComponent(Label);
-            node.getComponent(Label).string = bullets[i];
-            node.getComponent(UITransform).anchorX = 1
-            bulletScreen.addChild(node);
-            node.setPosition(-360, y); // 假设从屏幕左侧滚入
-            this.bulletPool.push(node);
-            node.active = true;
-
-
-            if (index >= ys.length) {
-                index = 0;
-            } else {
-                index++;
-            }
-        }
-        // let currentBulletGroup = [];
-        // // this.bulletPool[0].active = true;
-        // // console.log(bulletScreen)
-        // let currentBulletGroupIndex = 0;
-        let own = this;
-        own.scheduleOnce(()=>{
-            for (let i = 0; i < own.bulletPool.length; i++) {
-                own.bulletPool[i].active = false;
-            }
-            own.schedule(()=>{
-
-                for (let i = 0; i < bullets.length; i++) {
-                    // console.log(own.bulletPool.find((node) => node.active));
-                    // if (own.bulletPool.find((node) => !node.active)) {
-                    if (own.bufferBulletPool.length < 3) {
-
-                        let bulletNode = own.bulletPool[i];
-                        own.bufferBulletPool.unshift(bulletNode)
-                        bulletNode.getComponent(BulletNode).startScrolling(bullets[i], 720,()=>{
-                            console.log(1)
-                            own.bufferBulletPool.pop()
-                        });
-                    }
-
-                    // }
-                    // if (this.currentBulletIndex >= bullets.length) {
-                    //     this.currentBulletIndex = 0; // 循环使用弹幕文本
-                    // }
-                }
-
-            },1)
-        });
-
-
-
     }
     initShapeFour() {
         let detail = this.node.getChildByName('Detail');
@@ -100,6 +37,31 @@ export class GameLevel extends Component {
 
         // 绘制矩形，参数为左上角坐标x, y以及宽度width和高度height
         graphics.roundRect(-edgeLength/2, -edgeLength/2, edgeLength, edgeLength,10);
+
+        graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2, edgeLength, edgeLength,10);
+        graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2, edgeLength, edgeLength,10);
+        graphics.roundRect(-edgeLength/2 , -edgeLength/2- edgeLength -10, edgeLength, edgeLength,10);
+        graphics.roundRect(-edgeLength/2 , -edgeLength/2+ edgeLength +10, edgeLength, edgeLength,10);
+
+        // 结束当前路径并填充或描边
+        graphics.fill();
+        // 或者如果你想只描边不填充
+        graphics.stroke();
+    }
+    initShapeFourEightDirection() {
+        let detail = this.node.getChildByName('Detail');
+        const graphics = detail.getComponent(Graphics);
+        let edgeLength = 100;
+        // 开始新的绘制路径
+        // graphics.beginPath();
+
+        // 绘制矩形，参数为左上角坐标x, y以及宽度width和高度height
+        graphics.roundRect(-edgeLength/2, -edgeLength/2, edgeLength, edgeLength,10);
+
+        graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2 + edgeLength +10, edgeLength, edgeLength,10);
+        graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2 + edgeLength +10, edgeLength, edgeLength,10);
+        graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2 - edgeLength -10, edgeLength, edgeLength,10);
+        graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2 - edgeLength -10, edgeLength, edgeLength,10);
 
         graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2, edgeLength, edgeLength,10);
         graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2, edgeLength, edgeLength,10);

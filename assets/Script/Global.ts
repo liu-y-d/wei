@@ -29,7 +29,7 @@ export class Global {
 
     public playArea:Node;
 
-    public tileMap:TileMap = {};
+    public tileMap:TileMap;
 
     public defaultObstacleNum ;
 

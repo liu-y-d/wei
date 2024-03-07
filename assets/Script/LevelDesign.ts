@@ -4,6 +4,11 @@ import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {SquareManager} from "db://assets/Script/SquareManager";
 import {Global} from "db://assets/Script/Global";
+import {PropsBack} from "db://assets/Script/PropsBack";
+import {PropsForecast} from "db://assets/Script/PropsForecast";
+import {PropsObstacleReset} from "db://assets/Script/PropsObstacleReset";
+import {BaseProps} from "db://assets/Script/BaseProps";
+import {PropsFreeze} from "db://assets/Script/PropsFreeze";
 
 export class LevelDesign{
 
@@ -47,6 +52,16 @@ export class LevelDesign{
     public currentShapeEnum:ShapeEnum;
 
     /**
+     * 当前关卡道具数组
+     */
+    public levelPropsArray:BaseProps[]
+
+    /**
+     * 当前关卡各个道具可使用数量
+     */
+    public propsUsableConfig: Map<number,number>
+
+    /**
      * 鬼移动算法
      */
     public ghostMoveAlgorithms:Function = randomSolver;
@@ -76,12 +91,26 @@ export class LevelDesign{
                 this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
             }
         }
+        this.propsInit();
+    }
+    propsInit() {
+        this.levelPropsArray = [];
+        let propsBack = new PropsBack();
+        let propsForecast = new PropsForecast();
+        let propsObstacleReset = new PropsObstacleReset();
+        let propsFreeze = new PropsFreeze();
+        this.levelPropsArray.push(propsBack,propsForecast,propsObstacleReset,propsFreeze);
+        let propsUsableConfig = new Map<number,number>();
+        propsUsableConfig.set(propsBack.id,propsBack.defaultNum);
+        propsUsableConfig.set(propsForecast.id,propsForecast.defaultNum);
+        propsUsableConfig.set(propsObstacleReset.id,propsObstacleReset.defaultNum);
+        propsUsableConfig.set(propsFreeze.id,propsFreeze.defaultNum);
     }
     getDifficultyInfoByEnum(difficulty: DifficultyLevelEnum): DifficultyInfo | undefined {
         return this.difficultyDetails[difficulty];
     }
     getDifficultyInfo(): DifficultyInfo | undefined {
-        return this.difficultyDetails[DifficultyLevelEnum.Easy];
+        return this.difficultyDetails[this.difficultyLevel];
     }
     getShapeManager():ShapeManager {
         return this.shapeManagers.get(this.currentShapeEnum);

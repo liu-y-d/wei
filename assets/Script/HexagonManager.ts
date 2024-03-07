@@ -66,23 +66,6 @@ export class HexagonManager extends ShapeManager{
         for (var y = 0; y < this.HeightCount; y++) {
             for (var x = 0; x < this.WidthCount; x++) {
 
-                // 去掉四角
-                // if (this.layout == 1) {
-                //     if ((y == this.HeightCount - 1 && (x < Math.floor(this.WidthCount/2) || x > Math.floor(this.HeightCount/2)))
-                //         ||(y == this.HeightCount - 2 && (x < Math.floor(this.WidthCount/2) - 2 || x > Math.floor(this.HeightCount/2) + 2))
-                //             || (y == 0 && (x < Math.floor(this.WidthCount/2) - 1 || x > Math.floor(this.HeightCount/2) + 1))
-                //                 || (y == 1 && (x < Math.floor(this.WidthCount/2) - 3 || x > Math.floor(this.HeightCount/2) + 3) )
-                //     ) {
-                //         continue;
-                //     }
-                //     // if ((y == this.HeightCount - 1 || y == this.HeightCount - 2)   && (x < Math.floor(this.WidthCount/2) || x > Math.floor(this.HeightCount/2))
-                //     // || ((y== 0 || y == 1) && (x < Math.floor(this.WidthCount/2) || x > Math.floor(this.HeightCount/2))
-                //     // ) {
-                //     //     continue;
-                //     // }
-                // }else {
-                //
-                // }
                 result.push( ShapeFactory.create(x,y,this.shapeEnum));
             }
         }
