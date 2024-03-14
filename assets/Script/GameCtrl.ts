@@ -1,4 +1,4 @@
-import { _decorator, Component, Node,Prefab } from 'cc';
+import { _decorator, Component, Node,Prefab,director } from 'cc';
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 const { ccclass, property } = _decorator;
@@ -16,7 +16,12 @@ export class GameCtrl extends Component {
 
     }
     start() {
-        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game);
+        if (director.getScene().name == 'Game') {
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game);
+        }
+        if (director.getScene().name == 'Main') {
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main);
+        }
     }
 
     update(deltaTime: number) {

@@ -5,6 +5,7 @@ import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {GameLevel} from "db://assets/Script/GameLevel";
 import {Global} from "db://assets/Script/Global";
+import {UIManager} from "db://assets/Script/UIManager";
 export class MainProcessState implements IProcessStateNode {
     readonly key =  ProcessStateEnum.main;
 
@@ -30,9 +31,8 @@ export class MainProcessState implements IProcessStateNode {
         //     console.log("上传成功")
         // }).catch(err=>{
         // });
-        console.log(123123)
         LevelDesign.getInstance().init();
-        console.log(Global.getInstance().getPlayerInfo())
+        Global.getInstance().propsConfigInit();
         find('Canvas').getChildByName('GameLevel').getComponent(GameLevel).drawCustomer();
     }
 

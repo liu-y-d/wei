@@ -28,23 +28,7 @@ export class ObstacleState implements IProcessStateNode{
     }
 
     createDefaultObstacle(){
-        Global.getInstance().obstacleCoords = new Array<Coord>();
-        let count = 0;
-        while(count < Global.getInstance().defaultObstacleNum) {
-            let x = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().WidthCount))
-            let y = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().HeightCount))
-            let tile = Global.getInstance().tileMap[x][y].getComponent(Draw);
-            if ((x == LevelDesign.getInstance().getShapeManager().center.x && y == LevelDesign.getInstance().getShapeManager().center.y)
-                || (x == Global.getInstance().predictCoord.x && y == Global.getInstance().predictCoord.y)
-                || tile.hasObstacle) {
-                continue;
-            }
-            tile.creatorObstacle();
-            Global.getInstance().obstacleCoords.push({x,y})
-            count++;
-        }
-
-
+        LevelDesign.getInstance().getShapeManager().createDefaultObstacle();
     }
 
     createObstacle(params){
@@ -53,6 +37,7 @@ export class ObstacleState implements IProcessStateNode{
             let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
             tile.creatorObstacle();
             Global.getInstance().obstacleCoords.push(coord)
+            Global.getInstance().addPlayerPath(coord);
 
         }
     }

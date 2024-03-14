@@ -54,7 +54,7 @@ export class LevelDesign{
     /**
      * 当前关卡道具数组
      */
-    public levelPropsArray:BaseProps[]
+    public levelPropsArray:Map<number,BaseProps>
 
     /**
      * 当前关卡各个道具可使用数量
@@ -71,12 +71,17 @@ export class LevelDesign{
         this.shapeManagers.set(ShapeEnum.FOUR, new SquareManager())
         this.bulletArray = new Array<string>();
         if (Global.getInstance().getPlayerInfo().gameLevel % 5 == 0) {
+
+
+
             this.showGhostDirection = true;
             this.difficultyLevel = DifficultyLevelEnum.Easy;
             this.currentShapeEnum = ShapeEnum.FOUR;
             Global.getInstance().defaultObstacleNum = 10;
             this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
+
         }else {
+
             let random = Math.floor(Math.random() * 10);
             this.showGhostDirection = false;
             Global.getInstance().defaultObstacleNum = 10;
@@ -90,21 +95,29 @@ export class LevelDesign{
                 this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
                 this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
             }
+
+
+
         }
         this.propsInit();
     }
     propsInit() {
-        this.levelPropsArray = [];
+        this.levelPropsArray = new Map<number,BaseProps>();
         let propsBack = new PropsBack();
-        let propsForecast = new PropsForecast();
         let propsObstacleReset = new PropsObstacleReset();
         let propsFreeze = new PropsFreeze();
-        this.levelPropsArray.push(propsBack,propsForecast,propsObstacleReset,propsFreeze);
         let propsUsableConfig = new Map<number,number>();
         propsUsableConfig.set(propsBack.id,propsBack.defaultNum);
+        this.levelPropsArray.set(propsBack.id,propsBack);
+
+        let propsForecast = new PropsForecast();
         propsUsableConfig.set(propsForecast.id,propsForecast.defaultNum);
+        this.levelPropsArray.set(propsForecast.id,propsForecast);
+        this.levelPropsArray.set(propsObstacleReset.id,propsObstacleReset);
         propsUsableConfig.set(propsObstacleReset.id,propsObstacleReset.defaultNum);
+        this.levelPropsArray.set(propsFreeze.id,propsFreeze);
         propsUsableConfig.set(propsFreeze.id,propsFreeze.defaultNum);
+        this.propsUsableConfig = propsUsableConfig;
     }
     getDifficultyInfoByEnum(difficulty: DifficultyLevelEnum): DifficultyInfo | undefined {
         return this.difficultyDetails[difficulty];

@@ -20,7 +20,6 @@ export class LoadProcessState implements IProcessStateNode {
         //
         // });
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
-        console.log(222)
         let progressBarNode = find('Canvas/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
         director.preloadScene("Main", (completedCount, totalCount, item) =>{

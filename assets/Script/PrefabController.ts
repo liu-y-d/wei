@@ -10,6 +10,9 @@ export class PrefabController extends Component {
 
     @property(Prefab)
     public loading: Prefab = null;
+
+    @property(Prefab)
+    public maskGlobal:Prefab;
     start() {
 
     }

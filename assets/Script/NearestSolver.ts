@@ -72,7 +72,6 @@ export class Block {
         let result = -1;
         this.directions.forEach(direction => {
             let neighbour = this.neighbours[direction];
-            console.log("路径条数",maxRoutesCount);
             if (neighbour.routesCount > maxRoutesCount) {
                 maxRoutesCount = neighbour.routesCount;
                 result = direction;

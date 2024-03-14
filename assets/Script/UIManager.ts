@@ -1,9 +1,24 @@
-import {Node,director,Label} from "cc";
-import {GameStateEnum, Global} from "db://assets/Script/Global";
+import {Node,director,instantiate,find,Label,game,Director,resources,Prefab} from "cc";
+import {GameStateEnum, Global, resume} from "db://assets/Script/Global";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
+import {PopupBase} from "db://assets/Script/PopupBase";
+import {PopupGameOver} from "db://assets/Script/PopupGameOver";
+import {PopupPropsPrompt} from "db://assets/Script/PopupPropsPrompt";
+import {Popup} from "db://assets/Script/Popup";
+import {PrefabController} from "db://assets/Script/PrefabController";
 
+export enum PopupEnum {
+    /**
+     * 游戏结束弹窗
+     */
+    GAME_OVER,
+    /**
+     * 道具提示弹窗
+     */
+    PROPS_PROMPT
+}
 export class UIManager{
     private static _instance: UIManager;
     public static getInstance(): UIManager {
@@ -13,22 +28,49 @@ export class UIManager{
         return this._instance;
     }
 
+    constructor() {
+        if (!this.popupMap) {
+            this.popupMap = new Map<number, PopupBase>();
+
+            let popupGameOver = new PopupGameOver();
+            let propsPrompt = new PopupPropsPrompt();
+            this.popupMap.set(popupGameOver.type,popupGameOver);
+            this.popupMap.set(propsPrompt.type,propsPrompt);
+        }
+
+    }
     /**
      * 全局遮罩
      */
     maskGlobal:Node;
 
-    // /**
-    //  * 结束游戏提示
-    //  */
-    // gameOverTooltip:Node;
+    popupMap:Map<number,PopupBase>;
+
+    init() {
+        let canvas = find("Canvas");
+        if (!canvas.getChildByName("MaskGlobal")) {
+            this.maskGlobal = instantiate(canvas.getComponent(PrefabController).maskGlobal);
+            canvas.addChild(this.maskGlobal)
+            this.maskGlobal.getChildByName('Background').on(Node.EventType.TOUCH_START, function (event) {
+                UIManager.getInstance().closeMaskGlobal();
+            }, this);
+            this.maskGlobal.getChildByName('Popup').on(Node.EventType.TOUCH_START, function (event) {
+                // UIManager.getInstance().closeMaskGlobal();
+            }, this);
+        }
+
+    }
+    
 
     public openMaskGlobal(){
-        Global.getInstance().gameCanvas.getChildByName('MaskGlobal').active = true;
+        UIManager.getInstance().init();
+        UIManager.getInstance().maskGlobal.active = true;
     }
 
     public closeMaskGlobal(){
-        Global.getInstance().gameCanvas.getChildByName('MaskGlobal').active = false;
+        if (UIManager.getInstance().maskGlobal) {
+            UIManager.getInstance().maskGlobal.active = false;
+        }
     }
 
     public gameOver(state:GameStateEnum) {
@@ -41,40 +83,15 @@ export class UIManager{
         // }).catch(err=>{
         // });
         if (state == GameStateEnum.win) {
-
             Global.getInstance().playerNext();
         }
         this.openMaskGlobal()
-        let tooltip = Global.getInstance().gameCanvas.getChildByName('MaskGlobal').getChildByName('Tooltip');
-        tooltip.active = true;
-        if (state == GameStateEnum.lose) {
-            tooltip.getChildByName('TooltipLayout').getChildByName('Label').getComponent(Label).string = '失败'
-            Global.getInstance().gameState = GameStateEnum.lose;
-        }
-        if (state == GameStateEnum.win) {
-            tooltip.getChildByName('TooltipLayout').getChildByName('Label').getComponent(Label).string = '胜利'
-            Global.getInstance().gameState = GameStateEnum.win;
-        }
-        if (LevelDesign.getInstance().showGhostDirection) {
-            LevelDesign.getInstance().getShapeManager().closeDirect();
-        }
-        tooltip.active = true;
-        let continueButton = tooltip.getChildByName('TooltipLayout').getChildByName('ButtonGroup').getChildByName('Continue');
-        continueButton.on(Node.EventType.TOUCH_END, function (event) {
-            // event.stopPropagation(); // 可选，阻止事件向上冒泡
-
-            console.log('继续按钮被点击了！');
-            // 例如，可以调用一个函数
+        let popup = UIManager.getInstance().popupMap.get(PopupEnum.GAME_OVER) as PopupGameOver;
+        popup.overType = state  == GameStateEnum.win;
+        popup.resume = ()=>{
             UIManager.getInstance().gameContinue();
-        }, this);
-        let backButton = tooltip.getChildByName('TooltipLayout').getChildByName('ButtonGroup').getChildByName('Back');
-        backButton.on(Node.EventType.TOUCH_END, function (event) {
-            // event.stopPropagation(); // 可选，阻止事件向上冒泡
-
-            console.log('返回按钮被点击了！');
-            // 例如，可以调用一个函数
-            UIManager.getInstance().backMain();
-        }, this);
+        }
+        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.GAME_OVER);
 
     }
 
@@ -85,5 +102,14 @@ export class UIManager{
         this.closeMaskGlobal()
         LevelDesign.getInstance().init();
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game);
+    }
+
+    public showPropsTip(tip:string,resume:Function){
+        this.openMaskGlobal();
+        let popup = UIManager.getInstance().popupMap.get(PopupEnum.PROPS_PROMPT) as PopupPropsPrompt;
+        popup.text = tip;
+        popup.resume = resume;
+        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.PROPS_PROMPT);
+
     }
 }

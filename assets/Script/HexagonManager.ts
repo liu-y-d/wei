@@ -1,8 +1,10 @@
-import {Vec2,Animation,Sprite,Node} from "cc";
+import {Vec2,ParticleSystem2D,tween,Vec3} from "cc";
 import {Coord, Global} from "db://assets/Script/Global";
 import {ShapeEnum, ShapeFactory, ShapeManager} from "db://assets/Script/ShapeManager";
 import {Shape} from "db://assets/Script/Shape";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {Draw} from "db://assets/Script/Draw";
+import {Block} from "db://assets/Script/NearestSolver";
 
 export class HexagonManager extends ShapeManager{
 
@@ -72,17 +74,52 @@ export class HexagonManager extends ShapeManager{
         this.hexagonMap = result;
         return result;
     }
-    direct(coord: Coord) {
+    createDefaultObstacle() {
+        Global.getInstance().obstacleCoords = new Array<Coord>();
+        for (let x in Global.getInstance().tileMap) {
+            if (Global.getInstance().tileMap[x] != null) {
+                for (let i = 0; i < Global.getInstance().tileMap[x].length; i++) {
+                    Global.getInstance().tileMap[x][i].getComponent(Draw).clearObstacle({
+                        x: Number(x),
+                        y: i,
+                        shape: LevelDesign.getInstance().currentShapeEnum
+                    })
+                }
+            }
+        }
+        let count = 0;
+        while(count < Global.getInstance().defaultObstacleNum) {
+            let x = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().WidthCount))
+            let y = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().HeightCount))
+            let tile = Global.getInstance().tileMap[x][y].getComponent(Draw);
+            if ((x == LevelDesign.getInstance().getShapeManager().center.x && y == LevelDesign.getInstance().getShapeManager().center.y)
+                || (x == Global.getInstance().predictCoord.x && y == Global.getInstance().predictCoord.y)
+                || tile.hasObstacle) {
+                continue;
+            }
+            tile.creatorObstacle();
+            Global.getInstance().obstacleCoords.push({x,y})
+            count++;
+        }
+    }
+    direct(coord: Coord,duration) {
         this.directNode = Global.getInstance().playArea.getChildByName('Direct');
         let target = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x,coord.y));
+        this.directNode.setSiblingIndex(9999);
+        // this.directNode.getComponent(ParticleSystem2D).stopSystem();
+        // this.directNode.setPosition(target.x,target.y)
         this.directNode.active = true;
+        this.directNode.getComponent(ParticleSystem2D).resetSystem();
+        tween(this.directNode).to(duration,{position:new Vec3(target.x,target.y,0)}).start()
         // let animation = this.directNode.getComponent(Animation);
         // animation.pause();
-        this.directNode.setSiblingIndex(9999);
-        this.directNode.setPosition(target.x,target.y)
+
     }
     closeDirect() {
-        this.directNode.active = false;
+        if (this.directNode) {
+            this.directNode.getComponent(ParticleSystem2D).stopSystem();
+            // this.directNode.active = false;
+        }
     }
     /**
      * 获取触摸点所在正六边形的索引
@@ -305,13 +342,8 @@ export class HexagonManager extends ShapeManager{
         // ctx.circle(px,py,HexagonManager.hexagonWidth);
         ctx.stroke();
         //4边
-        // ctx.fillColor.fromHEX("#8CBDB9")
+        ctx.fillColor.fromHEX("#BD9A8C");
         ctx.fill();
-        // this.node.getChildByName('Pianyi').getComponent(Label).string = "x:"+hexagon.x+",y:"+hexagon.y;
-        // console.log("pianyi:" +"x:"+hexagon.x+",y:"+hexagon.y)
-        // let cube = HexagonManager.pianyi_cube(hexagon.x,hexagon.y)
-        // this.node.getChildByName('Zhou').getComponent(Label).string = "x:"+cube.x+",y:"+cube.y+",z:"+cube.z;
-        // console.log("Zhou:" +"x:"+cube.x+",y:"+cube.y+",z:"+cube.z)
     }
 
     creatorObstacle(ctx, shape: Shape) {
@@ -332,4 +364,5 @@ export class HexagonManager extends ShapeManager{
         // this.node.getChildByName('Zhou').getComponent(Label).string = "x:"+cube.x+",y:"+cube.y+",z:"+cube.z;
         // console.log("Zhou:" +"x:"+cube.x+",y:"+cube.y+",z:"+cube.z)
     }
+
 }

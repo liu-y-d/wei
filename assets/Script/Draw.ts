@@ -43,5 +43,10 @@ export class Draw extends Component {
         }
     }
 
+    clearObstacle(shape:Shape){
+        this.hasObstacle = false;
+        this.draw(shape);
+    }
+
 }
 

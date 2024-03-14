@@ -9,9 +9,9 @@ const { ccclass, property } = _decorator;
 export class GameLevel extends Component {
 
     public bulletPool:Node[] = [];
-    start() {
-        this.drawCustomer()
-    }
+    // start() {
+    //     this.drawCustomer()
+    // }
 
     drawCustomer() {
         this.initTitle();
@@ -31,6 +31,7 @@ export class GameLevel extends Component {
     initShapeFour() {
         let detail = this.node.getChildByName('Detail');
         const graphics = detail.getComponent(Graphics);
+        graphics.clear();
         let edgeLength = 100;
         // 开始新的绘制路径
         // graphics.beginPath();
@@ -51,6 +52,7 @@ export class GameLevel extends Component {
     initShapeFourEightDirection() {
         let detail = this.node.getChildByName('Detail');
         const graphics = detail.getComponent(Graphics);
+        graphics.clear();
         let edgeLength = 100;
         // 开始新的绘制路径
         // graphics.beginPath();
@@ -81,10 +83,10 @@ export class GameLevel extends Component {
 
         shapeCenterArray.push(new Vec2(0,0));
         let hexagonCenters1 = this.getCirclePoints(0,0,110);
-        console.log(hexagonCenters1)
 
         let detail = this.node.getChildByName('Detail');
         const graphics = detail.getComponent(Graphics);
+        graphics.clear();
         this.drawShapeSix(graphics,new Vec2(0,0),50,this.hex_corner)
         for (let i = 0; i < hexagonCenters1.length; i++) {
             this.drawShapeSix(graphics,new Vec2(hexagonCenters1[i].x,hexagonCenters1[i].y),50,this.hex_corner)
@@ -109,7 +111,6 @@ export class GameLevel extends Component {
 
 
     drawShapeSix(graphics:Graphics,center:Vec2,outerRadius,hex_corner:Function){
-        console.log(center)
         graphics.lineWidth = 0;
         // var hexagonWidth=HexagonManager.hexagonWidth-7;
         // var hexagonheight=hexagonWidth * 0.866;
@@ -144,9 +145,6 @@ export class GameLevel extends Component {
     initTitle() {
         this.node.getChildByName('Title').getComponent(Label).string = `第 ${Global.getInstance().getPlayerInfo().gameLevel} 关`;
         let difficultyInfo = LevelDesign.getInstance().getDifficultyInfo();
-        console.log(Global.getInstance().getPlayerInfo())
-        console.log(difficultyInfo)
-        console.log(LevelDesign.getInstance())
         let bgColor = new Color();
         Color.fromHEX(bgColor,difficultyInfo.bgColor);
         let childByName = this.node.getChildByName('DifficultyLevel');

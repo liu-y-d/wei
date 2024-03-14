@@ -25,9 +25,7 @@ export class PropsNum extends Component {
         let ctx = this.node.getComponent(Graphics);
         ctx.clear();
         ctx.fillColor.fromHEX("#FF0000");
-        console.log(this.node.getWorldPosition())
         this.node.getComponent(UITransform).convertToNodeSpaceAR(this.node.getWorldPosition())
-        console.log(this.node.getWorldPosition())
         // ctx.circle(this.node.getPosition().x + spriteSize.width/2, this.node.getPosition().y + spriteSize.height/2, this.dotRadius);
         // ctx.circle(spriteSize.width/2, spriteSize.height/2, this.dotRadius);
         ctx.circle(this.node.getPosition().x + spriteSize.width/2, this.node.getPosition().y + spriteSize.height/2, 20);

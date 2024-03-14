@@ -1,7 +1,9 @@
 import {Node,Vec2,sys} from "cc";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
+import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
 
 export type Coord= {x:number,y:number}
+export type resume = (instance: BaseProps)=>void
 type TileMap = {[key:number]:Array<Node>};
 export enum GameStateEnum{
     ready="ready",
@@ -14,6 +16,10 @@ export interface PlayerInfo {
     nickName:string,
     avatarUrl:string,
     gameLevel:number
+}
+export interface PropsConfig {
+    propsId:number,
+    showTip: boolean
 }
 export class Global {
     private static _instance: Global;
@@ -28,6 +34,8 @@ export class Global {
     public gameCanvas;
 
     public playArea:Node;
+
+    public moveLock:Node;
 
     public tileMap:TileMap;
 
@@ -46,8 +54,43 @@ export class Global {
     public prevGhostVec2:Vec2;
 
     public ghostMoving:boolean;
-    //
-    // public nearbyHexagonCoords:Coord[] = [];
+
+    public ghostFreezeNum:number = 0;
+    public propsConfig:PropsConfig[];
+
+    public playerPath:Array<Coord>;
+
+    public ghostPath:Array<Coord>;
+
+    /**
+     * 添加玩家路径
+     * @param coord
+     */
+    public addPlayerPath(coord:Coord){
+        if (!this.playerPath) {
+            this.playerPath = new Array<Coord>();
+        }
+        this.playerPath.push(coord);
+    }
+
+    /**
+     * 添加鬼路径
+     * @param coord
+     */
+    public addGhostPath(coord:Coord){
+        if (!this.ghostPath) {
+            this.ghostPath = new Array<Coord>();
+        }
+        this.ghostPath.push(coord);
+    }
+
+    /**
+     * 路径初始化
+     */
+    public pathInit() {
+        this.playerPath = new Array<Coord>();
+        this.ghostPath = new Array<Coord>();
+    }
 
     public setPlayerInfo(playerInfo: PlayerInfo) {
         sys.localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
@@ -56,10 +99,48 @@ export class Global {
         return JSON.parse(sys.localStorage.getItem('playerInfo'))
     }
 
+    public setPropsConfig(config: PropsConfig[]) {
+        sys.localStorage.setItem("propsConfig", JSON.stringify(config));
+    }
+    public setPropsConfigSingle(config:PropsConfig): void {
+        if (config) {
+            let allConfig = JSON.parse(sys.localStorage.getItem('propsConfig')) as PropsConfig[];
+            for (let i = 0; i < allConfig.length; i++) {
+                if (allConfig[i].propsId == config.propsId) {
+                    allConfig[i] = config;
+                    break;
+                }
+            }
+            sys.localStorage.setItem("propsConfig", JSON.stringify(allConfig));
+        }
+    }
+    public getPropsConfig(): PropsConfig[] {
+        return JSON.parse(sys.localStorage.getItem('propsConfig'))
+    }
+    public getPropsConfigById(id:number): PropsConfig {
+        let allConfig = JSON.parse(sys.localStorage.getItem('propsConfig')) as PropsConfig[];
+        for (let i = 0; i < allConfig.length; i++) {
+            if (allConfig[i].propsId == id) {
+                return allConfig[i];
+            }
+        }
+    }
+
+
 
     public playerNext() {
         let playerInfo = JSON.parse(sys.localStorage.getItem('playerInfo'))
         playerInfo.gameLevel++;
         sys.localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
+    }
+
+    propsConfigInit() {
+        let allPropsConfig: PropsConfig[]= [
+            {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: false},
+            {propsId:GamePropsEnum.BACK, showTip: false},
+            {propsId:GamePropsEnum.FORECAST, showTip: true},
+            {propsId:GamePropsEnum.FREEZE, showTip: false},
+        ];
+        this.setPropsConfig(allPropsConfig);
     }
 }

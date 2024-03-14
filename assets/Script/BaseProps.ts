@@ -1,13 +1,16 @@
 import {Node} from 'cc';
+import {resume} from "db://assets/Script/Global";
 export interface BaseProps{
     id:number,
     name:string,
     description?:string,
     defaultNum?:number,
     spriteFrameUrl?:string,
-    node?:Node
+    target?:Node
     init(),
     setNum(num?:number)
+    inure()
+    resume:Function
 }
 export enum GamePropsEnum {
     /**

@@ -32,7 +32,9 @@ export class ButtonsController extends Component {
         canvas.addChild(instantiate(canvas.getComponent(PrefabController).rankPrefab));
     }
     begin() {
-        director.loadScene("Game",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)});
+        director.loadScene("Game",()=>{
+            // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
+        });
     }
 }
 

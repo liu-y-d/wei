@@ -1,10 +1,12 @@
 import {ShapeEnum, ShapeFactory, ShapeManager} from "db://assets/Script/ShapeManager";
 import {Shape} from "db://assets/Script/Shape";
 import {Coord, Global} from "db://assets/Script/Global";
-import {Vec2} from "cc";
+import {Vec2,ParticleSystem2D,tween,Vec3} from "cc";
 import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
+import {Draw} from "db://assets/Script/Draw";
 
 export class SquareManager extends ShapeManager{
+
     shapeEnum:ShapeEnum = ShapeEnum.FOUR;
     shapeWidth:number;
     shapeHeight:number;
@@ -14,7 +16,6 @@ export class SquareManager extends ShapeManager{
     outerRadius:number;
     directNode;
     creatorObstacle(ctx, shape: Shape) {
-        // console.log(shape)
         ctx.lineWidth = 0;
         var px=this.getPx(shape);
         var py=this.getPy(shape);
@@ -27,17 +28,53 @@ export class SquareManager extends ShapeManager{
         ctx.stroke();
         ctx.fill();
     }
-    direct(coord: Coord) {
+    createDefaultObstacle() {
+        Global.getInstance().obstacleCoords = new Array<Coord>();
+        for (let x in Global.getInstance().tileMap) {
+            if (Global.getInstance().tileMap[x] != null) {
+                for (let i = 0; i < Global.getInstance().tileMap[x].length; i++) {
+                    Global.getInstance().tileMap[x][i].getComponent(Draw).clearObstacle({
+                        x: Number(x),
+                        y: i,
+                        shape: LevelDesign.getInstance().currentShapeEnum
+                    })
+                }
+            }
+        }
+        let count = 0;
+        while(count < Global.getInstance().defaultObstacleNum) {
+            let x = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().WidthCount))
+            let y = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().HeightCount))
+            let tile = Global.getInstance().tileMap[x][y].getComponent(Draw);
+            if ((x == LevelDesign.getInstance().getShapeManager().center.x && y == LevelDesign.getInstance().getShapeManager().center.y)
+                || (x == Global.getInstance().predictCoord.x && y == Global.getInstance().predictCoord.y)
+                || tile.hasObstacle) {
+                continue;
+            }
+            tile.creatorObstacle();
+            Global.getInstance().obstacleCoords.push({x,y})
+            count++;
+        }
+    }
+    direct(coord: Coord,duration) {
         this.directNode = Global.getInstance().playArea.getChildByName('Direct');
         let target = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x,coord.y));
+        this.directNode.setSiblingIndex(9999);
+        this.directNode.getComponent(ParticleSystem2D).stopSystem();
+        // this.directNode.setPosition(target.x,target.y)
         this.directNode.active = true;
+        this.directNode.getComponent(ParticleSystem2D).resetSystem();
+        tween(this.directNode).to(duration,{position:new Vec3(target.x,target.y,0)}).start()
+        // this.directNode.active = true;
         // let animation = this.directNode.getComponent(Animation);
         // animation.pause();
-        this.directNode.setSiblingIndex(9999);
-        this.directNode.setPosition(target.x,target.y)
+
     }
     closeDirect() {
-        this.directNode.active = false;
+        if (this.directNode) {
+            this.directNode.getComponent(ParticleSystem2D).stopSystem();
+            // this.directNode.active = false;
+        }
     }
     draw(ctx, shape: Shape) {
         ctx.clear();
@@ -103,8 +140,6 @@ export class SquareManager extends ShapeManager{
         if (px < 0) {
             return null;
         }
-        // console.log(px)
-        // console.log(py)
         return new Vec2(Math.floor(px / this.shapeWidth),Math.floor(py / this.shapeHeight));
     }
     calculateWidthAndHeight(totalWidth: number) {
@@ -130,5 +165,6 @@ export class SquareManager extends ShapeManager{
             (coord.x ==this.WidthCount-1 && coord.y < this.HeightCount) ||
             (coord.x < this.WidthCount && coord.y ==this.HeightCount-1);
     }
+
 
 }

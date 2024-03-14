@@ -21,11 +21,12 @@ export abstract class ShapeManager {
     abstract getPy(shape: Shape);
     abstract getPx(shape: Shape);
 
-    abstract direct(coord: Coord);
+    abstract direct(coord: Coord,duration);
     abstract closeDirect();
 
     abstract draw(ctx,shape: Shape);
     abstract creatorObstacle(ctx,shape: Shape);
+    abstract createDefaultObstacle();
 }
 // export interface Shape {
 //     x: number;
