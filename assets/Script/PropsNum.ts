@@ -28,7 +28,7 @@ export class PropsNum extends Component {
         this.node.getComponent(UITransform).convertToNodeSpaceAR(this.node.getWorldPosition())
         // ctx.circle(this.node.getPosition().x + spriteSize.width/2, this.node.getPosition().y + spriteSize.height/2, this.dotRadius);
         // ctx.circle(spriteSize.width/2, spriteSize.height/2, this.dotRadius);
-        ctx.circle(this.node.getPosition().x + spriteSize.width/2, this.node.getPosition().y + spriteSize.height/2, 20);
+        ctx.circle(this.node.getPosition().x + spriteSize.width/2, this.node.getPosition().y - spriteSize.height/2, 20);
         // ctx.circle(200,200, 200);
         // ctx.circle(0, 0, this.dotRadius);
         ctx.stroke();
@@ -38,7 +38,7 @@ export class PropsNum extends Component {
         let spriteSize = this.node.getComponent(UITransform).contentSize;
         let childByName = this.node.getChildByName("propsNumLabel");
         childByName.getComponent(Label).string = num.toString();
-        childByName.setPosition(spriteSize.width/2,spriteSize.height/2)
+        childByName.setPosition(spriteSize.width/2,-spriteSize.height/2)
     }
     // addNum() {
     //     if (!this.labelNum) {

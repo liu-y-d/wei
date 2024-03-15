@@ -1,5 +1,5 @@
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
-import {Node, Toggle, Graphics, Vec2} from 'cc';
+import {Node, Toggle, tween, Vec2} from 'cc';
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
 import {GameStateEnum, Global, PropsConfig} from "db://assets/Script/Global";
@@ -17,6 +17,7 @@ export class PropsBack implements BaseProps {
     defaultNum: number = 3;
     spriteFrameUrl = 'back/spriteFrame'
     target: Node
+    isTweening: boolean;
 
     init() {
         return true;
@@ -36,6 +37,21 @@ export class PropsBack implements BaseProps {
                 UIManager.getInstance().showPropsTip(this.description, this.resume);
             } else {
                 this.resume()
+            }
+
+        }else {
+            if (!this.isTweening) {
+                this.isTweening = true;
+                let self = this;
+                let angle = 20;
+                tween(this.target.getChildByName("icon"))
+                    .to(0.1,{angle: -angle})
+                    .to(0.1,{angle:angle})
+                    .to(0.1,{angle:0})
+                    .call(()=>{
+                        self.isTweening = false;
+                    })
+                    .start();
             }
 
         }
@@ -86,5 +102,6 @@ export class PropsBack implements BaseProps {
             LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.BACK).setNum(num)
         }
     }
+
 
 }

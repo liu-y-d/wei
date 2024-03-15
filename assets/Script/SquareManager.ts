@@ -1,7 +1,7 @@
 import {ShapeEnum, ShapeFactory, ShapeManager} from "db://assets/Script/ShapeManager";
 import {Shape} from "db://assets/Script/Shape";
 import {Coord, Global} from "db://assets/Script/Global";
-import {Vec2,ParticleSystem2D,tween,Vec3} from "cc";
+import {Vec2,ParticleSystem2D,tween,Vec3,Graphics} from "cc";
 import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {Draw} from "db://assets/Script/Draw";
 
@@ -17,14 +17,14 @@ export class SquareManager extends ShapeManager{
     directNode;
     creatorObstacle(ctx, shape: Shape) {
         ctx.lineWidth = 0;
-        var px=this.getPx(shape);
-        var py=this.getPy(shape);
-        let center = new Vec2(px,py);
+        // var px=this.getPx(shape);
+        // var py=this.getPy(shape);
+        // let center = new Vec2(px,py);
         //    ctx.strokeColor.fromHEX("#ff0000")
         ctx.fillColor.fromHEX("#E09E50")
         // ctx.circle(px,py,hexagonheight);
         // ctx.strokeColor.fromHEX("#363333")
-        ctx.circle(px,py,this.shapeWidth/2 - 10);
+        ctx.circle(0,0,this.shapeWidth/2 - 10);
         ctx.stroke();
         ctx.fill();
     }
@@ -76,14 +76,17 @@ export class SquareManager extends ShapeManager{
             // this.directNode.active = false;
         }
     }
-    draw(ctx, shape: Shape) {
+    draw(ctx:Graphics, shape: Shape) {
         ctx.clear();
         ctx.lineWidth = 0;
         var px=this.getPx(shape);
         var py=this.getPy(shape);
         let center = new Vec2(px,py);
         let halfWidth = this.shapeWidth;
-        ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        ctx.roundRect(-this.shapeWidth/2 + 5, -this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        // ctx.getParent().getPosition()
+        // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
         ctx.stroke();
         ctx.fillColor.fromHEX("#8CBDB9");
         ctx.fill();

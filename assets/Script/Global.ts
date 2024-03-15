@@ -31,13 +31,15 @@ export class Global {
 
     }
     gameState:GameStateEnum = GameStateEnum.ready;
-    public gameCanvas;
+    public gameCanvas:Node;
 
     public playArea:Node;
 
     public moveLock:Node;
 
     public tileMap:TileMap;
+
+    public panelInfo:Node;
 
     public defaultObstacleNum ;
 

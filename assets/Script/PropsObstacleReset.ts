@@ -1,5 +1,5 @@
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
-import {Node, Toggle} from 'cc';
+import {Node, Toggle,tween} from 'cc';
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
 import {Global, PropsConfig} from "db://assets/Script/Global";
@@ -15,6 +15,8 @@ export class PropsObstacleReset implements BaseProps {
     defaultNum: number = 3;
     spriteFrameUrl = 'reset/spriteFrame'
     target: Node
+    isTweening: boolean;
+
 
     init() {
         return true;
@@ -34,6 +36,21 @@ export class PropsObstacleReset implements BaseProps {
                 UIManager.getInstance().showPropsTip(this.description, this.resume);
             } else {
                 this.resume()
+            }
+
+        }else {
+            if (!this.isTweening) {
+                this.isTweening = true;
+                let self = this;
+                let angle = 20;
+                tween(this.target.getChildByName("icon"))
+                    .to(0.1,{angle: -angle})
+                    .to(0.1,{angle:angle})
+                    .to(0.1,{angle:0})
+                    .call(()=>{
+                        self.isTweening = false;
+                    })
+                    .start();
             }
 
         }
@@ -58,5 +75,6 @@ export class PropsObstacleReset implements BaseProps {
 
 
     }
+
 
 }

@@ -61,6 +61,8 @@ export class LevelDesign{
      */
     public propsUsableConfig: Map<number,number>
 
+    public currentMovableDirection:number;
+
     /**
      * 鬼移动算法
      */
@@ -70,6 +72,14 @@ export class LevelDesign{
         this.shapeManagers.set(ShapeEnum.SIX, new HexagonManager())
         this.shapeManagers.set(ShapeEnum.FOUR, new SquareManager())
         this.bulletArray = new Array<string>();
+
+        // this.showGhostDirection = true;
+        // this.difficultyLevel = DifficultyLevelEnum.Easy;
+        // this.currentShapeEnum = ShapeEnum.SIX;
+        // Global.getInstance().defaultObstacleNum = 10;
+        // this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
+
+
         if (Global.getInstance().getPlayerInfo().gameLevel % 5 == 0) {
 
 
@@ -77,6 +87,7 @@ export class LevelDesign{
             this.showGhostDirection = true;
             this.difficultyLevel = DifficultyLevelEnum.Easy;
             this.currentShapeEnum = ShapeEnum.FOUR;
+            this.currentMovableDirection = 4;
             Global.getInstance().defaultObstacleNum = 10;
             this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
 
@@ -88,16 +99,15 @@ export class LevelDesign{
             this.difficultyLevel = DifficultyLevelEnum.Hard;
             if ((random &1) == 1) {
                 this.currentShapeEnum = ShapeEnum.SIX;
+                this.currentMovableDirection = 6;
                 this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
                 this.bulletArray.push(BulletEnum.SixDirection,BulletEnum.SmartMove)
             }else {
                 this.currentShapeEnum = ShapeEnum.FOUR;
+                this.currentMovableDirection = 8;
                 this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
                 this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
             }
-
-
-
         }
         this.propsInit();
     }

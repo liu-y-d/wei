@@ -312,9 +312,9 @@ export class HexagonManager extends ShapeManager{
 
         ctx.clear();
         ctx.lineWidth = 0;
-        var px=this.getPx(shape);
-        var py=this.getPy(shape);
-        let center = new Vec2(px,py);
+        // var px=this.getPx(shape);
+        // var py=this.getPy(shape);
+        let center = new Vec2(0,0);
         // var hexagonWidth=HexagonManager.hexagonWidth-7;
         // var hexagonheight=hexagonWidth * 0.866;
         //一边
@@ -348,14 +348,14 @@ export class HexagonManager extends ShapeManager{
 
     creatorObstacle(ctx, shape: Shape) {
         ctx.lineWidth = 0;
-        var px=this.getPx(shape);
-        var py=this.getPy(shape);
-        let center = new Vec2(px,py);
+        // var px=this.getPx(shape);
+        // var py=this.getPy(shape);
+        // let center = new Vec2(px,py);
         //    ctx.strokeColor.fromHEX("#ff0000")
         ctx.fillColor.fromHEX("#E09E50")
         // ctx.circle(px,py,hexagonheight);
         // ctx.strokeColor.fromHEX("#363333")
-        ctx.circle(px,py,this.hexagonHeight-10);
+        ctx.circle(0,0,this.hexagonHeight-10);
         ctx.stroke();
         ctx.fill();
         // this.node.getChildByName('Pianyi').getComponent(Label).string = "x:"+hexagon.x+",y:"+hexagon.y;

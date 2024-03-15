@@ -11,6 +11,7 @@ export interface BaseProps{
     setNum(num?:number)
     inure()
     resume:Function
+    isTweening:boolean
 }
 export enum GamePropsEnum {
     /**

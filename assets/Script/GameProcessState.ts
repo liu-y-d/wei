@@ -1,6 +1,6 @@
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
-import {Button,Label,Graphics,EventTouch, find, instantiate, Node, Size, UITransform, Vec3,Sprite,resources,SpriteFrame,Layers,Layout} from "cc";
+import {Button,Label,Graphics,EventTouch, find, instantiate, Node, Size, UITransform, Vec3,Sprite,resources,SpriteFrame,Layers,Layout,tween,Vec2} from "cc";
 import {GameCtrl} from "db://assets/Script/GameCtrl";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {Draw} from "db://assets/Script/Draw";
@@ -35,6 +35,7 @@ export class GameProcessState implements IProcessStateNode {
         // LevelDesign.getInstance().init();
         this.playAreaInit(gameCtrl)
         this.propsAreaInit(gameCtrl)
+        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.panel);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);
 
@@ -80,7 +81,7 @@ export class GameProcessState implements IProcessStateNode {
             const newNodeParent = new Node(props.name);
             newNodeParent.layer =Layers.Enum.UI_2D;
             newNodeParent.addComponent(UITransform);
-            newNodeParent.getComponent(UITransform).setContentSize(120,120);
+            newNodeParent.getComponent(UITransform).setContentSize(110,110);
             // newNodeParent.addComponent(Graphics);
             // newNodeParent.addComponent(PropsNum);
             const propsNum = new Node("propsNum");
@@ -107,7 +108,7 @@ export class GameProcessState implements IProcessStateNode {
          */
         function dynamicDistributingProps(num) {
             let totalWidth = propsContent.getComponent(UITransform).contentSize.width
-            let realWidth = num * 120 + (num + 1) * 50;
+            let realWidth = num * 110 + (num + 1) * 50;
             let pitch = 50;
             if (realWidth <= totalWidth) {
                 pitch +=(totalWidth - realWidth) == 0?0:(totalWidth - realWidth) / (num + 1)
@@ -215,7 +216,20 @@ export class GameProcessState implements IProcessStateNode {
         }
         let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
         if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle) {
-            console.log("你傻逼啊")
+            // if (!this.isTweening) {
+            //     this.isTweening = true;
+                let self = this;
+                let angle = 20;
+
+                tween(Global.getInstance().tileMap[coord.x][coord.y])
+                    .to(0.1,{angle: -angle})
+                    .to(0.1,{angle:angle})
+                    .to(0.1,{angle:0})
+                    .call(()=>{
+                        // self.isTweening = false;
+                    })
+                    .start();
+            // }
             return;
         }
         ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle,ObstacleMessage.create,coord);

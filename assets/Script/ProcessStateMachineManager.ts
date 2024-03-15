@@ -5,6 +5,7 @@ import {ObstacleState} from "db://assets/Script/ObstacleState";
 import {LoadProcessState} from "db://assets/Script/LoadProcessState";
 import {LoginProcessState} from "db://assets/Script/LoginProcessState";
 import {MainProcessState} from "db://assets/Script/MainProcessState";
+import {PanelProcessState} from "db://assets/Script/PanelProcessState";
 
 
 /**
@@ -35,6 +36,8 @@ export class ProcessStateMachineManager {
         this._state_machine.addNode(ghostState.key,ghostState);
         let obstacleState = new ObstacleState();
         this._state_machine.addNode(obstacleState.key,obstacleState);
+        let panelProcessState = new PanelProcessState();
+        this._state_machine.addNode(panelProcessState.key,panelProcessState);
     }
 
     /**

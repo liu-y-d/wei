@@ -1,5 +1,5 @@
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
-import {Node, Toggle, Vec2, Vec3} from 'cc';
+import {Node, Toggle, Vec2, Vec3,tween} from 'cc';
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
 import {Global, PropsConfig} from "db://assets/Script/Global";
@@ -13,6 +13,7 @@ export class PropsForecast implements BaseProps {
     defaultNum: number = 3;
     spriteFrameUrl = 'location/spriteFrame'
     target: Node
+    isTweening: boolean;
 
     init() {
         // 如果关卡默认显示移动方向则删掉这个道具
@@ -33,6 +34,21 @@ export class PropsForecast implements BaseProps {
                 UIManager.getInstance().showPropsTip(this.description, this.resume);
             } else {
                 this.resume()
+            }
+
+        }else {
+            if (!this.isTweening) {
+                this.isTweening = true;
+                let self = this;
+                let angle = 20;
+                tween(this.target.getChildByName("icon"))
+                    .to(0.1,{angle: -angle})
+                    .to(0.1,{angle:angle})
+                    .to(0.1,{angle:0})
+                    .call(()=>{
+                        self.isTweening = false;
+                    })
+                    .start();
             }
 
         }
@@ -58,6 +74,7 @@ export class PropsForecast implements BaseProps {
         LevelDesign.getInstance().propsUsableConfig.set(GamePropsEnum.FORECAST, num)
         LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.FORECAST).setNum(num)
     }
+
 
 
 }
