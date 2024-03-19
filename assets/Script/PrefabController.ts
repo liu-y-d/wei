@@ -13,6 +13,15 @@ export class PrefabController extends Component {
 
     @property(Prefab)
     public maskGlobal:Prefab;
+
+    @property(Prefab)
+    public obstacleEmit:Prefab;
+
+    @property(Prefab)
+    public propsEmit:Prefab;
+
+    @property(Prefab)
+    public props:Prefab;
     start() {
 
     }

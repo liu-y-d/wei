@@ -1,17 +1,19 @@
-import {Vec2,ParticleSystem2D,tween,Vec3} from "cc";
+import {Vec2, ParticleSystem2D, tween, Vec3, instantiate, UITransform, Node} from "cc";
 import {Coord, Global} from "db://assets/Script/Global";
 import {ShapeEnum, ShapeFactory, ShapeManager} from "db://assets/Script/ShapeManager";
 import {Shape} from "db://assets/Script/Shape";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {Draw} from "db://assets/Script/Draw";
 import {Block} from "db://assets/Script/NearestSolver";
+import {GameCtrl} from "db://assets/Script/GameCtrl";
+import {PrefabController} from "db://assets/Script/PrefabController";
 
-export class HexagonManager extends ShapeManager{
+export class HexagonManager extends ShapeManager {
 
 
-    shapeEnum:ShapeEnum = ShapeEnum.SIX;
-    shapeWidth:number;
-    shapeHeight:number;
+    shapeEnum: ShapeEnum = ShapeEnum.SIX;
+    shapeWidth: number;
+    shapeHeight: number;
     /**
      * 外接圆半径
      */
@@ -32,10 +34,10 @@ export class HexagonManager extends ShapeManager{
     WidthCount = 9;
     HeightCount = 9;
 
-    center:Vec2;
+    center: Vec2;
     hexagonMap;
-    directNode;
-    currentNearbyHexagonCoords:Array<Coord>;
+    directNode: Node;
+    currentNearbyHexagonCoords: Array<Coord>;
 
 
     public calculateWidthAndHeight(totalWidth: number, layout: number) {
@@ -47,33 +49,34 @@ export class HexagonManager extends ShapeManager{
             // this.hexagonHeight = totalWidth / (this.WidthCount + 0.5) / 2;
             // this.hexagonWidth = this.hexagonHeight / this.sqrt3divide2
 
-            this.hexagonWidth = totalWidth / (Math.floor(this.WidthCount / 2) + 1 + Math.floor(this.WidthCount / 2) / 2)/2;
+            this.hexagonWidth = totalWidth / (Math.floor(this.WidthCount / 2) + 1 + Math.floor(this.WidthCount / 2) / 2) / 2;
             this.hexagonHeight = this.hexagonWidth * this.sqrt3divide2;
         }
         this.outerRadius = this.hexagonWidth - 5;
         if (this.layout == 0) {
-            this.innerCircleRadius = this.hexagonWidth/2;
-        }else {
-            this.innerCircleRadius = this.hexagonHeight/2;
+            this.innerCircleRadius = this.hexagonWidth / 2;
+        } else {
+            this.innerCircleRadius = this.hexagonHeight / 2;
         }
         this.shapeWidth = this.hexagonWidth;
         this.shapeHeight = this.hexagonHeight;
     }
 
-     initMap(totalWidth: number): Array<Shape> {
+    initMap(totalWidth: number): Array<Shape> {
         this.layout = 1;
-        this.center = new Vec2(Math.floor(this.WidthCount / 2) , Math.floor(this.HeightCount / 2));
+        this.center = new Vec2(Math.floor(this.WidthCount / 2), Math.floor(this.HeightCount / 2));
         this.calculateWidthAndHeight(totalWidth, this.layout);
         var result = [];
         for (var y = 0; y < this.HeightCount; y++) {
             for (var x = 0; x < this.WidthCount; x++) {
 
-                result.push( ShapeFactory.create(x,y,this.shapeEnum));
+                result.push(ShapeFactory.create(x, y, this.shapeEnum));
             }
         }
         this.hexagonMap = result;
         return result;
     }
+
     createDefaultObstacle() {
         Global.getInstance().obstacleCoords = new Array<Coord>();
         for (let x in Global.getInstance().tileMap) {
@@ -88,39 +91,91 @@ export class HexagonManager extends ShapeManager{
             }
         }
         let count = 0;
-        while(count < Global.getInstance().defaultObstacleNum) {
+        let prefabCtl = Global.getInstance().gameCanvas.getComponent(PrefabController);
+
+        let playArea = Global.getInstance().playArea;
+        while (count < Global.getInstance().defaultObstacleNum) {
             let x = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().WidthCount))
             let y = Math.floor(Math.random() * (LevelDesign.getInstance().getShapeManager().HeightCount))
-            let tile = Global.getInstance().tileMap[x][y].getComponent(Draw);
+            let tileNode = Global.getInstance().tileMap[x][y];
+            let tile = tileNode.getComponent(Draw);
             if ((x == LevelDesign.getInstance().getShapeManager().center.x && y == LevelDesign.getInstance().getShapeManager().center.y)
                 || (x == Global.getInstance().predictCoord.x && y == Global.getInstance().predictCoord.y)
                 || tile.hasObstacle) {
                 continue;
             }
-            tile.creatorObstacle();
-            Global.getInstance().obstacleCoords.push({x,y})
+
+            let movableDirection = Global.getInstance().panelInfo.getChildByName("MovableDirection");
+            let emitPosition = movableDirection.getComponent(UITransform).convertToWorldSpaceAR(movableDirection.getPosition());
+            emitPosition.x = emitPosition.x - 270;
+            let emit = instantiate(prefabCtl.obstacleEmit);
+            playArea.addChild(emit);
+
+            // tile.getComponent(Draw).emit = emit;
+            // emit.setSiblingIndex(999999999);
+            let position = playArea.getComponent(UITransform).convertToNodeSpaceAR(emitPosition)
+
+            // let position = emit.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(0,0,0))
+            emit.setPosition(new Vec3(position.x, position.y, 0))
+            Global.getInstance().moveLock.active = true;
+
+            tween(emit).delay(0.2).to(1, {position: new Vec3(tileNode.getPosition().x, tileNode.getPosition().y, 0)}).call(() => {
+                tween(tile.node)
+                    .to(0.1,{angle: -20})
+                    .to(0.1,{angle:20})
+                    .to(0.1,{angle:0})
+                    .call(() => {
+                        tile.creatorObstacleHasAnimation();
+                        emit.destroy();
+                    }).start()
+
+            }).start();
+            Global.getInstance().obstacleCoords.push({x, y})
             count++;
         }
+
+
+        // console.log(tweens)
+        // // @ts-ignore
+        // obstacleTween.sequence(tweens).start();
+        // console.log("asdfasd",obstacleTween)
+        // obstacleTween.start();
     }
-    direct(coord: Coord,duration) {
+
+    direct(coord: Coord, duration) {
         this.directNode = Global.getInstance().playArea.getChildByName('Direct');
-        let target = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x,coord.y));
+        let target = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x, coord.y));
         this.directNode.setSiblingIndex(9999);
         // this.directNode.getComponent(ParticleSystem2D).stopSystem();
         // this.directNode.setPosition(target.x,target.y)
         this.directNode.active = true;
         this.directNode.getComponent(ParticleSystem2D).resetSystem();
-        tween(this.directNode).to(duration,{position:new Vec3(target.x,target.y,0)}).start()
+        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y, 0)}).start()
         // let animation = this.directNode.getComponent(Animation);
         // animation.pause();
 
     }
+
+    propsDirect(coord: Coord, duration, position) {
+        this.directNode = Global.getInstance().playArea.getChildByName('Direct');
+        let target = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x, coord.y));
+        this.directNode.setPosition(Global.getInstance().playArea.getComponent(UITransform).convertToNodeSpaceAR(position));
+        this.directNode.setSiblingIndex(9999);
+        // this.directNode.getComponent(ParticleSystem2D).stopSystem();
+        // this.directNode.setPosition(target.x,target.y)
+        this.directNode.active = true;
+        this.directNode.getComponent(ParticleSystem2D).resetSystem();
+        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y, 0)}).start()
+
+    }
+
     closeDirect() {
         if (this.directNode) {
             this.directNode.getComponent(ParticleSystem2D).stopSystem();
             // this.directNode.active = false;
         }
     }
+
     /**
      * 获取触摸点所在正六边形的索引
      * @param px
@@ -128,7 +183,7 @@ export class HexagonManager extends ShapeManager{
      * @constructor
      */
     public getShape(px, py): Vec2 {
-        let x1,x2,y1,y2;
+        let x1, x2, y1, y2;
         if (this.layout == 0) {
             let y = (py - this.hexagonWidth) / (1.5 * this.hexagonWidth);
             y1 = Math.abs(Math.floor(y));
@@ -137,7 +192,7 @@ export class HexagonManager extends ShapeManager{
             x1 = Math.abs(Math.floor(px / this.hexagonHeight / 2));
             //奇数
             x2 = Math.abs(Math.floor((px - this.hexagonHeight) / this.hexagonHeight / 2));
-        }else {
+        } else {
             let x = (px - this.hexagonWidth) / (1.5 * this.hexagonWidth);
             x1 = Math.abs(Math.floor(x));
             x2 = Math.abs(Math.ceil(x));
@@ -234,30 +289,29 @@ export class HexagonManager extends ShapeManager{
     }
 
 
-
-    public getNearbyShapeCoords(point?:Coord):Array<Coord> {
+    public getNearbyShapeCoords(point?: Coord): Array<Coord> {
         if (!point) {
             point = Global.getInstance().currentGhostVec2;
         }
         // 顶点朝上 奇数行偏移
-        let nearbyHexagonCoords:Array<Coord> = new Array<Coord>();
+        let nearbyHexagonCoords: Array<Coord> = new Array<Coord>();
         if (this.layout == 0) {
             nearbyHexagonCoords.push(
                 {x: point.x + 1, y: point.y},
-                {x: point.x + (point.y&1), y: point.y + 1},
-                {x: point.x - ((point.y&1)==0?1:0), y: point.y + 1},
+                {x: point.x + (point.y & 1), y: point.y + 1},
+                {x: point.x - ((point.y & 1) == 0 ? 1 : 0), y: point.y + 1},
                 {x: point.x - 1, y: point.y},
-                {x: point.x - ((point.y&1)==0?1:0), y: point.y - 1},
-                {x: point.x +(point.y&1), y: point.y - 1}
+                {x: point.x - ((point.y & 1) == 0 ? 1 : 0), y: point.y - 1},
+                {x: point.x + (point.y & 1), y: point.y - 1}
             );
-        }else {
+        } else {
             nearbyHexagonCoords.push(
-                {x: point.x + 1, y: point.y + (point.x&1)},
-                {x: point.x , y: point.y + 1},
-                {x: point.x - 1 , y: point.y + (point.x&1)},
-                {x: point.x - 1, y: point.y - ((point.x&1)==0?1:0)},
-                {x: point.x , y: point.y - 1},
-                {x: point.x + 1, y: point.y - ((point.x&1)==0?1:0)}
+                {x: point.x + 1, y: point.y + (point.x & 1)},
+                {x: point.x, y: point.y + 1},
+                {x: point.x - 1, y: point.y + (point.x & 1)},
+                {x: point.x - 1, y: point.y - ((point.x & 1) == 0 ? 1 : 0)},
+                {x: point.x, y: point.y - 1},
+                {x: point.x + 1, y: point.y - ((point.x & 1) == 0 ? 1 : 0)}
             );
         }
         if (!point) {
@@ -266,12 +320,12 @@ export class HexagonManager extends ShapeManager{
         return nearbyHexagonCoords;
     }
 
-    public isEdge(coord:Coord){
-        return (coord.x ==0 && coord.y < this.HeightCount) ||
-            (coord.x < this.WidthCount && coord.y ==0) ||
-            (coord.x ==this.WidthCount-1 && coord.y < this.HeightCount) ||
-            (coord.x < this.WidthCount && coord.y ==this.HeightCount-1);
-        
+    public isEdge(coord: Coord) {
+        return (coord.x == 0 && coord.y < this.HeightCount) ||
+            (coord.x < this.WidthCount && coord.y == 0) ||
+            (coord.x == this.WidthCount - 1 && coord.y < this.HeightCount) ||
+            (coord.x < this.WidthCount && coord.y == this.HeightCount - 1);
+
     }
 
     getPx(shape: Shape) {
@@ -302,47 +356,51 @@ export class HexagonManager extends ShapeManager{
         }
 
     }
-    hex_corner(center, size, i, ) {
-        var angle_deg = 60 * i + (this.layout ===0?30:0);
+
+    hex_corner(center, size, i,) {
+        var angle_deg = 60 * i + (this.layout === 0 ? 30 : 0);
         var angle_rad = Math.PI / 180 * angle_deg
-        return new Vec2 (center.x + size * Math.cos(angle_rad),
+        return new Vec2(center.x + size * Math.cos(angle_rad),
             center.y + size * Math.sin(angle_rad))
     }
+
     draw(ctx, shape: Shape) {
 
         ctx.clear();
-        ctx.lineWidth = 0;
+        ctx.lineWidth = 2;
         // var px=this.getPx(shape);
         // var py=this.getPy(shape);
-        let center = new Vec2(0,0);
+        let center = new Vec2(0, 0);
         // var hexagonWidth=HexagonManager.hexagonWidth-7;
         // var hexagonheight=hexagonWidth * 0.866;
         //一边
-        let p0 = this.hex_corner(center,this.outerRadius,0);
+        let p0 = this.hex_corner(center, this.outerRadius, 0);
         ctx.moveTo(p0.x, p0.y);
 
-        let p1 = this.hex_corner(center,this.outerRadius,1);
+        let p1 = this.hex_corner(center, this.outerRadius, 1);
 
         ctx.lineTo(p1.x, p1.y);
 
-        let p2 = this.hex_corner(center,this.outerRadius,2);
+        let p2 = this.hex_corner(center, this.outerRadius, 2);
         ctx.lineTo(p2.x, p2.y);
-        let p3 = this.hex_corner(center,this.outerRadius,3);
+        let p3 = this.hex_corner(center, this.outerRadius, 3);
         ctx.lineTo(p3.x, p3.y);
 
-        let p4 = this.hex_corner(center,this.outerRadius,4);
+        let p4 = this.hex_corner(center, this.outerRadius, 4);
         ctx.lineTo(p4.x, p4.y);
 
-        let p5 = this.hex_corner(center,this.outerRadius,5);
+        let p5 = this.hex_corner(center, this.outerRadius, 5);
         ctx.lineTo(p5.x, p5.y);
-        ctx.lineTo(p0.x,p0.y );
+        ctx.lineTo(p0.x, p0.y);
 
         // ctx.circle(px,py,hexagonheight);
         // ctx.strokeColor.fromHEX("#363333")
         // ctx.circle(px,py,HexagonManager.hexagonWidth);
+        ctx.strokeColor.fromHEX("#ffffff");
         ctx.stroke();
         //4边
-        ctx.fillColor.fromHEX("#BD9A8C");
+        // ctx.fillColor.fromHEX("#212529");
+        ctx.fillColor.fromHEX("#3C6338");
         ctx.fill();
     }
 
@@ -352,10 +410,10 @@ export class HexagonManager extends ShapeManager{
         // var py=this.getPy(shape);
         // let center = new Vec2(px,py);
         //    ctx.strokeColor.fromHEX("#ff0000")
-        ctx.fillColor.fromHEX("#E09E50")
+        ctx.fillColor.fromHEX("#BD9A8C")
         // ctx.circle(px,py,hexagonheight);
         // ctx.strokeColor.fromHEX("#363333")
-        ctx.circle(0,0,this.hexagonHeight-10);
+        ctx.circle(0, 0, this.hexagonHeight - 10);
         ctx.stroke();
         ctx.fill();
         // this.node.getChildByName('Pianyi').getComponent(Label).string = "x:"+hexagon.x+",y:"+hexagon.y;
@@ -364,5 +422,6 @@ export class HexagonManager extends ShapeManager{
         // this.node.getChildByName('Zhou').getComponent(Label).string = "x:"+cube.x+",y:"+cube.y+",z:"+cube.z;
         // console.log("Zhou:" +"x:"+cube.x+",y:"+cube.y+",z:"+cube.z)
     }
+
 
 }

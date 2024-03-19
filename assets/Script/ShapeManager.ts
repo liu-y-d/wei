@@ -1,5 +1,5 @@
 
-import {Vec3, Vec2} from "cc";
+import {Vec3, Vec2,Node} from "cc";
 import {Coord} from "db://assets/Script/Global";
 import {Shape} from "db://assets/Script/Shape";
 
@@ -22,11 +22,13 @@ export abstract class ShapeManager {
     abstract getPx(shape: Shape);
 
     abstract direct(coord: Coord,duration);
+    abstract propsDirect(coord: Coord,duration,position:Vec3);
     abstract closeDirect();
 
     abstract draw(ctx,shape: Shape);
     abstract creatorObstacle(ctx,shape: Shape);
     abstract createDefaultObstacle();
+
 }
 // export interface Shape {
 //     x: number;

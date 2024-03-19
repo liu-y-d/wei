@@ -8,6 +8,7 @@ import {PopupGameOver} from "db://assets/Script/PopupGameOver";
 import {PopupPropsPrompt} from "db://assets/Script/PopupPropsPrompt";
 import {Popup} from "db://assets/Script/Popup";
 import {PrefabController} from "db://assets/Script/PrefabController";
+import {PopupMenu} from "db://assets/Script/PopupMenu";
 
 export enum PopupEnum {
     /**
@@ -17,7 +18,11 @@ export enum PopupEnum {
     /**
      * 道具提示弹窗
      */
-    PROPS_PROMPT
+    PROPS_PROMPT,
+    /**
+     * 菜单
+     */
+    MENU
 }
 export class UIManager{
     private static _instance: UIManager;
@@ -34,8 +39,10 @@ export class UIManager{
 
             let popupGameOver = new PopupGameOver();
             let propsPrompt = new PopupPropsPrompt();
+            let popupMenu = new PopupMenu();
             this.popupMap.set(popupGameOver.type,popupGameOver);
             this.popupMap.set(propsPrompt.type,propsPrompt);
+            this.popupMap.set(popupMenu.type,popupMenu);
         }
 
     }
@@ -111,5 +118,10 @@ export class UIManager{
         popup.resume = resume;
         UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.PROPS_PROMPT);
 
+    }
+
+    public pause(){
+        this.openMaskGlobal();
+        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.MENU);
     }
 }

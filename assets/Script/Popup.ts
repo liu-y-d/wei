@@ -11,6 +11,9 @@ export class Popup extends Component {
     @property(Prefab)
     public promptTooltip:Prefab;
 
+    @property(Prefab)
+    public menuTooltip:Prefab;
+
 
 
     init(popupType:number) {

@@ -1,5 +1,5 @@
 
-import {find,Graphics,Vec2} from 'cc';
+import {Node,Graphics,Vec2,Label} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -19,19 +19,30 @@ export class PanelProcessState implements IProcessStateNode {
 
     onInit() {
 
-        if (!Global.getInstance().panelInfo) {
+        // if (!Global.getInstance().panelInfo) {
             Global.getInstance().panelInfo = Global.getInstance().gameCanvas.getChildByName("PanelInfo");
-        }
+        // }
         this.drawMovableDirection();
+
+        this.levelInfoInit();
     }
 
+    levelInfoInit(){
+        let levelInfo = Global.getInstance().panelInfo.getChildByName("LevelInfo");
+        levelInfo.getChildByName("Label").getComponent(Label).string = `第${Global.getInstance().getPlayerInfo().gameLevel}关`;
+        levelInfo.getChildByName("Pause").on(Node.EventType.TOUCH_END, ()=>{
+            UIManager.getInstance().pause();
+        }, this);
+    }
     drawMovableDirection() {
         let angle = 360/LevelDesign.getInstance().currentMovableDirection;
         let movableDirection = Global.getInstance().panelInfo.getChildByName('MovableDirection');
         let ctx = movableDirection.getComponent(Graphics);
+        ctx.clear()
         let length = 40;
         // ctx.moveTo(0,0);
         // ctx.lineTo(50,50);
+        console.log(LevelDesign.getInstance().currentMovableDirection)
         for (let i = 0; i <= LevelDesign.getInstance().currentMovableDirection; i++) {
 
             ctx.moveTo(0,0);

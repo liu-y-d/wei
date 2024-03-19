@@ -292,12 +292,17 @@ export class GhostState implements IProcessStateNode {
         // ice.active = true;
 
         let color = new Color();
-        target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#000000")
+        target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#0f87ff")
         target.ghostNode.getComponent(Animation).pause();
         freezeNum.getComponent(Label).string = Global.getInstance().ghostFreezeNum.toString();
     }
 
     unfreeze(target, params: any[]) {
+        tween(target.ghostNode)
+            .to(0.1,{angle: -20})
+            .to(0.1,{angle:20})
+            .to(0.1,{angle:0})
+            .start();
         Global.getInstance().ghostFreezeNum--;
         let freezeNum = target.ghostNode.getChildByName("FreezeNum");
 
@@ -305,7 +310,7 @@ export class GhostState implements IProcessStateNode {
         if (Global.getInstance().ghostFreezeNum <= 0) {
             freezeNum.active = false;
             let color = new Color();
-            target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#ffffff")
+            target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#F55F5F")
             target.ghostNode.getComponent(Animation).play();
 
         }

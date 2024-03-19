@@ -1,5 +1,5 @@
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
-import {Node, Toggle, Vec2, Vec3,tween} from 'cc';
+import {Node, Toggle, Vec2, Vec3,tween,UITransform} from 'cc';
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
 import {Global, PropsConfig} from "db://assets/Script/Global";
@@ -65,9 +65,11 @@ export class PropsForecast implements BaseProps {
 
         }
         UIManager.getInstance().closeMaskGlobal();
+        let position = LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.FORECAST).target.getPosition();
 
-
-        LevelDesign.getInstance().getShapeManager().direct(Global.getInstance().predictCoord,0.5);
+        let position1 = LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.FORECAST).target.getComponent(UITransform).convertToWorldSpaceAR(position);
+        position1.x = position1.x-LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.FORECAST).target.getPosition().x;
+        LevelDesign.getInstance().getShapeManager().propsDirect(Global.getInstance().predictCoord,0.5,position1);
 
         let num = LevelDesign.getInstance().propsUsableConfig.get(GamePropsEnum.FORECAST);
         num--;

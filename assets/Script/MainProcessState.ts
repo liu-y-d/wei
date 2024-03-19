@@ -31,11 +31,26 @@ export class MainProcessState implements IProcessStateNode {
         //     console.log("上传成功")
         // }).catch(err=>{
         // });
+        this.simulation();
         LevelDesign.getInstance().init();
         Global.getInstance().propsConfigInit();
         find('Canvas').getChildByName('GameLevel').getComponent(GameLevel).drawCustomer();
     }
+    simulation() {
+        let info = Global.getInstance().getPlayerInfo();
+        if (!info) {
+            info = {
+                playerId:'1',
+                nickName:'云达',
+                gameLevel:1,
+                avatarUrl:null
+            }
+            Global.getInstance().setPlayerInfo(info)
+        }
 
+        // LevelDesign.getInstance().showGhostDirection = true;
+        // LevelDesign.getInstance().init();
+    }
     onUpdate() {
     }
 

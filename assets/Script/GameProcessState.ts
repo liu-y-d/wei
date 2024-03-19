@@ -12,6 +12,7 @@ import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
+import {PrefabController} from "db://assets/Script/PrefabController";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -45,13 +46,17 @@ export class GameProcessState implements IProcessStateNode {
     }
 
     simulation() {
-        let simulationPlayer: PlayerInfo = {
-            playerId:'1',
-            nickName:'云达',
-            gameLevel:1,
-            avatarUrl:null
+        let info = Global.getInstance().getPlayerInfo();
+        if (!info) {
+            info = {
+                playerId:'1',
+                nickName:'云达',
+                gameLevel:1,
+                avatarUrl:null
+            }
+            Global.getInstance().setPlayerInfo(info)
         }
-        Global.getInstance().setPlayerInfo(simulationPlayer)
+
         // LevelDesign.getInstance().showGhostDirection = true;
         // LevelDesign.getInstance().init();
     }
@@ -77,11 +82,16 @@ export class GameProcessState implements IProcessStateNode {
             sprite.spriteFrame = spriteFrame;
             iconNode.addComponent(Button);
             iconNode.on(Button.EventType.CLICK, props.inure, props);
+            iconNode.getComponent(UITransform).setContentSize(iconNode.getComponent(UITransform).contentSize.width - 20,iconNode.getComponent(UITransform).contentSize.height - 20,);
 
-            const newNodeParent = new Node(props.name);
+
+            const newNodeParent = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).props);
+            newNodeParent.name = props.name;
             newNodeParent.layer =Layers.Enum.UI_2D;
-            newNodeParent.addComponent(UITransform);
-            newNodeParent.getComponent(UITransform).setContentSize(110,110);
+            // newNodeParent.addComponent(UITransform);
+            // newNodeParent.getComponent(UITransform).setContentSize(110,110);
+            // newNodeParent.addComponent(Sprite);
+            // newNodeParent.getComponent(Sprite).spriteFrame = "default_panel"
             // newNodeParent.addComponent(Graphics);
             // newNodeParent.addComponent(PropsNum);
             const propsNum = new Node("propsNum");
@@ -157,7 +167,7 @@ export class GameProcessState implements IProcessStateNode {
 
     playAreaInit(gameCtrl:GameCtrl) {
         let playArea = Global.getInstance().gameCanvas.getChildByName('PlayArea');
-        playArea.on(Node.EventType.TOUCH_START,this.onClick,this);
+        playArea.on(Node.EventType.TOUCH_END,this.onClick,this);
 
         let moveLock = Global.getInstance().gameCanvas.getChildByName('MoveLock');
         moveLock.on(Node.EventType.TOUCH_START,()=>{},this);
@@ -201,6 +211,7 @@ export class GameProcessState implements IProcessStateNode {
     }
 
     onClick(event :EventTouch) {
+        console.log(event)
         if (Global.getInstance().defaultObstacleNum == Global.getInstance().obstacleCoords.length) {
             Global.getInstance().gameState = GameStateEnum.ing;
         }

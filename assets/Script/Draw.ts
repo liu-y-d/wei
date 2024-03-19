@@ -1,4 +1,4 @@
-import { _decorator, Component, Node,Graphics,Vec2,Label,EventTouch,UITransform } from 'cc';
+import { _decorator, Component, Node,Graphics,Vec2,Label,EventTouch,UITransform,tween,Vec3 } from 'cc';
 import {Shape} from "db://assets/Script/Shape";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -43,6 +43,21 @@ export class Draw extends Component {
             var ctx = this.getComponent(Graphics);
             LevelDesign.getInstance().getShapeManager().creatorObstacle(ctx,this.shape)
 
+        }
+    }
+    initObstacleEmit() {
+
+    }
+    /**
+     * 创建障碍
+     */
+    creatorObstacleHasAnimation(){
+        if (!this.hasObstacle){
+            // console.log(this.emit)
+            this.hasObstacle = true;
+            var ctx = this.getComponent(Graphics);
+            LevelDesign.getInstance().getShapeManager().creatorObstacle(ctx,this.shape)
+            Global.getInstance().moveLock.active = false;
         }
     }
 

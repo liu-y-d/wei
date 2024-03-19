@@ -297,6 +297,10 @@
       "__uuid__": "95768d06-60b6-4545-9d59-b1bbb82151d5",
       "__expectedType__": "cc.Prefab"
     },
+    "menuTooltip": {
+      "__uuid__": "8ae9a8c7-0588-46a1-90d4-f717f7e8b1f0",
+      "__expectedType__": "cc.Prefab"
+    },
     "_id": ""
   },
   {

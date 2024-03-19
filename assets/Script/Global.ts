@@ -64,6 +64,28 @@ export class Global {
 
     public ghostPath:Array<Coord>;
 
+    public music:boolean;
+    public soundEffect:boolean;
+    public shake:boolean;
+
+    public setMusicState(state:boolean) {
+        sys.localStorage.setItem("music", state?"1":"0");
+    }
+    public getMusicState(): boolean {
+        return sys.localStorage.getItem('music') == "1";
+    }
+    public setSoundEffectState(state:boolean) {
+        sys.localStorage.setItem("soundEffect", state?"1":"0");
+    }
+    public getSoundEffectState(): boolean {
+        return sys.localStorage.getItem('soundEffect') == "1";
+    }
+    public setShakeState(state:boolean) {
+        sys.localStorage.setItem("shake", state?"1":"0");
+    }
+    public getShakeState(): boolean {
+        return sys.localStorage.getItem('shake') == "1";
+    }
     /**
      * 添加玩家路径
      * @param coord
@@ -133,6 +155,7 @@ export class Global {
     public playerNext() {
         let playerInfo = JSON.parse(sys.localStorage.getItem('playerInfo'))
         playerInfo.gameLevel++;
+        console.log(playerInfo)
         sys.localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
     }
 
