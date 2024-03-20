@@ -1,11 +1,9 @@
-import {Vec2, ParticleSystem2D, tween, Vec3, instantiate, UITransform, Node} from "cc";
+import {instantiate, Node, ParticleSystem2D, tween, UITransform, Vec2, Vec3} from "cc";
 import {Coord, Global} from "db://assets/Script/Global";
 import {ShapeEnum, ShapeFactory, ShapeManager} from "db://assets/Script/ShapeManager";
 import {Shape} from "db://assets/Script/Shape";
-import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {Draw} from "db://assets/Script/Draw";
-import {Block} from "db://assets/Script/NearestSolver";
-import {GameCtrl} from "db://assets/Script/GameCtrl";
 import {PrefabController} from "db://assets/Script/PrefabController";
 
 export class HexagonManager extends ShapeManager {
@@ -367,7 +365,7 @@ export class HexagonManager extends ShapeManager {
     draw(ctx, shape: Shape) {
 
         ctx.clear();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 0;
         // var px=this.getPx(shape);
         // var py=this.getPy(shape);
         let center = new Vec2(0, 0);
@@ -404,6 +402,77 @@ export class HexagonManager extends ShapeManager {
         ctx.fill();
     }
 
+    drawDestination(graphics, shape: Shape) {
+
+        // ctx.clear();
+
+        // 设置五角星的中心点、外接圆半径和内切圆半径（可选）
+        const centerX = 0; // 假设中心点在(0, 0)
+        const centerY = 0;
+        const outerRadius = 30; // 外接圆半径
+        const innerRadius = outerRadius * 0.35; // 内切圆半径，可以根据实际需求调整
+
+        // 计算每个顶点的角度和坐标
+        for (let i = 0; i < 5; i++) {
+            let angle = i * Math.PI / 2.5 - 50; // 每隔72度一个顶点
+            let x = centerX + Math.cos(angle) * outerRadius;
+            let y = centerY + Math.sin(angle) * outerRadius;
+
+            if (i === 0) {
+                graphics.moveTo(x, y);
+            } else {
+                graphics.lineTo(x, y);
+            }
+
+            // 绘制内切五角星的线条（如果需要）
+            angle += Math.PI / 5; // 内部顶点角度略作调整
+            let xInner = centerX + Math.cos(angle) * innerRadius;
+            let yInner = centerY + Math.sin(angle) * innerRadius;
+            graphics.lineTo(xInner, yInner);
+        }
+
+        // 绘制边框（即描边）
+        graphics.stroke();
+        graphics.fillColor.fromHEX("#FFFF00");
+        graphics.fill();
+// graphics.fill();
+        // ctx.lineWidth = 15;
+        // // var px=this.getPx(shape);
+        // // var py=this.getPy(shape);
+        // let center = new Vec2(0, 0);
+        // // var hexagonWidth=HexagonManager.hexagonWidth-7;
+        // // var hexagonheight=hexagonWidth * 0.866;
+        // //一边
+        // let p0 = this.hex_corner(center, this.outerRadius, 0);
+        // ctx.moveTo(p0.x, p0.y);
+        //
+        // let p1 = this.hex_corner(center, this.outerRadius, 1);
+        //
+        // ctx.lineTo(p1.x, p1.y);
+        //
+        // let p2 = this.hex_corner(center, this.outerRadius, 2);
+        // ctx.lineTo(p2.x, p2.y);
+        // let p3 = this.hex_corner(center, this.outerRadius, 3);
+        // ctx.lineTo(p3.x, p3.y);
+        //
+        // let p4 = this.hex_corner(center, this.outerRadius, 4);
+        // ctx.lineTo(p4.x, p4.y);
+        //
+        // let p5 = this.hex_corner(center, this.outerRadius, 5);
+        // ctx.lineTo(p5.x, p5.y);
+        // ctx.lineTo(p0.x, p0.y);
+        //
+        // // ctx.circle(px,py,hexagonheight);
+        // // ctx.strokeColor.fromHEX("#363333")
+        // // ctx.circle(px,py,HexagonManager.hexagonWidth);
+        // ctx.strokeColor.fromHEX("#F55F5F");
+        // ctx.stroke();
+        // //4边
+        // // ctx.fillColor.fromHEX("#212529");
+        // ctx.fillColor.fromHEX("#3C6338");
+        // ctx.fill();
+    }
+
     creatorObstacle(ctx, shape: Shape) {
         ctx.lineWidth = 0;
         // var px=this.getPx(shape);
@@ -421,6 +490,32 @@ export class HexagonManager extends ShapeManager {
         // let cube = HexagonManager.pianyi_cube(hexagon.x,hexagon.y)
         // this.node.getChildByName('Zhou').getComponent(Label).string = "x:"+cube.x+",y:"+cube.y+",z:"+cube.z;
         // console.log("Zhou:" +"x:"+cube.x+",y:"+cube.y+",z:"+cube.z)
+    }
+
+    initDestination() {
+        let destinationNum = 6;
+        LevelDesign.getInstance().currentDestination = new Array<Coord>();
+        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Easy) {
+            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+        }else if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Medium) {
+            destinationNum = destinationNum*2;
+            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+        }else {
+            for (let i = 0; i < this.WidthCount; i++) {
+                LevelDesign.getInstance().currentDestination.push({x:0,y:i})
+                LevelDesign.getInstance().currentDestination.push({x:i,y:0})
+                LevelDesign.getInstance().currentDestination.push({x:i,y:this.WidthCount -1})
+                LevelDesign.getInstance().currentDestination.push({x:this.WidthCount -1,y:i})
+            }
+            LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.reduce((pre, cur) => {
+                var exists = pre.find(item => JSON.stringify(item) === JSON.stringify(cur));
+                if (!exists) {
+                    pre.push(cur);
+                }
+                return pre;
+            }, []);
+
+        }
     }
 
 

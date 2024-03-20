@@ -26,8 +26,52 @@ export abstract class ShapeManager {
     abstract closeDirect();
 
     abstract draw(ctx,shape: Shape);
+    abstract drawDestination(ctx,shape: Shape);
     abstract creatorObstacle(ctx,shape: Shape);
     abstract createDefaultObstacle();
+
+    abstract initDestination();
+
+    generateRandomCoordinatesOnSides(length,n) {
+        // 验证输入值
+        if (!Number.isInteger(n) || n <= 0) {
+            throw new Error("Invalid input. The number of points should be a positive integer.");
+        }
+
+        const sides = [
+            { type: 'horizontal', xRange: [0, length], y: 0, usedPoints: new Set() },
+            { type: 'vertical', x: length, yRange: [0, length], usedPoints: new Set() },
+            { type: 'horizontal', xRange: [length, 0], y: length, usedPoints: new Set() },
+            { type: 'vertical', x: 0, yRange: [length, 0], usedPoints: new Set() }
+        ];
+
+        let randomPoints = [];
+        let generatedCount = 0;
+
+        while (generatedCount < n) {
+            for (const side of sides) {
+                if (side.usedPoints.size < Math.min(side.type === 'horizontal' ? length : length + 1, n - generatedCount)) {
+                    let candidate;
+                    if (side.type === 'horizontal') {
+                        candidate = { x: Math.floor(Math.random() * (side.xRange[1] - side.xRange[0] + 1)) + side.xRange[0], y: side.y };
+                    } else {
+                        candidate = { x: side.x, y: Math.floor(Math.random() * (side.yRange[1] - side.yRange[0] + 1)) + side.yRange[0] };
+                    }
+
+                    if (!side.usedPoints.has(JSON.stringify(candidate))) {
+                        side.usedPoints.add(JSON.stringify(candidate));
+                        randomPoints.push(JSON.parse(JSON.stringify(candidate)));
+                        generatedCount++;
+                        if (generatedCount === n) {
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        return randomPoints;
+    }
 
 }
 // export interface Shape {

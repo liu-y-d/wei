@@ -40,9 +40,6 @@ export class PanelProcessState implements IProcessStateNode {
         let ctx = movableDirection.getComponent(Graphics);
         ctx.clear()
         let length = 40;
-        // ctx.moveTo(0,0);
-        // ctx.lineTo(50,50);
-        console.log(LevelDesign.getInstance().currentMovableDirection)
         for (let i = 0; i <= LevelDesign.getInstance().currentMovableDirection; i++) {
 
             ctx.moveTo(0,0);

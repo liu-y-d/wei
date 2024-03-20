@@ -3,7 +3,7 @@ import nearestAndMoreRoutesSolver from "db://assets/Script/NearestSolver";
 import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {SquareManager} from "db://assets/Script/SquareManager";
-import {Global} from "db://assets/Script/Global";
+import {Coord, Global} from "db://assets/Script/Global";
 import {PropsBack} from "db://assets/Script/PropsBack";
 import {PropsForecast} from "db://assets/Script/PropsForecast";
 import {PropsObstacleReset} from "db://assets/Script/PropsObstacleReset";
@@ -64,6 +64,11 @@ export class LevelDesign{
     public currentMovableDirection:number;
 
     /**
+     * 当前关卡目的地集合
+     */
+    public currentDestination:Array<Coord> = new Array<Coord>();
+
+    /**
      * 鬼移动算法
      */
     public ghostMoveAlgorithms:Function = randomSolver;
@@ -109,6 +114,7 @@ export class LevelDesign{
                 this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
             }
         }
+        this.shapeManagers.get(this.currentShapeEnum).initDestination()
         this.propsInit();
     }
     propsInit() {

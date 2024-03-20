@@ -124,7 +124,7 @@ export class SquareManager extends ShapeManager {
 
     draw(ctx: Graphics, shape: Shape) {
         ctx.clear();
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 0;
         var px = this.getPx(shape);
         var py = this.getPy(shape);
         let center = new Vec2(px, py);
@@ -135,8 +135,39 @@ export class SquareManager extends ShapeManager {
         // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
         ctx.strokeColor.fromHEX("#ffffff");
         ctx.stroke();
-        ctx.fillColor.fromHEX("#8CBDB9");
+        ctx.fillColor.fromHEX("#3C6338");
         ctx.fill();
+    }
+    drawDestination(graphics: Graphics, shape: Shape) {
+        // 设置五角星的中心点、外接圆半径和内切圆半径（可选）
+        const centerX = 0; // 假设中心点在(0, 0)
+        const centerY = 0;
+        const outerRadius = 30; // 外接圆半径
+        const innerRadius = outerRadius * 0.35; // 内切圆半径，可以根据实际需求调整
+
+        // 计算每个顶点的角度和坐标
+        for (let i = 0; i < 5; i++) {
+            let angle = i * Math.PI / 2.5 - 50; // 每隔72度一个顶点
+            let x = centerX + Math.cos(angle) * outerRadius;
+            let y = centerY + Math.sin(angle) * outerRadius;
+
+            if (i === 0) {
+                graphics.moveTo(x, y);
+            } else {
+                graphics.lineTo(x, y);
+            }
+
+            // 绘制内切五角星的线条（如果需要）
+            angle += Math.PI / 5; // 内部顶点角度略作调整
+            let xInner = centerX + Math.cos(angle) * innerRadius;
+            let yInner = centerY + Math.sin(angle) * innerRadius;
+            graphics.lineTo(xInner, yInner);
+        }
+
+        // 绘制边框（即描边）
+        graphics.stroke();
+        graphics.fillColor.fromHEX("#FFFF00");
+        graphics.fill();
     }
 
     getCenter(index) {
@@ -217,5 +248,28 @@ export class SquareManager extends ShapeManager {
             (coord.x < this.WidthCount && coord.y == this.HeightCount - 1);
     }
 
-
+    initDestination() {
+        let destinationNum = 6;
+        LevelDesign.getInstance().currentDestination = new Array<Coord>();
+        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Easy) {
+            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+        }else if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Medium) {
+            destinationNum = destinationNum*2;
+            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+        }else {
+            for (let i = 0; i < this.WidthCount; i++) {
+                LevelDesign.getInstance().currentDestination.push({x:0,y:i})
+                LevelDesign.getInstance().currentDestination.push({x:i,y:0})
+                LevelDesign.getInstance().currentDestination.push({x:i,y:this.WidthCount -1})
+                LevelDesign.getInstance().currentDestination.push({x:this.WidthCount -1,y:i})
+            }
+            LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.reduce((pre, cur) => {
+                var exists = pre.find(item => JSON.stringify(item) === JSON.stringify(cur));
+                if (!exists) {
+                    pre.push(cur);
+                }
+                return pre;
+            }, []);
+        }
+    }
 }

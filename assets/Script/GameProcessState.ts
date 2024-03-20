@@ -13,6 +13,7 @@ import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
 import {PrefabController} from "db://assets/Script/PrefabController";
+import {DestinationProcessState} from "db://assets/Script/DestinationProcessState";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -38,7 +39,7 @@ export class GameProcessState implements IProcessStateNode {
         this.propsAreaInit(gameCtrl)
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.panel);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
-        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);
+        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.destination);
 
     }
 

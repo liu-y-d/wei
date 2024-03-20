@@ -32,8 +32,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": -31.187,
+      "y": 4.798,
       "z": 0
     },
     "_lrot": {
@@ -111,11 +111,11 @@
     },
     "duration": -1,
     "emissionRate": 999.999985098839,
-    "life": 0.20000000298023224,
-    "lifeVar": 0.5,
+    "life": 0.2,
+    "lifeVar": 0.1,
     "angle": 360,
     "angleVar": 360,
-    "startSize": 0,
+    "startSize": 20,
     "startSizeVar": 20,
     "endSize": 20,
     "endSizeVar": 0,
@@ -136,8 +136,8 @@
     "emitterMode": 0,
     "gravity": {
       "__type__": "cc.Vec2",
-      "x": 0.25,
-      "y": 0.8600000143051147
+      "x": 1,
+      "y": 1
     },
     "speed": 0,
     "speedVar": 190.7899932861328,
@@ -194,7 +194,7 @@
       "b": 0,
       "a": 0
     },
-    "_positionType": 0,
+    "_positionType": 1,
     "_id": ""
   },
   {

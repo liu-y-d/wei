@@ -5,5 +5,6 @@ export enum ProcessStateEnum {
     game = "game",
     ghost = "ghost",
     obstacle = "obstacle",
-    panel = "panel"
+    panel = "panel",
+    destination = "destination"
 }
