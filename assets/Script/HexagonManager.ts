@@ -105,7 +105,7 @@ export class HexagonManager extends ShapeManager {
 
             let movableDirection = Global.getInstance().panelInfo.getChildByName("MovableDirection");
             let emitPosition = movableDirection.getComponent(UITransform).convertToWorldSpaceAR(movableDirection.getPosition());
-            emitPosition.x = emitPosition.x - 270;
+            emitPosition.x = emitPosition.x - movableDirection.getPosition().x;
             let emit = instantiate(prefabCtl.obstacleEmit);
             playArea.addChild(emit);
 
@@ -410,7 +410,7 @@ export class HexagonManager extends ShapeManager {
         const centerX = 0; // 假设中心点在(0, 0)
         const centerY = 0;
         const outerRadius = 30; // 外接圆半径
-        const innerRadius = outerRadius * 0.35; // 内切圆半径，可以根据实际需求调整
+        const innerRadius = outerRadius * 0.61; // 内切圆半径，可以根据实际需求调整
 
         // 计算每个顶点的角度和坐标
         for (let i = 0; i < 5; i++) {
@@ -474,6 +474,7 @@ export class HexagonManager extends ShapeManager {
     }
 
     creatorObstacle(ctx, shape: Shape) {
+        this.draw(ctx,shape);
         ctx.lineWidth = 0;
         // var px=this.getPx(shape);
         // var py=this.getPy(shape);

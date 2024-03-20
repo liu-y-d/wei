@@ -59,7 +59,7 @@ export class UIManager{
             this.maskGlobal = instantiate(canvas.getComponent(PrefabController).maskGlobal);
             canvas.addChild(this.maskGlobal)
             this.maskGlobal.getChildByName('Background').on(Node.EventType.TOUCH_START, function (event) {
-                UIManager.getInstance().closeMaskGlobal();
+                // UIManager.getInstance().closeMaskGlobal();
             }, this);
             this.maskGlobal.getChildByName('Popup').on(Node.EventType.TOUCH_START, function (event) {
                 // UIManager.getInstance().closeMaskGlobal();
@@ -67,7 +67,7 @@ export class UIManager{
         }
 
     }
-    
+
 
     public openMaskGlobal(){
         UIManager.getInstance().init();

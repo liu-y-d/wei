@@ -22,12 +22,21 @@ export class PrefabController extends Component {
 
     @property(Prefab)
     public props:Prefab;
+
+    @property(Prefab)
+    public Star_4:Prefab;
+
+    @property(Prefab)
+    public Star_6:Prefab;
+
+    @property(Prefab)
+    public Star_8:Prefab;
     start() {
 
     }
 
     update(deltaTime: number) {
-        
+
     }
 }
 

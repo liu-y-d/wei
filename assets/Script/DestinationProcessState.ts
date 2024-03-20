@@ -1,4 +1,4 @@
-import {Node, Graphics, Vec3, Label, tween} from 'cc';
+import {Node, Graphics, Vec3, Label, tween,Animation} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -44,7 +44,11 @@ export class DestinationProcessState implements IProcessStateNode {
                         tile.getComponent(Draw).drawDestination({x:coord.x,y:coord.y,shape:LevelDesign.getInstance().currentShapeEnum})
                         currentIndex++;
                         if (currentIndex == LevelDesign.getInstance().currentDestination.length) {
+                            let detailPanel = Global.getInstance().panelInfo.getChildByName('DetailPanel');
+                            detailPanel.setSiblingIndex(99999999999999999999)
+                            detailPanel.getComponent(Animation).play();
                             ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);
+                            // tween(detailPanel).delay(5).to(0.5,{position:new Vec3(0,260,0)}).start();
                         }
                         haha();
                     }).start()

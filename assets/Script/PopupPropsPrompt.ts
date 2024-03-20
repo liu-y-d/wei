@@ -46,6 +46,9 @@ export class PopupPropsPrompt implements PopupBase {
         // 更新父节点的contentSize 避免弹框外的关闭弹框监听有误
         popup.getComponent(UITransform).setContentSize(tooltip.getComponent(UITransform).contentSize)
 
+        UIManager.getInstance().maskGlobal.getChildByName('Background').on(Node.EventType.TOUCH_START, function (event) {
+            UIManager.getInstance().closeMaskGlobal();
+        }, this);
         tooltip.getChildByName('Label').getComponent(Label).string = this.text;
 
     }

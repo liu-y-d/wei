@@ -23,7 +23,7 @@ export class Draw extends Component {
 
 
     update(deltaTime: number) {
-        
+
     }
     draw(shape:Shape){
         this.shape = shape;
@@ -50,9 +50,8 @@ export class Draw extends Component {
      */
     creatorObstacle(){
         if (!this.hasObstacle){
-
-            this.hasObstacle = true;
             var ctx = this.getComponent(Graphics);
+            this.hasObstacle = true;
             LevelDesign.getInstance().getShapeManager().creatorObstacle(ctx,this.shape)
 
         }

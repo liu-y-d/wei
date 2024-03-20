@@ -31,8 +31,10 @@ export class PopupGameOver implements PopupBase {
             }, this);
             // 将实例化的预制体添加到场景中
             UIManager.getInstance().maskGlobal.getChildByName("Popup").addChild(tooltip)
-            // 取消监听
             UIManager.getInstance().maskGlobal.getChildByName('Background').off(Node.EventType.TOUCH_START);
+            UIManager.getInstance().maskGlobal.getChildByName('Background').on(Node.EventType.TOUCH_START, function (event) {
+                // UIManager.getInstance().closeMaskGlobal();
+            }, this);
             // tooltip.getParent().getComponent(UITransform).setContentSize(tooltip.getComponent(UITransform).contentSize)
             // });
         }
