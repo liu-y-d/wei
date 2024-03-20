@@ -28,7 +28,6 @@ export class PropsObstacleReset implements BaseProps {
 
     inure() {
         let num = LevelDesign.getInstance().propsUsableConfig.get(GamePropsEnum.OBSTACLE_RESET);
-        console.log(Global.getInstance().playerPath.length)
         if (Global.getInstance().playerPath.length == 0 && num > 0) {
 
             let propsConfigById = Global.getInstance().getPropsConfigById(this.id);

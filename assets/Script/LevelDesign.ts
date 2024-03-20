@@ -84,19 +84,9 @@ export class LevelDesign{
         // Global.getInstance().defaultObstacleNum = 10;
         // this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
 
-
+        console.log(Global.getInstance().getPlayerInfo().gameLevel)
         if (Global.getInstance().getPlayerInfo().gameLevel % 5 == 0) {
 
-
-
-            this.showGhostDirection = true;
-            this.difficultyLevel = DifficultyLevelEnum.Easy;
-            this.currentShapeEnum = ShapeEnum.FOUR;
-            this.currentMovableDirection = 4;
-            Global.getInstance().defaultObstacleNum = 10;
-            this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
-
-        }else {
 
             let random = Math.floor(Math.random() * 10);
             this.showGhostDirection = false;
@@ -113,6 +103,17 @@ export class LevelDesign{
                 this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
                 this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
             }
+
+
+
+        }else {
+
+            this.showGhostDirection = true;
+            this.difficultyLevel = DifficultyLevelEnum.Easy;
+            this.currentShapeEnum = ShapeEnum.FOUR;
+            this.currentMovableDirection = 4;
+            Global.getInstance().defaultObstacleNum = 10;
+            this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
         }
         this.shapeManagers.get(this.currentShapeEnum).initDestination()
         this.propsInit();

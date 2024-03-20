@@ -155,7 +155,6 @@ export class Global {
     public playerNext() {
         let playerInfo = JSON.parse(sys.localStorage.getItem('playerInfo'))
         playerInfo.gameLevel++;
-        console.log(playerInfo)
         sys.localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
     }
 

@@ -212,7 +212,6 @@ export class GameProcessState implements IProcessStateNode {
     }
 
     onClick(event :EventTouch) {
-        console.log(event)
         if (Global.getInstance().defaultObstacleNum == Global.getInstance().obstacleCoords.length) {
             Global.getInstance().gameState = GameStateEnum.ing;
         }

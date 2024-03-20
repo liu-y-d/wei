@@ -12,12 +12,13 @@ export class PopupPropsPrompt implements PopupBase {
     resume:Function
     init() {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
-        let tooltip = popup.getChildByName(popup.getComponent(Popup).promptTooltip.name)
-        if (tooltip) {
-            popup.removeAllChildren();
-        }
+        popup.removeAllChildren();
+        // let tooltip = popup.getChildByName(popup.getComponent(Popup).promptTooltip.name)
+        // if (tooltip) {
+        //
+        // }
         // 实例化预制体
-        tooltip = instantiate(UIManager.getInstance().maskGlobal.getChildByName("Popup").getComponent(Popup).promptTooltip);
+        let tooltip  = instantiate(UIManager.getInstance().maskGlobal.getChildByName("Popup").getComponent(Popup).promptTooltip);
         // 将实例化的预制体添加到场景中
         UIManager.getInstance().maskGlobal.getChildByName("Popup").addChild(tooltip)
 

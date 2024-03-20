@@ -32,7 +32,6 @@ export class DestinationProcessState implements IProcessStateNode {
         // }
         Global.getInstance().moveLock.active = true;
         let currentIndex = 0;
-        console.log(LevelDesign.getInstance().currentDestination)
         function haha() {
             if (currentIndex < LevelDesign.getInstance().currentDestination.length) {
                 let coord = LevelDesign.getInstance().currentDestination[currentIndex];

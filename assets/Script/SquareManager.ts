@@ -64,7 +64,6 @@ export class SquareManager extends ShapeManager {
             emitPosition.x = emitPosition.x - movableDirection.getPosition().x;
             let emit = instantiate(prefabCtl.obstacleEmit);
             playArea.addChild(emit);
-            console.log(emitPosition)
             // tile.getComponent(Draw).emit = emit;
             // emit.setSiblingIndex(999999999);
             let position = playArea.getComponent(UITransform).convertToNodeSpaceAR(emitPosition)

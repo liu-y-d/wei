@@ -1,5 +1,5 @@
 
-import {Node,Graphics,Vec2,Label,instantiate,tween} from 'cc';
+import {Node,Color,Sprite,Label,instantiate,tween} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -81,8 +81,12 @@ export class PanelProcessState implements IProcessStateNode {
         movableDirection.removeAllChildren();
         movableDirection.addChild(star)
         star.setPosition(0,0)
-        let angle = 360/LevelDesign.getInstance().currentMovableDirection;
 
+        let bgColor = new Color();
+        let difficultyInfo = LevelDesign.getInstance().getDifficultyInfo();
+        Color.fromHEX(bgColor,difficultyInfo.bgColor);
+        star.getComponent(Sprite).color = bgColor;
+        let angle = 360/LevelDesign.getInstance().currentMovableDirection;
         let zixuan = tween(star);
         for (let i = 1; i <= LevelDesign.getInstance().currentMovableDirection; i++) {
             zixuan.to(0.5,{angle:angle * i})
