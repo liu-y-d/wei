@@ -83,8 +83,6 @@ export class LevelDesign{
         // this.currentShapeEnum = ShapeEnum.SIX;
         // Global.getInstance().defaultObstacleNum = 10;
         // this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
-
-        console.log(Global.getInstance().getPlayerInfo().gameLevel)
         if (Global.getInstance().getPlayerInfo().gameLevel % 5 == 0) {
 
 
@@ -107,7 +105,6 @@ export class LevelDesign{
 
 
         }else {
-
             this.showGhostDirection = true;
             this.difficultyLevel = DifficultyLevelEnum.Easy;
             this.currentShapeEnum = ShapeEnum.FOUR;
@@ -135,6 +132,8 @@ export class LevelDesign{
         this.levelPropsArray.set(propsFreeze.id,propsFreeze);
         propsUsableConfig.set(propsFreeze.id,propsFreeze.defaultNum);
         this.propsUsableConfig = propsUsableConfig;
+
+        Global.getInstance().ghostFreezeNum = 0;
     }
     getDifficultyInfoByEnum(difficulty: DifficultyLevelEnum): DifficultyInfo | undefined {
         return this.difficultyDetails[difficulty];

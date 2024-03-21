@@ -57,10 +57,16 @@ export class PopupMenu implements PopupBase {
             // 将实例化的预制体添加到场景中
             UIManager.getInstance().maskGlobal.getChildByName("Popup").addChild(tooltip)
             // 取消监听
-            UIManager.getInstance().maskGlobal.getChildByName('Background').off(Node.EventType.TOUCH_START);
-            UIManager.getInstance().maskGlobal.getChildByName('Background').on(Node.EventType.TOUCH_START, function (event) {
-                // UIManager.getInstance().closeMaskGlobal();
-            }, this);
+            let background = UIManager.getInstance().maskGlobal.getChildByName('Background');
+            // UIManager.getInstance().adapterContentSize(background);
+            background.off(Node.EventType.TOUCH_START);
+            background.on(Node.EventType.TOUCH_START, function (event) {
+                console.log(123123)
+            }, background);
+            // background.setSiblingIndex(1)
+            console.log(background.hasEventListener(Node.EventType.TOUCH_START))
+            console.log(background.getSiblingIndex())
+            console.log(Global.getInstance().playArea.getChildByName("Background").getSiblingIndex())
             // tooltip.getParent().getComponent(UITransform).setContentSize(tooltip.getComponent(UITransform).contentSize)
             // });
         }

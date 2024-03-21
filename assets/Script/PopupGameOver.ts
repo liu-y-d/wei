@@ -35,6 +35,7 @@ export class PopupGameOver implements PopupBase {
             UIManager.getInstance().maskGlobal.getChildByName('Background').on(Node.EventType.TOUCH_START, function (event) {
                 // UIManager.getInstance().closeMaskGlobal();
             }, this);
+            console.log(UIManager.getInstance().maskGlobal.getChildByName('Background').hasEventListener(Node.EventType.TOUCH_START))
             // tooltip.getParent().getComponent(UITransform).setContentSize(tooltip.getComponent(UITransform).contentSize)
             // });
         }

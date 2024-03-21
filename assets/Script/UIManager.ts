@@ -1,4 +1,4 @@
-import {Node,director,instantiate,find,Label,game,Director,resources,Prefab} from "cc";
+import {Node,director,instantiate,find,Label,game,Director,resources,Prefab,screen,UITransform,Vec3} from "cc";
 import {GameStateEnum, Global, resume} from "db://assets/Script/Global";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
@@ -123,5 +123,24 @@ export class UIManager{
     public pause(){
         this.openMaskGlobal();
         UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.MENU);
+    }
+
+    public adapterScale(node:Node){
+        let srcScaleForShowAll = Math.min(screen.windowSize.width / node.getComponent(UITransform).contentSize.width, screen.windowSize.height / node.getComponent(UITransform).contentSize.height);
+        let realWidth = node.getComponent(UITransform).contentSize.width * srcScaleForShowAll;
+        let realHeight = node.getComponent(UITransform).contentSize.height * srcScaleForShowAll;
+
+        // 2. 基于第一步的数据，再做缩放适配
+        node.scale = new Vec3(Math.max(screen.windowSize.width  / realWidth, screen.windowSize.height  / realHeight),Math.max(screen.windowSize.width  / realWidth, screen.windowSize.height  / realHeight),0);
+    }
+    
+    public adapterContentSize(node:Node) {
+        let srcScaleForShowAll = Math.min(screen.windowSize.width / node.getComponent(UITransform).contentSize.width, screen.windowSize.height / node.getComponent(UITransform).contentSize.height);
+        let realWidth = node.getComponent(UITransform).contentSize.width * srcScaleForShowAll;
+        let realHeight = node.getComponent(UITransform).contentSize.height * srcScaleForShowAll;
+
+        // 2. 基于第一步的数据，再做节点宽高适配
+        node.getComponent(UITransform).setContentSize(node.getComponent(UITransform).contentSize.width * (screen.windowSize.width / realWidth),node.getComponent(UITransform).contentSize.height * (screen.windowSize.height / realHeight));
+
     }
 }

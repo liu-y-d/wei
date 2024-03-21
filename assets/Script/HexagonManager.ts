@@ -318,13 +318,7 @@ export class HexagonManager extends ShapeManager {
         return nearbyHexagonCoords;
     }
 
-    public isEdge(coord: Coord) {
-        return (coord.x == 0 && coord.y < this.HeightCount) ||
-            (coord.x < this.WidthCount && coord.y == 0) ||
-            (coord.x == this.WidthCount - 1 && coord.y < this.HeightCount) ||
-            (coord.x < this.WidthCount && coord.y == this.HeightCount - 1);
 
-    }
 
     getPx(shape: Shape) {
         if (this.layout == 0) {

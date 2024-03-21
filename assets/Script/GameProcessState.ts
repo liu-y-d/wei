@@ -1,19 +1,32 @@
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
-import {Button,Label,Graphics,EventTouch, find, instantiate, Node, Size, UITransform, Vec3,Sprite,resources,SpriteFrame,Layers,Layout,tween,Vec2} from "cc";
+import {
+    Button,
+    EventTouch,
+    find,
+    Graphics,
+    instantiate,
+    Label,
+    Layers,
+    Layout,
+    Node,
+    resources,
+    Size,
+    Sprite,
+    SpriteFrame,
+    tween,
+    UITransform,
+    Vec3
+} from "cc";
 import {GameCtrl} from "db://assets/Script/GameCtrl";
-import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {Draw} from "db://assets/Script/Draw";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
-import {GameStateEnum, Global, PlayerInfo} from "db://assets/Script/Global";
+import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {GhostMessage} from "db://assets/Script/GhostState";
 import {ObstacleMessage} from "db://assets/Script/ObstacleState";
-import {LevelDesign} from "db://assets/Script/LevelDesign";
-import {ShapeEnum, ShapeManager} from "db://assets/Script/ShapeManager";
+import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {PropsNum} from "db://assets/Script/PropsNum";
-import {UIManager} from "db://assets/Script/UIManager";
 import {PrefabController} from "db://assets/Script/PrefabController";
-import {DestinationProcessState} from "db://assets/Script/DestinationProcessState";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -222,11 +235,11 @@ export class GameProcessState implements IProcessStateNode {
         let vec2= event.getUILocation();
         let vec3 = Global.getInstance().playArea.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(vec2.x,vec2.y,0))
         let coord = LevelDesign.getInstance().getShapeManager().getShape(vec3.x,vec3.y);
-        if (!coord || coord.x <0 || coord.y<0) {
+        if (!coord || coord.x <0 || coord.y<0 || coord.x > LevelDesign.getInstance().getShapeManager().WidthCount - 1 || coord.y > LevelDesign.getInstance().getShapeManager().HeightCount - 1) {
             return;
         }
         let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
-        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle) {
+        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle || (LevelDesign.getInstance().difficultyLevel != DifficultyLevelEnum.Hard && tile.isDestination)) {
             // if (!this.isTweening) {
             //     this.isTweening = true;
                 let self = this;

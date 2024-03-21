@@ -1,6 +1,7 @@
 import {Vec3, Vec2, Node} from "cc";
 import {Coord} from "db://assets/Script/Global";
 import {Shape} from "db://assets/Script/Shape";
+import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 
 export type side = { type: string, xRange?: [], y?: number, x?: number, yRange?: [], usedPoints: Set<Coord> }
 
@@ -13,7 +14,16 @@ export abstract class ShapeManager {
 
 	abstract getNearbyShapeCoords(point?: Coord): Array<Coord>;
 
-	abstract isEdge(coord: Coord): boolean;
+	isDestination(coord: Coord) {
+        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
+            return (coord.x == 0 && coord.y < this.HeightCount) ||
+                (coord.x < this.WidthCount && coord.y == 0) ||
+                (coord.x == this.WidthCount - 1 && coord.y < this.HeightCount) ||
+                (coord.x < this.WidthCount && coord.y == this.HeightCount - 1);
+        }else {
+            return LevelDesign.getInstance().currentDestination.some(d=>d.x == coord.x && d.y == coord.y);
+        }
+    }
 
 	shapeEnum: ShapeEnum;
 	shapeWidth: number;

@@ -39,11 +39,13 @@ export class PopupPropsPrompt implements PopupBase {
             UIManager.getInstance().closeMaskGlobal();
         }, cancelButton);
         let background = UIManager.getInstance().maskGlobal.getChildByName('Background')
-        if (!background.hasEventListener(Node.EventType.TOUCH_START)) {
-            background.on(Node.EventType.TOUCH_START, ()=>{
-                UIManager.getInstance().closeMaskGlobal();
-            }, popup);
-        }
+        background.off(Node.EventType.TOUCH_START);
+        // if (!background.hasEventListener(Node.EventType.TOUCH_START)) {
+        //
+        // }
+        background.on(Node.EventType.TOUCH_START, ()=>{
+            UIManager.getInstance().closeMaskGlobal();
+        }, popup);
         // 更新父节点的contentSize 避免弹框外的关闭弹框监听有误
         popup.getComponent(UITransform).setContentSize(tooltip.getComponent(UITransform).contentSize)
 

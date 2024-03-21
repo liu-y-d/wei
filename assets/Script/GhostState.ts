@@ -41,6 +41,16 @@ export class GhostState implements IProcessStateNode {
         let point = LevelDesign.getInstance().getShapeManager().getCenter(Global.getInstance().currentGhostVec2);
         this.ghostNode.setPosition(point.x, point.y)
         this.ghostNode.angle = 0;
+        let  freezeNum = this.ghostNode.getChildByName("FreezeNum");
+
+        freezeNum.getComponent(Label).string = Global.getInstance().ghostFreezeNum.toString();
+
+        freezeNum.active = false;
+        let color = new Color();
+        this.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#F55F5F")
+        this.ghostNode.getComponent(Animation).play();
+
+
         // this.ghostNode.getComponent(Ghost).draw();
 
         // if (LevelDesign.getInstance().showGhostDirection) {
@@ -190,7 +200,7 @@ export class GhostState implements IProcessStateNode {
             .to(0.25, {angle: -angle})
             .to(0.25, {position: new Vec3(point.x, point.y, 0)})
             .call(() => {
-                if (LevelDesign.getInstance().getShapeManager().isEdge(Global.getInstance().currentGhostVec2)) {
+                if (LevelDesign.getInstance().getShapeManager().isDestination(Global.getInstance().currentGhostVec2)) {
                     Global.getInstance().ghostMoving = false;
                     Global.getInstance().moveLock.active = false;
                     self.lose();
@@ -242,7 +252,7 @@ export class GhostState implements IProcessStateNode {
             .to(0.25, {angle: -angle})
             .to(0.25, {position: new Vec3(point.x, point.y, 0)})
             .call(() => {
-                if (LevelDesign.getInstance().getShapeManager().isEdge(Global.getInstance().currentGhostVec2)) {
+                if (LevelDesign.getInstance().getShapeManager().isDestination(Global.getInstance().currentGhostVec2)) {
                     Global.getInstance().ghostMoving = false;
                     Global.getInstance().moveLock.active = false;
                     self.lose();

@@ -1,14 +1,13 @@
-import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {Global} from "db://assets/Script/Global";
 import {Draw} from "db://assets/Script/Draw";
-import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 
 
 export class Block {
     public readonly x: number;
     public readonly y: number;
     public readonly isWall: boolean;
-    public readonly isEdge: boolean;
+    public readonly isDestination: boolean;
     public distance: number;
     private parent: Blocks;
 
@@ -18,14 +17,18 @@ export class Block {
         this.isWall = isWall;
         this.distance = Infinity;
         this.parent = parent;
-        this.isEdge = this.x <= 0 || this.x >= this.parent.w - 1 || this.y <= 0 || this.y >= this.parent.h - 1;
+        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
+            this.isDestination = this.x <= 0 || this.x >= this.parent.w - 1 || this.y <= 0 || this.y >= this.parent.h - 1;
+        }else {
+            this.isDestination = LevelDesign.getInstance().currentDestination.some(d=>d.x == i && d.y == j);
+        }
     }
 
     private _routesCount: number;
 
     get routesCount(): number {
         if (this._routesCount === undefined) {
-            if (this.isEdge) {
+            if (this.isDestination) {
                 this._routesCount = 1;
             } else {
                 let routesCount = 0;
@@ -121,7 +124,7 @@ export class Blocks {
         let queue: Block[] = [];
         this.blocks.forEach(col => {
             col.forEach(block => {
-                if (block.isEdge && !block.isWall) {
+                if (block.isDestination && !block.isWall) {
                     block.distance = 0;
                     queue.push(block);
                 }
@@ -130,7 +133,7 @@ export class Blocks {
         while (queue.length > 0) {
             let block = queue.shift();
             block.neighbours.forEach(neighbour => {
-                if (neighbour !== null && !neighbour.isEdge && !neighbour.isWall) {
+                if (neighbour !== null && !neighbour.isDestination && !neighbour.isWall) {
                     if (neighbour.distance > block.distance + 1) {
                         neighbour.distance = block.distance + 1;
                         if (queue.indexOf(neighbour) < 0) {

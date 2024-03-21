@@ -1,7 +1,7 @@
 import {ShapeEnum, ShapeFactory, ShapeManager} from "db://assets/Script/ShapeManager";
 import {Shape} from "db://assets/Script/Shape";
 import {Coord, Global} from "db://assets/Script/Global";
-import {Node, Vec2, ParticleSystem2D, tween, Vec3, Graphics, instantiate, UITransform} from "cc";
+import {Graphics, instantiate, Node, ParticleSystem2D, tween, UITransform, Vec2, Vec3} from "cc";
 import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {Draw} from "db://assets/Script/Draw";
 import {PrefabController} from "db://assets/Script/PrefabController";
@@ -241,12 +241,7 @@ export class SquareManager extends ShapeManager {
         return result;
     }
 
-    isEdge(coord: Coord): boolean {
-        return (coord.x == 0 && coord.y < this.HeightCount) ||
-            (coord.x < this.WidthCount && coord.y == 0) ||
-            (coord.x == this.WidthCount - 1 && coord.y < this.HeightCount) ||
-            (coord.x < this.WidthCount && coord.y == this.HeightCount - 1);
-    }
+
 
     initDestination() {
         let destinationNum = 6;
