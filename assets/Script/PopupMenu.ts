@@ -1,6 +1,6 @@
 import {PopupBase} from "db://assets/Script/PopupBase";
 import {PopupEnum, UIManager} from "db://assets/Script/UIManager";
-import {Node, instantiate, Prefab, resources, Label, Toggle} from 'cc';
+import {Node, instantiate, Prefab, resources, tween, Toggle,Vec3} from 'cc';
 import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {Popup} from "db://assets/Script/Popup";
@@ -12,7 +12,7 @@ export class PopupMenu implements PopupBase {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
         popup.removeAllChildren();
         let tooltip = popup.getChildByName(popup.getComponent(Popup).menuTooltip.name)
-
+        popup.scale = new Vec3(0,0,1);
         if (!tooltip) {
             // 实例化预制体
             tooltip = instantiate(UIManager.getInstance().maskGlobal.getChildByName("Popup").getComponent(Popup).menuTooltip);
@@ -61,12 +61,13 @@ export class PopupMenu implements PopupBase {
             // UIManager.getInstance().adapterContentSize(background);
             background.off(Node.EventType.TOUCH_START);
             background.on(Node.EventType.TOUCH_START, function (event) {
-                console.log(123123)
             }, background);
             // background.setSiblingIndex(1)
-            console.log(background.hasEventListener(Node.EventType.TOUCH_START))
-            console.log(background.getSiblingIndex())
-            console.log(Global.getInstance().playArea.getChildByName("Background").getSiblingIndex())
+
+            tween(popup)
+                .to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
+
+            }).start();
             // tooltip.getParent().getComponent(UITransform).setContentSize(tooltip.getComponent(UITransform).contentSize)
             // });
         }

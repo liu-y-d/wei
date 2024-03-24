@@ -1,6 +1,6 @@
 import {PopupBase} from "db://assets/Script/PopupBase";
 import {PopupEnum, UIManager} from "db://assets/Script/UIManager";
-import {Node, instantiate, Prefab, resources, Label, UITransform} from 'cc';
+import {Node, instantiate, Prefab, tween, Label, Vec3} from 'cc';
 import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {Popup} from "db://assets/Script/Popup";
@@ -12,6 +12,7 @@ export class PopupGameOver implements PopupBase {
     init() {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
         popup.removeAllChildren();
+        popup.scale = new Vec3(0,0,1);
         let tooltip = popup.getChildByName(popup.getComponent(Popup).gameOverTooltip.name)
 
         if (!tooltip) {
@@ -49,6 +50,11 @@ export class PopupGameOver implements PopupBase {
         if (LevelDesign.getInstance().showGhostDirection) {
             LevelDesign.getInstance().getShapeManager().closeDirect();
         }
+
+        tween(popup)
+            .to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
+
+        }).start();
     }
 
 }

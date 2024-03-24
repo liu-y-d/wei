@@ -1,6 +1,6 @@
-import { _decorator, Component, Node,Prefab,instantiate,UITransform,Label,Color } from 'cc';
+import { _decorator, Component, Node,Prefab,instantiate,UITransform,Label,Color,director } from 'cc';
 import {Bullet} from "db://assets/Script/Bullet";
-import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {BulletEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 const { ccclass, property } = _decorator;
 
 @ccclass('BulletScreen')
@@ -24,7 +24,11 @@ export class BulletScreen extends Component {
         "#FF8C00"
     ]
     start() {
-        this.bulletContent = LevelDesign.getInstance().bulletArray;
+        if (director.getScene().name == 'Load') {
+            this.bulletContent.push(BulletEnum.load_tip);
+        }else {
+            this.bulletContent = LevelDesign.getInstance().bulletArray;
+        }
     }
 
     update(deltaTime: number) {
@@ -45,14 +49,15 @@ export class BulletScreen extends Component {
 
         // 当前所有提示文本消失后，重新生成
         if (this.bulletsArray.length == 0) {
-            let trigger = Math.random();
-            if (trigger>0.99)
-            {this.spawnBullets();}
+            // let trigger = Math.random();
+            // if (trigger>0.99)
+            this.spawnBullets();
         }
     }
     spawnBullets () {
         // 生成提示文本
-        let num = Math.round(Math.random()*4);      // 决定生成的数量
+        // let num = Math.round(Math.random()*4);      // 决定生成的数量
+        let num = 6;      // 决定生成的数量
         // let num = 1;
 
         for (let i=0; i<num; i++) {

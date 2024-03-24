@@ -1,5 +1,5 @@
 
-import { director,find } from "cc";
+import { director,find, sys,Node} from "cc";
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import CommonProgressBar from "db://assets/Script/CommonProgressBar";
@@ -20,14 +20,22 @@ export class LoadProcessState implements IProcessStateNode {
         //
         // });
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
-        let progressBarNode = find('Canvas/ProgressBar');
+        let progressBarNode = find('Canvas/Content/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
+        find('Canvas/Content/Enter').on(Node.EventType.TOUCH_END,()=>{
+            director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
+        })
         director.preloadScene("Main", (completedCount, totalCount, item) =>{
+            progressBar.prevNum = progressBar.num;
             progressBar.num = completedCount / totalCount;
             progressBar.show();
         }, function(){
             progressBar.hide();
-            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
+            find('Canvas/Content/Enter').active = true;
+            // if (sys.platform === sys.Platform.WECHAT_GAME) {
+            //     ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
+            // }else {
+            // }
         })
     }
     onExit() {

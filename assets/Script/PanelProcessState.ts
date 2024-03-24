@@ -1,5 +1,5 @@
 
-import {Node,Color,Sprite,Label,instantiate,tween} from 'cc';
+import {Node,Color,Sprite,Label,instantiate,tween,Vec3} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -21,7 +21,7 @@ export class PanelProcessState implements IProcessStateNode {
     onInit() {
 
         // if (!Global.getInstance().panelInfo) {
-            Global.getInstance().panelInfo = Global.getInstance().gameCanvas.getChildByName("PanelInfo");
+            Global.getInstance().panelInfo = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName("PanelInfo");
         // }
         this.drawMovableDirection();
 
@@ -69,14 +69,19 @@ export class PanelProcessState implements IProcessStateNode {
     //     }
     // }
     drawMovableDirection() {
-        let star;
+        let star:Node;
         let movableDirection = Global.getInstance().panelInfo.getChildByName('MovableDirection');
+        let movableTip = Global.getInstance().panelInfo.getChildByName('MovableTip');
+
         if (LevelDesign.getInstance().currentMovableDirection == 4){
             star = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).Star_4);
+            movableTip.getComponent(Label).string = '4个可移动方向';
         }else if (LevelDesign.getInstance().currentMovableDirection == 6) {
             star = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).Star_6);
+            movableTip.getComponent(Label).string = '6个可移动方向';
         }else {
             star = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).Star_8);
+            movableTip.getComponent(Label).string = '8个可移动方向';
         }
         movableDirection.removeAllChildren();
         movableDirection.addChild(star)
@@ -91,7 +96,23 @@ export class PanelProcessState implements IProcessStateNode {
         for (let i = 1; i <= LevelDesign.getInstance().currentMovableDirection; i++) {
             zixuan.to(0.5,{angle:angle * i})
         }
-        zixuan.start();
+        zixuan.call(()=>{
+            movableTip.active = true;
+            tween(movableTip).to(0.5,{
+                scale:new Vec3(1,1,1)
+            }).call(()=>{
+                // movableTip.active = false;
+                // if (!star.hasEventListener(Node.EventType.TOUCH_START)) {
+                // star.off(Node.EventType.TOUCH_END)
+                    star.on(Node.EventType.TOUCH_END,(e)=>clickCallBack(e))
+                // }
+            })
+                .start();
+            function clickCallBack(e) {
+                console.log(e)
+                movableTip.active = !movableTip.active;
+            }
+        }).start();
 
     }
     onUpdate() {

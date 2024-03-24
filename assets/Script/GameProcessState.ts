@@ -43,7 +43,7 @@ export class GameProcessState implements IProcessStateNode {
         Global.getInstance().gameCanvas = find('Canvas');
         // UIManager.getInstance().init();
         // Global.getInstance().gameCanvas.addChild(UIManager.getInstance().maskGlobal)
-        Global.getInstance().playArea = Global.getInstance().gameCanvas.getChildByName('PlayArea');
+        Global.getInstance().playArea = Global.getInstance().gameCanvas.getChildByName('Content').getChildByName('PlayArea');
 
         // this.gameCanvas.getChildByName('PlayArea').on(Node.EventType.TOUCH_START,this.onClick,this);
         let gameCtrl = Global.getInstance().gameCanvas.getComponent(GameCtrl);
@@ -75,7 +75,7 @@ export class GameProcessState implements IProcessStateNode {
         // LevelDesign.getInstance().init();
     }
     propsAreaInit(gameCtrl:GameCtrl) {
-        let gamePropsArea = Global.getInstance().gameCanvas.getChildByName('GameProps');
+        let gamePropsArea = Global.getInstance().gameCanvas.getChildByName('Content').getChildByName('GameProps');
         let propsContent = gamePropsArea.getChildByName('ScrollView').getChildByName('view').getChildByName('content');
         propsContent.removeAllChildren();
         let levelPropsArray = LevelDesign.getInstance().levelPropsArray;
@@ -180,10 +180,10 @@ export class GameProcessState implements IProcessStateNode {
     }
 
     playAreaInit(gameCtrl:GameCtrl) {
-        let playArea = Global.getInstance().gameCanvas.getChildByName('PlayArea');
+        let playArea = Global.getInstance().gameCanvas.getChildByName('Content').getChildByName('PlayArea');
         playArea.on(Node.EventType.TOUCH_END,this.onClick,this);
 
-        let moveLock = Global.getInstance().gameCanvas.getChildByName('MoveLock');
+        let moveLock = Global.getInstance().gameCanvas.getChildByName('Content').getChildByName('MoveLock');
         moveLock.on(Node.EventType.TOUCH_START,()=>{},this);
         Global.getInstance().moveLock = moveLock;
         playArea.getChildByName('Direct').setPosition(320,1050)

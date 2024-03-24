@@ -1,8 +1,9 @@
-import { _decorator, Component, Node,ProgressBar } from 'cc'
+import { _decorator, Component, Node,ProgressBar,Label } from 'cc'
 const { ccclass, property } = _decorator;
 @ccclass('CommonProgressBar')
 export default class CommonProgressBar extends Component {
     num = 0;//进度数据
+    prevNum = 0;//进度数据
     isShow = false;//是否显示
     show() {
         //显示
@@ -16,7 +17,10 @@ export default class CommonProgressBar extends Component {
     }
     update() {
         let progressBar = this.node.getComponent(ProgressBar);
-        progressBar.progress = this.num/10;//更新进度条ui的图
-        // cc.find('MainMenu/ProgressBar/num').getComponent(cc.Label).string= Math.trunc(this.num*100)+'%';//更新进度条文字
+        if (this.num > this.prevNum) {
+            progressBar.progress = this.num;//更新进度条ui的图
+            // this.node.getChildByName('Bar').getComponent(Label).string= Math.trunc(this.num*100)+'%';//更新进度条文字
+
+        }
     }
 }

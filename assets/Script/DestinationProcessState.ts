@@ -43,7 +43,7 @@ export class DestinationProcessState implements IProcessStateNode {
                         tile.getComponent(Draw).drawDestination({x:coord.x,y:coord.y,shape:LevelDesign.getInstance().currentShapeEnum})
                         currentIndex++;
                         if (currentIndex == LevelDesign.getInstance().currentDestination.length) {
-                            let detailPanel = Global.getInstance().panelInfo.getChildByName('DetailPanel');
+                            let detailPanel = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName('DetailPanel');
                             detailPanel.setSiblingIndex(99999999999999999999)
                             detailPanel.getComponent(Animation).play();
                             ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);

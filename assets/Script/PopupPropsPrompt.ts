@@ -3,7 +3,7 @@ import {PopupEnum, UIManager} from "db://assets/Script/UIManager";
 import {Popup} from "db://assets/Script/Popup";
 import {GameStateEnum, Global, resume} from "db://assets/Script/Global";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
-import {Node, instantiate, Prefab, resources, Label, UITransform,Toggle} from 'cc';
+import {Node, instantiate, Prefab, resources, Label, UITransform,Toggle,tween,Vec3} from 'cc';
 
 
 export class PopupPropsPrompt implements PopupBase {
@@ -13,6 +13,7 @@ export class PopupPropsPrompt implements PopupBase {
     init() {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
         popup.removeAllChildren();
+        popup.scale = new Vec3(0,0,1);
         // let tooltip = popup.getChildByName(popup.getComponent(Popup).promptTooltip.name)
         // if (tooltip) {
         //
@@ -53,7 +54,10 @@ export class PopupPropsPrompt implements PopupBase {
             UIManager.getInstance().closeMaskGlobal();
         }, this);
         tooltip.getChildByName('Label').getComponent(Label).string = this.text;
+        tween(popup)
+            .to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
 
+        }).start();
     }
 
 }

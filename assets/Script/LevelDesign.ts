@@ -165,4 +165,6 @@ export enum BulletEnum{
     EightDirection='八方向移动',
     RandomMove='随机移动',
     SmartMove='智能移动',
+    load_tip = '友情提示：在试运营阶段，我们将暂不储存用户数据信息。'
+    // load_tip = '友情提示：在试运营阶段，我们将暂不储存用户数据信息。'
 }
