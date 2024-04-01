@@ -1,4 +1,4 @@
-import {Node,Vec2,sys} from "cc";
+import {Node,Vec2,sys,EventTarget} from "cc";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
 
@@ -32,6 +32,8 @@ export class Global {
     }
     gameState:GameStateEnum = GameStateEnum.ready;
     public gameCanvas:Node;
+
+    public globalEvent:EventTarget;
 
     public playArea:Node;
 

@@ -252,19 +252,22 @@ export class SquareManager extends ShapeManager {
             destinationNum = destinationNum*2;
             LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
         }else {
-            for (let i = 0; i < this.WidthCount; i++) {
-                LevelDesign.getInstance().currentDestination.push({x:0,y:i})
-                LevelDesign.getInstance().currentDestination.push({x:i,y:0})
-                LevelDesign.getInstance().currentDestination.push({x:i,y:this.WidthCount -1})
-                LevelDesign.getInstance().currentDestination.push({x:this.WidthCount -1,y:i})
-            }
-            LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.reduce((pre, cur) => {
-                var exists = pre.find(item => JSON.stringify(item) === JSON.stringify(cur));
-                if (!exists) {
-                    pre.push(cur);
-                }
-                return pre;
-            }, []);
+            destinationNum = destinationNum*3;
+            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+            // 四边满
+            // for (let i = 0; i < this.WidthCount; i++) {
+            //     LevelDesign.getInstance().currentDestination.push({x:0,y:i})
+            //     LevelDesign.getInstance().currentDestination.push({x:i,y:0})
+            //     LevelDesign.getInstance().currentDestination.push({x:i,y:this.WidthCount -1})
+            //     LevelDesign.getInstance().currentDestination.push({x:this.WidthCount -1,y:i})
+            // }
+            // LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.reduce((pre, cur) => {
+            //     var exists = pre.find(item => JSON.stringify(item) === JSON.stringify(cur));
+            //     if (!exists) {
+            //         pre.push(cur);
+            //     }
+            //     return pre;
+            // }, []);
         }
     }
 }

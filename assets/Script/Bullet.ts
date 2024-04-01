@@ -5,6 +5,8 @@ const { ccclass, property } = _decorator;
 export class Bullet extends Component {
 
     public speed:number;
+
+    public hoverTime:number;
     start() {
 
     }
