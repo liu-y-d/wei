@@ -10,6 +10,7 @@ import {Popup} from "db://assets/Script/Popup";
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {PopupMenu} from "db://assets/Script/PopupMenu";
 import {PopupMainMenu} from "db://assets/Script/PopupMainMenu";
+import {gameOverReq} from "db://assets/Script/Request";
 
 export enum PopupEnum {
     /**
@@ -93,21 +94,29 @@ export class UIManager{
         //     console.log("上传成功")
         // }).catch(err=>{
         // });
-        if (state == GameStateEnum.win) {
-            Global.getInstance().playerNext();
-        }
-        this.openMaskGlobal()
-        let popup = UIManager.getInstance().popupMap.get(PopupEnum.GAME_OVER) as PopupGameOver;
-        popup.overType = state  == GameStateEnum.win;
-        popup.resume = ()=>{
-            UIManager.getInstance().gameContinue();
-        }
-        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.GAME_OVER);
+        let orgLevel = Global.getInstance().getPlayerInfo().gameLevel
+
+        let my = this
+        gameOverReq(orgLevel,state,(addStatus)=>{
+            if (addStatus) {
+                if (state == GameStateEnum.win) {
+                    Global.getInstance().playerNext();
+                }
+            }
+            my.openMaskGlobal()
+            let popup = UIManager.getInstance().popupMap.get(PopupEnum.GAME_OVER) as PopupGameOver;
+            popup.overType = state  == GameStateEnum.win;
+            popup.resume = ()=>{
+                UIManager.getInstance().gameContinue();
+            }
+            UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.GAME_OVER);
+        })
+
 
     }
 
     public backMain() {
-        director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
+        director.loadScene("Main");
     }
     public gameContinue() {
         this.closeMaskGlobal()

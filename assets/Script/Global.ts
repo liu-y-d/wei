@@ -1,4 +1,4 @@
-import {Node,Vec2,sys,EventTarget} from "cc";
+import {Node,Vec2,sys} from "cc";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
 import {AudioMgr} from "db://assets/Script/AudioMgr";
@@ -31,13 +31,33 @@ export class Global {
         return this._instance;
 
     }
+
+    public serverAddrProd:string = 'https://boolbool.online/api/'
+    public serverAddrDev:string = 'http://localhost/api/'
+
+    public getPath(path:string){
+        return this.serverAddrDev + path;
+    }
     gameState:GameStateEnum = GameStateEnum.ready;
     public gameCanvas:Node;
 
-    public globalEvent:EventTarget;
-
     public playArea:Node;
 
+    public rsa
+
+    constructor() {
+        //@ts-ignore
+        this.rsa = new JSEncrypt()
+        this.rsa.setPublicKey(`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtIDVyXvlfWqEbwkdZ9qJ
+ZoImIOqUdtu7MXdyyQzGB/nWT6DU0T+dkkFQfeo/it+rf6BloZNMXtpWHwzIgAuv
+0+xzZnp9KgII6FA2/iqNsZhbGpHHgy23dzMbxYM2AoUE1DccYStR/9yyUx32v4nK
+fwTfKEYojHDrrMGnWSQHH5qMKcvbgloUq1DmCYrSDdGnSF2LS4b6xs5K2VRXIrYt
+cgxf7hDAPpiDYd8yUI9VQ6FHiyBkifTBg8LEkUnRiez942W/vWoJ1KUG/ae35MRc
+w9gMn52O8IzUun9ROjoDA25qYqvWW7j+tUhNOOK9y7VNkzn6cyFlWtP+MxqNOg7R
+fQIDAQAB
+-----END PUBLIC KEY-----`)
+    }
     public moveLock:Node;
 
     public tileMap:TileMap;
@@ -78,6 +98,13 @@ export class Global {
             AudioMgr.inst.stop()
         }
         sys.localStorage.setItem("music", state?"1":"0");
+    }
+
+    public setToken(token:string) {
+        sys.localStorage.setItem("token", token);
+    }
+    public getToken() : string{
+        return sys.localStorage.getItem("token");
     }
     public getMusicState(): boolean {
         return sys.localStorage.getItem('music') == "1";
@@ -135,6 +162,7 @@ export class Global {
             // parse.gameLevel = 1;
             return parse
         }
+
     }
 
     public setPropsConfig(config: PropsConfig[]) {

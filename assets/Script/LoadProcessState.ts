@@ -24,19 +24,13 @@ export class LoadProcessState implements IProcessStateNode {
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
         let progressBarNode = find('Canvas/Content/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
-        find('Canvas/Content/Enter').on(Node.EventType.TOUCH_END,()=>{
-            director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
-        })
         director.preloadScene("Main", (completedCount, totalCount, item) =>{
             progressBar.prevNum = progressBar.num;
             progressBar.num = completedCount / totalCount;
             progressBar.show();
         }, function(){
             progressBar.hide();
-            find('Canvas/Content/Enter').active = true;
-            if (Global.getInstance().getMusicState()) {
-                AudioMgr.inst.play('audio/bgm',0.5)
-            }
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
             // if (sys.platform === sys.Platform.WECHAT_GAME) {
             //     ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
             // }else {
