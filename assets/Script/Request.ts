@@ -1,0 +1,49 @@
+import {GameStateEnum, Global} from "db://assets/Script/Global";
+const wx = window['wx'];
+export function getCurrentUserGameLevelReq(callback:Function) {
+    wx.request({
+        method: 'GET',
+        url: Global.getInstance().getPath('game/currentGameLevel'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success (res) {
+            callback(res.data.data.gameLevel);
+        }
+    })
+}
+
+export function gameOverReq(gameLevel, status, callback:Function) {
+    let flag;
+    if (status == GameStateEnum.win) {
+        flag = 1
+    }else {
+        flag = 2
+    }
+    // let param = EncryptUtil.aesEncrypt(JSON.stringify({gameLevel:gameLevel,status:flag}))
+    let param =  Global.getInstance().rsa.encrypt(JSON.stringify({gameLevel:gameLevel,status:flag}))
+
+    wx.request({
+        method: 'POST',
+        url: Global.getInstance().getPath('game/gameOver'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        data: {
+            param: base64ReplaceSpecialChar(param)
+        },
+        success (res) {
+
+            callback(res.data.data.status);
+        }
+    })
+}
+function base64ReplaceSpecialChar(str:string):string{
+    let regex = /\+/g;
+    let regex1 = /\//g;
+    let globalReplacedStr = str.replace(regex, "-");
+    return globalReplacedStr.replace(regex1,"_")
+
+}

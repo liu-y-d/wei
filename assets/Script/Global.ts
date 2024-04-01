@@ -30,11 +30,32 @@ export class Global {
         return this._instance;
 
     }
+
+    public serverAddrProd:string = 'https://boolbool.online/api/'
+    public serverAddrDev:string = 'http://localhost/api/'
+
+    public getPath(path:string){
+        return this.serverAddrDev + path;
+    }
     gameState:GameStateEnum = GameStateEnum.ready;
     public gameCanvas:Node;
-
     public playArea:Node;
 
+    public rsa
+
+    constructor() {
+        //@ts-ignore
+        this.rsa = new JSEncrypt()
+        this.rsa.setPublicKey(`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtIDVyXvlfWqEbwkdZ9qJ
+ZoImIOqUdtu7MXdyyQzGB/nWT6DU0T+dkkFQfeo/it+rf6BloZNMXtpWHwzIgAuv
+0+xzZnp9KgII6FA2/iqNsZhbGpHHgy23dzMbxYM2AoUE1DccYStR/9yyUx32v4nK
+fwTfKEYojHDrrMGnWSQHH5qMKcvbgloUq1DmCYrSDdGnSF2LS4b6xs5K2VRXIrYt
+cgxf7hDAPpiDYd8yUI9VQ6FHiyBkifTBg8LEkUnRiez942W/vWoJ1KUG/ae35MRc
+w9gMn52O8IzUun9ROjoDA25qYqvWW7j+tUhNOOK9y7VNkzn6cyFlWtP+MxqNOg7R
+fQIDAQAB
+-----END PUBLIC KEY-----`)
+    }
     public moveLock:Node;
 
     public tileMap:TileMap;
@@ -70,6 +91,13 @@ export class Global {
 
     public setMusicState(state:boolean) {
         sys.localStorage.setItem("music", state?"1":"0");
+    }
+
+    public setToken(token:string) {
+        sys.localStorage.setItem("token", token);
+    }
+    public getToken() : string{
+        return sys.localStorage.getItem("token");
     }
     public getMusicState(): boolean {
         return sys.localStorage.getItem('music') == "1";
@@ -120,9 +148,13 @@ export class Global {
         sys.localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
     }
     public getPlayerInfo(): PlayerInfo {
-        let parse = JSON.parse(sys.localStorage.getItem('playerInfo'));
-        // parse.gameLevel = 1;
-        return parse
+        let storage = sys.localStorage.getItem('playerInfo');
+        if (storage) {
+            let parse = JSON.parse(storage);
+            // parse.gameLevel = 1;
+            return parse
+        }
+
     }
 
     public setPropsConfig(config: PropsConfig[]) {
@@ -162,8 +194,8 @@ export class Global {
 
     propsConfigInit() {
         let allPropsConfig: PropsConfig[]= [
-            {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: false},
-            {propsId:GamePropsEnum.BACK, showTip: false},
+            {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: true},
+            {propsId:GamePropsEnum.BACK, showTip: true},
             {propsId:GamePropsEnum.FORECAST, showTip: true},
             {propsId:GamePropsEnum.FREEZE, showTip: true},
         ];

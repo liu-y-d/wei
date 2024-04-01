@@ -4,7 +4,14 @@ import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import CommonProgressBar from "db://assets/Script/CommonProgressBar";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
+import {Global} from "db://assets/Script/Global";
 
+var secretkey= '-----BEGIN PUBLIC KEY-----\n' +
+    'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDbOYcY8HbDaNM9ooYXoc9s+R5o\n' +
+    'R05ZL1BsVKadQBgOVH/kj7PQuD+ABEFVgB6rJNi287fRuZeZR+MCoG72H+AYsAhR\n' +
+    'sEaB5SuI7gDEstXuTyjhx5bz0wUujbDK4VMgRfPO6MQo+A0c95OadDEvEQDG3KBQ\n' +
+    'wLXapv+ZfsjG7NgdawIDAQAB\n' +
+    '-----END PUBLIC KEY-----'; // 加密密钥
 export class LoadProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.load;
     onInit () {
@@ -22,20 +29,13 @@ export class LoadProcessState implements IProcessStateNode {
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
         let progressBarNode = find('Canvas/Content/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
-        find('Canvas/Content/Enter').on(Node.EventType.TOUCH_END,()=>{
-            director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
-        })
         director.preloadScene("Main", (completedCount, totalCount, item) =>{
             progressBar.prevNum = progressBar.num;
             progressBar.num = completedCount / totalCount;
             progressBar.show();
         }, function(){
             progressBar.hide();
-            find('Canvas/Content/Enter').active = true;
-            // if (sys.platform === sys.Platform.WECHAT_GAME) {
-            //     ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
-            // }else {
-            // }
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
         })
     }
     onExit() {

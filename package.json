@@ -3,5 +3,11 @@
   "uuid": "b6ea9adc-aeae-49ac-8fa2-147aa5c7a72d",
   "creator": {
     "version": "3.8.2"
+  },
+  "dependencies": {
+    "crypto-es": "^2.1.0",
+    "encryptjs": "^2.0.0",
+    "jsencrypt": "^3.3.2",
+    "wxmp-rsa": "^2.1.0"
   }
 }
