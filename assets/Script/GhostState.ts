@@ -47,7 +47,7 @@ export class GhostState implements IProcessStateNode {
 
         freezeNum.active = false;
         let color = new Color();
-        this.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#F55F5F")
+        this.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#FFFFFF")
         this.ghostNode.getComponent(Animation).play();
 
 
@@ -320,7 +320,7 @@ export class GhostState implements IProcessStateNode {
         if (Global.getInstance().ghostFreezeNum <= 0) {
             freezeNum.active = false;
             let color = new Color();
-            target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#F55F5F")
+            target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#FFFFFF")
             target.ghostNode.getComponent(Animation).play();
 
         }

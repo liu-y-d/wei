@@ -120,9 +120,12 @@ export class Global {
         sys.localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
     }
     public getPlayerInfo(): PlayerInfo {
-        let parse = JSON.parse(sys.localStorage.getItem('playerInfo'));
-        // parse.gameLevel = 1;
-        return parse
+        let storage = sys.localStorage.getItem('playerInfo');
+        if (storage) {
+            let parse = JSON.parse(storage);
+            // parse.gameLevel = 1;
+            return parse
+        }
     }
 
     public setPropsConfig(config: PropsConfig[]) {
@@ -162,8 +165,8 @@ export class Global {
 
     propsConfigInit() {
         let allPropsConfig: PropsConfig[]= [
-            {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: false},
-            {propsId:GamePropsEnum.BACK, showTip: false},
+            {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: true},
+            {propsId:GamePropsEnum.BACK, showTip: true},
             {propsId:GamePropsEnum.FORECAST, showTip: true},
             {propsId:GamePropsEnum.FREEZE, showTip: true},
         ];

@@ -64,7 +64,7 @@ export class GameProcessState implements IProcessStateNode {
         if (!info) {
             info = {
                 playerId:'1',
-                nickName:'云达',
+                nickName:'玩家',
                 gameLevel:1,
                 avatarUrl:null
             }
