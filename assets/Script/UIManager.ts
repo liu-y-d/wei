@@ -9,6 +9,7 @@ import {PopupPropsPrompt} from "db://assets/Script/PopupPropsPrompt";
 import {Popup} from "db://assets/Script/Popup";
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {PopupMenu} from "db://assets/Script/PopupMenu";
+import {PopupMainMenu} from "db://assets/Script/PopupMainMenu";
 
 export enum PopupEnum {
     /**
@@ -22,7 +23,8 @@ export enum PopupEnum {
     /**
      * 菜单
      */
-    MENU
+    MENU,
+    MAIN_MENU
 }
 export class UIManager{
     private static _instance: UIManager;
@@ -40,9 +42,11 @@ export class UIManager{
             let popupGameOver = new PopupGameOver();
             let propsPrompt = new PopupPropsPrompt();
             let popupMenu = new PopupMenu();
+            let popupMainMenu = new PopupMainMenu();
             this.popupMap.set(popupGameOver.type,popupGameOver);
             this.popupMap.set(propsPrompt.type,propsPrompt);
             this.popupMap.set(popupMenu.type,popupMenu);
+            this.popupMap.set(popupMainMenu.type,popupMainMenu);
         }
 
     }
@@ -124,6 +128,10 @@ export class UIManager{
         this.openMaskGlobal();
         UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.MENU);
     }
+    public mainMenu(){
+        this.openMaskGlobal();
+        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.MAIN_MENU);
+    }
 
     public adapterScale(node:Node){
         let srcScaleForShowAll = Math.min(screen.windowSize.width / node.getComponent(UITransform).contentSize.width, screen.windowSize.height / node.getComponent(UITransform).contentSize.height);
@@ -133,7 +141,7 @@ export class UIManager{
         // 2. 基于第一步的数据，再做缩放适配
         node.scale = new Vec3(Math.max(screen.windowSize.width  / realWidth, screen.windowSize.height  / realHeight),Math.max(screen.windowSize.width  / realWidth, screen.windowSize.height  / realHeight),0);
     }
-    
+
     public adapterContentSize(node:Node) {
         let srcScaleForShowAll = Math.min(screen.windowSize.width / node.getComponent(UITransform).contentSize.width, screen.windowSize.height / node.getComponent(UITransform).contentSize.height);
         let realWidth = node.getComponent(UITransform).contentSize.width * srcScaleForShowAll;

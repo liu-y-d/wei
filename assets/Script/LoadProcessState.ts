@@ -4,6 +4,8 @@ import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import CommonProgressBar from "db://assets/Script/CommonProgressBar";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
+import {AudioMgr} from "db://assets/Script/AudioMgr";
+import {Global} from "db://assets/Script/Global";
 
 export class LoadProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.load;
@@ -32,6 +34,9 @@ export class LoadProcessState implements IProcessStateNode {
         }, function(){
             progressBar.hide();
             find('Canvas/Content/Enter').active = true;
+            if (Global.getInstance().getMusicState()) {
+                AudioMgr.inst.play('audio/bgm',0.5)
+            }
             // if (sys.platform === sys.Platform.WECHAT_GAME) {
             //     ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
             // }else {

@@ -102,10 +102,9 @@ export class HexagonManager extends ShapeManager {
                 || tile.hasObstacle) {
                 continue;
             }
-
-            let movableDirection = Global.getInstance().panelInfo.getChildByName("MovableDirection");
-            let emitPosition = movableDirection.getComponent(UITransform).convertToWorldSpaceAR(movableDirection.getPosition());
-            emitPosition.x = emitPosition.x - movableDirection.getPosition().x;
+            let detail = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName("DetailPanel").getChildByName("Detail")
+            let emitPosition = detail.getComponent(UITransform).convertToWorldSpaceAR(detail.getPosition());
+            emitPosition.y = emitPosition.y - detail.getPosition().y-detail.getComponent(UITransform).height/2;
             let emit = instantiate(prefabCtl.obstacleEmit);
             playArea.addChild(emit);
 

@@ -9,6 +9,7 @@ import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {GhostMessage} from "db://assets/Script/GhostState";
+import {AudioMgr} from "db://assets/Script/AudioMgr";
 
 export class PropsBack implements BaseProps {
     description: string = "返回上一步";
@@ -95,6 +96,9 @@ export class PropsBack implements BaseProps {
                 Global.getInstance().currentGhostVec2 = LevelDesign.getInstance().getShapeManager().center;
                 // Global.getInstance().ghostMoving = true;
                 ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost,GhostMessage.back)
+            }
+            if (Global.getInstance().getSoundEffectState()) {
+                AudioMgr.inst.playOneShot('audio/swoosh')
             }
             let num = LevelDesign.getInstance().propsUsableConfig.get(GamePropsEnum.BACK);
             num--;

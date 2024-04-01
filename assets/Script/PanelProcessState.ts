@@ -23,7 +23,7 @@ export class PanelProcessState implements IProcessStateNode {
         // if (!Global.getInstance().panelInfo) {
             Global.getInstance().panelInfo = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName("PanelInfo");
         // }
-        this.drawMovableDirection();
+        // this.drawMovableDirection();
 
         this.levelInfoInit();
     }

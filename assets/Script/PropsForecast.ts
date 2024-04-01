@@ -5,6 +5,7 @@ import {UIManager} from "db://assets/Script/UIManager";
 import {Global, PropsConfig} from "db://assets/Script/Global";
 import {Draw} from "db://assets/Script/Draw";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
+import {AudioMgr} from "db://assets/Script/AudioMgr";
 
 export class PropsForecast implements BaseProps {
     description: string = "预示对手即将前往的目标点";
@@ -63,6 +64,9 @@ export class PropsForecast implements BaseProps {
             }
             Global.getInstance().setPropsConfigSingle(config);
 
+        }
+        if (Global.getInstance().getSoundEffectState()) {
+            AudioMgr.inst.playOneShot('audio/swoosh')
         }
         UIManager.getInstance().closeMaskGlobal();
         let position = LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.FORECAST).target.getPosition();

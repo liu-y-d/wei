@@ -17,11 +17,8 @@ export class Block {
         this.isWall = isWall;
         this.distance = Infinity;
         this.parent = parent;
-        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
-            this.isDestination = this.x <= 0 || this.x >= this.parent.w - 1 || this.y <= 0 || this.y >= this.parent.h - 1;
-        }else {
-            this.isDestination = LevelDesign.getInstance().currentDestination.some(d=>d.x == i && d.y == j);
-        }
+        this.isDestination = LevelDesign.getInstance().currentDestination.some(d=>d.x == i && d.y == j);
+
     }
 
     private _routesCount: number;

@@ -1,5 +1,5 @@
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
-import {Node, Toggle,tween} from 'cc';
+import {Node, Toggle,tween,Animation} from 'cc';
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
 import {Global, PropsConfig} from "db://assets/Script/Global";
@@ -7,6 +7,7 @@ import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {GhostMessage} from "db://assets/Script/GhostState";
+import {AudioMgr} from "db://assets/Script/AudioMgr";
 
 export class PropsObstacleReset implements BaseProps {
     description: string = "将所有障碍物随机分布，只在开局时可用";
@@ -64,8 +65,11 @@ export class PropsObstacleReset implements BaseProps {
             Global.getInstance().setPropsConfigSingle(config);
 
         }
+        if (Global.getInstance().getSoundEffectState()) {
+            AudioMgr.inst.playOneShot('audio/swoosh')
+        }
         UIManager.getInstance().closeMaskGlobal();
-
+        Global.getInstance().gameCanvas.getChildByName("Content").getChildByName("DetailPanel").getComponent(Animation).play();
         LevelDesign.getInstance().getShapeManager().createDefaultObstacle();
         let num = LevelDesign.getInstance().propsUsableConfig.get(GamePropsEnum.OBSTACLE_RESET);
         num--;

@@ -8,6 +8,7 @@ import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachine
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {GhostMessage} from "db://assets/Script/GhostState";
 import {PrefabController} from "db://assets/Script/PrefabController";
+import {AudioMgr} from "db://assets/Script/AudioMgr";
 
 export class PropsFreeze implements BaseProps {
     description: string = "当前回合中，限制对手移动";
@@ -77,6 +78,9 @@ export class PropsFreeze implements BaseProps {
         playArea.addChild(emit);
         emit.setPosition(startPosition)
 
+        if (Global.getInstance().getSoundEffectState()) {
+            AudioMgr.inst.playOneShot('audio/freeze')
+        }
         tween(emit).to(0.5,{position:endPosition}).call(()=>{
             emit.destroy();
             tween(ghost)

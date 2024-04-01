@@ -1,6 +1,7 @@
 import {Node,Vec2,sys,EventTarget} from "cc";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
+import {AudioMgr} from "db://assets/Script/AudioMgr";
 
 export type Coord= {x:number,y:number}
 export type resume = (instance: BaseProps)=>void
@@ -71,6 +72,11 @@ export class Global {
     public shake:boolean;
 
     public setMusicState(state:boolean) {
+        if (state) {
+            AudioMgr.inst.play('audio/bgm',0.5)
+        }else {
+            AudioMgr.inst.stop()
+        }
         sys.localStorage.setItem("music", state?"1":"0");
     }
     public getMusicState(): boolean {
@@ -83,6 +89,7 @@ export class Global {
         return sys.localStorage.getItem('soundEffect') == "1";
     }
     public setShakeState(state:boolean) {
+
         sys.localStorage.setItem("shake", state?"1":"0");
     }
     public getShakeState(): boolean {
