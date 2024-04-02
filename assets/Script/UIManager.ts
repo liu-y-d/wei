@@ -115,10 +115,11 @@ export class UIManager{
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game);
     }
 
-    public showPropsTip(tip:string,resume:Function){
+    public showPropsTip(title:string,tip:string,resume:Function){
         this.openMaskGlobal();
         let popup = UIManager.getInstance().popupMap.get(PopupEnum.PROPS_PROMPT) as PopupPropsPrompt;
         popup.text = tip;
+        popup.title = title;
         popup.resume = resume;
         UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.PROPS_PROMPT);
 

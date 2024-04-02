@@ -313,8 +313,12 @@
     "__prefab": {
       "__id__": 14
     },
-    "gameOverTooltip": {
-      "__uuid__": "6e46c35f-78ed-425a-92f8-b871cca22587",
+    "gameOverWinTooltip": {
+      "__uuid__": "8d9b8389-d7d8-4e19-bbf8-873239a93279",
+      "__expectedType__": "cc.Prefab"
+    },
+    "gameOverLoseTooltip": {
+      "__uuid__": "744d021d-bb45-4912-a416-ff4c854d078c",
       "__expectedType__": "cc.Prefab"
     },
     "promptTooltip": {

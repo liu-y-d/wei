@@ -32,7 +32,7 @@ export class PropsForecast implements BaseProps {
         if (num > 0 && !Global.getInstance().playArea.getChildByName("Direct").getPosition().equals(new Vec3(point1.x, point1.y, 0))) {
             let propsConfigById = Global.getInstance().getPropsConfigById(this.id);
             if (propsConfigById.showTip) {
-                UIManager.getInstance().showPropsTip(this.description, this.resume);
+                UIManager.getInstance().showPropsTip(this.name,this.description, this.resume);
             } else {
                 this.resume()
             }

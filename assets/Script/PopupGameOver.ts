@@ -13,11 +13,21 @@ export class PopupGameOver implements PopupBase {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
         popup.removeAllChildren();
         popup.scale = new Vec3(0,0,1);
-        let tooltip = popup.getChildByName(popup.getComponent(Popup).gameOverTooltip.name)
+        let tooltip;
+        if (this.overType) {
+            tooltip = popup.getChildByName(popup.getComponent(Popup).gameOverWinTooltip.name)
+        }else {
+            tooltip = popup.getChildByName(popup.getComponent(Popup).gameOverLoseTooltip.name)
+        }
 
         if (!tooltip) {
             // 实例化预制体
-            tooltip = instantiate(UIManager.getInstance().maskGlobal.getChildByName("Popup").getComponent(Popup).gameOverTooltip);
+
+            if (this.overType) {
+                tooltip = instantiate(UIManager.getInstance().maskGlobal.getChildByName("Popup").getComponent(Popup).gameOverWinTooltip);
+            }else {
+                tooltip = instantiate(UIManager.getInstance().maskGlobal.getChildByName("Popup").getComponent(Popup).gameOverLoseTooltip);
+            }
 
 
             let continueButton = tooltip.getChildByName('TooltipLayout').getChildByName('ButtonGroup').getChildByName('Continue');
@@ -41,10 +51,10 @@ export class PopupGameOver implements PopupBase {
             // });
         }
         if (this.overType) {
-            tooltip.getChildByName('TooltipLayout').getChildByName('Label').getComponent(Label).string = '胜利';
+            // tooltip.getChildByName('TooltipLayout').getChildByName('Label').getComponent(Label).string = '胜利';
             Global.getInstance().gameState = GameStateEnum.win;
         } else {
-            tooltip.getChildByName('TooltipLayout').getChildByName('Label').getComponent(Label).string = '失败';
+            // tooltip.getChildByName('TooltipLayout').getChildByName('Label').getComponent(Label).string = '失败';
             Global.getInstance().gameState = GameStateEnum.lose;
         }
         if (LevelDesign.getInstance().showGhostDirection) {

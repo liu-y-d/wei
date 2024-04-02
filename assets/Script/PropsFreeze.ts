@@ -32,7 +32,7 @@ export class PropsFreeze implements BaseProps {
         if (num > 0) {
             let propsConfigById = Global.getInstance().getPropsConfigById(this.id);
             if (propsConfigById.showTip) {
-                UIManager.getInstance().showPropsTip(this.description, this.resume);
+                UIManager.getInstance().showPropsTip(this.name,this.description, this.resume);
             } else {
                 this.resume()
             }

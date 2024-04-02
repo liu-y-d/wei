@@ -35,7 +35,7 @@ export class PropsBack implements BaseProps {
         if (prevCoord > 0 && num > 0) {
             let propsConfigById = Global.getInstance().getPropsConfigById(this.id);
             if (propsConfigById.showTip) {
-                UIManager.getInstance().showPropsTip(this.description, this.resume);
+                UIManager.getInstance().showPropsTip(this.name,this.description, this.resume);
             } else {
                 this.resume()
             }

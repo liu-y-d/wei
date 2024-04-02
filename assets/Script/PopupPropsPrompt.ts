@@ -9,6 +9,7 @@ import {Node, instantiate, Prefab, resources, Label, UITransform,Toggle,tween,Ve
 export class PopupPropsPrompt implements PopupBase {
     type: number = PopupEnum.PROPS_PROMPT;
     text:string
+    title:string
     resume:Function
     init() {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
@@ -54,6 +55,7 @@ export class PopupPropsPrompt implements PopupBase {
             UIManager.getInstance().closeMaskGlobal();
         }, this);
         tooltip.getChildByName('Label').getComponent(Label).string = this.text;
+        tooltip.getChildByName('Name').getComponent(Label).string = this.title;
         tween(popup)
             .to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
 

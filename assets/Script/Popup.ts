@@ -8,7 +8,9 @@ const { ccclass, property } = _decorator;
 export class Popup extends Component {
 
     @property(Prefab)
-    public gameOverTooltip:Prefab;
+    public gameOverWinTooltip:Prefab;
+    @property(Prefab)
+    public gameOverLoseTooltip:Prefab;
 
     @property(Prefab)
     public promptTooltip:Prefab;
