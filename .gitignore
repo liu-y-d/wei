@@ -22,3 +22,5 @@ node_modules/
 # WebStorm
 #//////////////////////////
 .idea/
+.Ds_Store
+.creator
