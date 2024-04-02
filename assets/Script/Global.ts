@@ -33,7 +33,7 @@ export class Global {
     }
 
     public serverAddrProd:string = 'https://boolbool.online/api/'
-    public serverAddrDev:string = 'http://localhost/api/'
+    public serverAddrDev:string = 'http://localhost:8088/api/'
 
     public getPath(path:string){
         return this.serverAddrDev + path;
