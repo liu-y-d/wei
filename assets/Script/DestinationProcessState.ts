@@ -19,17 +19,6 @@ export class DestinationProcessState implements IProcessStateNode {
     }
 
     onInit() {
-        // for (let coord of LevelDesign.getInstance().currentDestination) {
-        //     let tile = Global.getInstance().tileMap[coord.x][coord.y];
-        //
-        //     tween(tile)
-        //         .to(0, {scale: new Vec3(2, 2, 0)})
-        //         .to(0.5, {scale: new Vec3(1, 1, 0)})
-        //         .call(() => {
-        //             tile.getComponent(Draw).drawDestination({x:coord.x,y:coord.y,shape:LevelDesign.getInstance().currentShapeEnum})
-        //         }).start()
-        //
-        // }
         Global.getInstance().moveLock.active = true;
         let currentIndex = 0;
         function haha() {

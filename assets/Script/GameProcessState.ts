@@ -239,7 +239,7 @@ export class GameProcessState implements IProcessStateNode {
             return;
         }
         let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
-        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle || (LevelDesign.getInstance().difficultyLevel != DifficultyLevelEnum.Hard && tile.isDestination)) {
+        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle) {
             // if (!this.isTweening) {
             //     this.isTweening = true;
                 let self = this;
