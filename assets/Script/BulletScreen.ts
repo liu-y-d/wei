@@ -40,7 +40,6 @@ export class BulletScreen extends Component {
         for (let i=0; i<this.bulletsArray.length; i++) {
             let compontent = this.bulletsArray[i].getComponent(Bullet);
             if (this.bulletsArray[i].getPosition().x < -this.node.getComponent(UITransform).contentSize.width/2 && compontent.hoverTime > 0) {
-                console.log(compontent.hoverTime);
                 if (!director.getScheduler().isScheduled(clear,compontent)) {
                     compontent.scheduleOnce(clear,compontent.hoverTime)
                 }

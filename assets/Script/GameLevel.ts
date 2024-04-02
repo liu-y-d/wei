@@ -185,8 +185,6 @@ export class GameLevel extends Component {
 
         shapeCenterArray.push(new Vec2(0,0));
         let hexagonCenters1 = this.getCirclePoints(0,0,110);
-
-        console.log(hexagonCenters1)
         let detail = this.node.getChildByName('Detail');
         let boolBool = detail.getChildByName('BoolBool');
         const graphics = detail.getComponent(Graphics);
