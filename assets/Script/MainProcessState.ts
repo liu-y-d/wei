@@ -1,5 +1,5 @@
 
-import {find,Node} from 'cc';
+import {find,Node,sys} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -37,6 +37,12 @@ export class MainProcessState implements IProcessStateNode {
         let gameLevel = find('Canvas').getChildByName('GameLevel');
         gameLevel.getComponent(GameLevel).drawCustomer();
         gameLevel.getChildByName("Menu").on(Node.EventType.TOUCH_END, ()=>{
+            Global.getInstance().setPlayerInfo({
+                playerId:'1',
+                nickName:'云达',
+                gameLevel:1,
+                avatarUrl:null
+            })
             UIManager.getInstance().mainMenu();
         }, this);
 

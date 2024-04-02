@@ -27,6 +27,7 @@ import {ObstacleMessage} from "db://assets/Script/ObstacleState";
 import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {PrefabController} from "db://assets/Script/PrefabController";
+import {UIManager} from "db://assets/Script/UIManager";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -53,6 +54,9 @@ export class GameProcessState implements IProcessStateNode {
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.panel);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
         ProcessStateMachineManager.getInstance().change(ProcessStateEnum.destination);
+        if (Global.getInstance().getPlayerInfo().gameLevel == 1) {
+            UIManager.getInstance().showFistGuide();
+        }
 
     }
 
