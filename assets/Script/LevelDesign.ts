@@ -105,13 +105,14 @@ export class LevelDesign{
 
 
         }else {
-            this.showGhostDirection = true;
+
             this.difficultyLevel = DifficultyLevelEnum.Easy;
             this.currentShapeEnum = ShapeEnum.FOUR;
             this.currentMovableDirection = 4;
             Global.getInstance().defaultObstacleNum = 10;
             this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
         }
+        this.showGhostDirection = Global.getInstance().getPlayerInfo().gameLevel == 1;
         this.shapeManagers.get(this.currentShapeEnum).initDestination()
         this.propsInit();
     }

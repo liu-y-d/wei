@@ -248,6 +248,7 @@ export class SquareManager extends ShapeManager {
         let destinationNum = 6;
         LevelDesign.getInstance().currentDestination = new Array<Coord>();
         if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Easy) {
+            destinationNum = destinationNum*2;
             LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
         }else if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Medium) {
             destinationNum = destinationNum*2;
