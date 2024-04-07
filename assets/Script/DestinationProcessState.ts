@@ -35,43 +35,7 @@ export class DestinationProcessState implements IProcessStateNode {
                             let detailPanel = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName('DetailPanel');
                             detailPanel.setSiblingIndex(99999999999999999999)
                             detailPanel.getComponent(Animation).play();
-                            let Detail = detailPanel.getChildByName("Detail");
-                            let DetailTip = detailPanel.getChildByName("DetailTip");
-                            DetailTip.getChildByName("Label").getComponent(Label).string = "移动方向："+LevelDesign.getInstance().currentMovableDirection
-                            // 如果你需要按照一定顺序逐个切换子节点
-                            let toggleChildSequentially = function () {
-                                if (Detail.scale.x == 1){
-                                    tween(Detail)
-                                        .to(0.2,{scale:new Vec3(0,0,1)})
-                                        .call(()=>{
-                                            tween(DetailTip)
-                                                .to(0.2,{scale:new Vec3(1,1,1)})
-                                                .start();
-                                        }).start();
-                                }else {
-                                    tween(DetailTip)
-                                        .to(0.2,{scale:new Vec3(0,0,1)})
-                                        .call(()=>{
-                                            tween(Detail)
-                                                .to(0.2,{scale:new Vec3(1,1,1)})
-                                                .start();
-                                        }).start();
-                                }
 
-                                // if (Detail.active == true) {
-                                //     Detail.scale = new Vec3(0,0,1);
-                                //     Detail.active = false;
-                                //     DetailTip.scale = new Vec3(1,1,1);
-                                //     DetailTip.active = true
-                                // }else {
-                                //     DetailTip.scale = new Vec3(0,0,1);
-                                //     DetailTip.active = false;
-                                //     Detail.scale = new Vec3(1,1,1);
-                                //     Detail.active = true
-                                // }
-                            }
-                            director.getScheduler().unschedule(toggleChildSequentially,detailPanel)
-                            director.getScheduler().schedule(toggleChildSequentially,detailPanel,10)
                             // detailPanel.schedule(function() {
                             //     // 这里的 this 指向 component
                             //     this.doSomething();

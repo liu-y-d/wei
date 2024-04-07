@@ -16,7 +16,9 @@ import {
     SpriteFrame,
     tween,
     UITransform,
-    Vec3
+    Vec3,
+    Color,
+    Component
 } from "cc";
 import {GameCtrl} from "db://assets/Script/GameCtrl";
 import {Draw} from "db://assets/Script/Draw";
@@ -58,8 +60,12 @@ export class GameProcessState implements IProcessStateNode {
                 UIManager.getInstance().showFistGuide();
             }
         })
-
-
+        let detailPanel = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName('DetailPanel');
+        let Detail = detailPanel.getChildByName("Detail");
+        let DetailTip = detailPanel.getChildByName("DetailTip");
+        DetailTip.getChildByName("Label").getComponent(Label).string = "移动方向："+LevelDesign.getInstance().currentMovableDirection
+        let color = new Color();
+        detailPanel.getChildByName("SpriteSplash").getComponent(Sprite).color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
     }
 
     onUpdate() {
@@ -254,7 +260,7 @@ export class GameProcessState implements IProcessStateNode {
             return;
         }
         let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
-        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle) {
+        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle||tile.isDestination) {
             // if (!this.isTweening) {
             //     this.isTweening = true;
             let self = this;

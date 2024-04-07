@@ -57,7 +57,7 @@ export class LevelDesign{
     public difficultySettings:LevelSettings  = {
         Easy: {
             initialObstacleCount: 10,
-            moveProbability: { random: 0.7, towardsTarget: 0.3 }, // 简单难度下随机移动较多
+            moveProbability: { random: 0.8, towardsTarget: 0.2 }, // 简单难度下随机移动较多
             directions: 4, // 简单难度下只有上下左右移动
             targetPoints:10
         },
@@ -65,13 +65,13 @@ export class LevelDesign{
             initialObstacleCount: 8,
             moveProbability: { random: 0.5, towardsTarget: 0.5 }, // 中等难度下随机和最近目标移动均衡
             directions: 6, // 中等难度6
-            targetPoints:8
+            targetPoints:9
         },
         Hard: {
             initialObstacleCount: 6,
-            moveProbability: { random: 0.3, towardsTarget: 0.7 }, // 困难难度下最近目标移动较多
+            moveProbability: { random: 0.2, towardsTarget: 0.8 }, // 困难难度下最近目标移动较多
             directions: 8, // 困难难度下支持上下左右和对角线移动
-            targetPoints:6
+            targetPoints:8
         },
     };
     /**
