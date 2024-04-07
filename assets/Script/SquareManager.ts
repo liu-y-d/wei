@@ -140,6 +140,7 @@ export class SquareManager extends ShapeManager {
         ctx.fill();
     }
     drawDestination(graphics: Graphics, shape: Shape) {
+        this.draw(graphics,shape)
         // 设置五角星的中心点、外接圆半径和内切圆半径（可选）
         const centerX = 0; // 假设中心点在(0, 0)
         const centerY = 0;
@@ -244,32 +245,32 @@ export class SquareManager extends ShapeManager {
 
 
 
-    initDestination() {
-        let destinationNum = 6;
-        LevelDesign.getInstance().currentDestination = new Array<Coord>();
-        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Easy) {
-            destinationNum = destinationNum*2;
-            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
-        }else if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Medium) {
-            destinationNum = destinationNum*2;
-            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
-        }else {
-            destinationNum = destinationNum*3;
-            LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
-            // 四边满
-            // for (let i = 0; i < this.WidthCount; i++) {
-            //     LevelDesign.getInstance().currentDestination.push({x:0,y:i})
-            //     LevelDesign.getInstance().currentDestination.push({x:i,y:0})
-            //     LevelDesign.getInstance().currentDestination.push({x:i,y:this.WidthCount -1})
-            //     LevelDesign.getInstance().currentDestination.push({x:this.WidthCount -1,y:i})
-            // }
-            // LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.reduce((pre, cur) => {
-            //     var exists = pre.find(item => JSON.stringify(item) === JSON.stringify(cur));
-            //     if (!exists) {
-            //         pre.push(cur);
-            //     }
-            //     return pre;
-            // }, []);
-        }
-    }
+    // initDestination() {
+    //     let destinationNum = 6;
+    //     LevelDesign.getInstance().currentDestination = new Array<Coord>();
+    //     if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Easy) {
+    //         destinationNum = destinationNum*2;
+    //         LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+    //     }else if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Medium) {
+    //         destinationNum = destinationNum*2;
+    //         LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+    //     }else {
+    //         destinationNum = destinationNum*3;
+    //         LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, destinationNum);
+    //         // 四边满
+    //         // for (let i = 0; i < this.WidthCount; i++) {
+    //         //     LevelDesign.getInstance().currentDestination.push({x:0,y:i})
+    //         //     LevelDesign.getInstance().currentDestination.push({x:i,y:0})
+    //         //     LevelDesign.getInstance().currentDestination.push({x:i,y:this.WidthCount -1})
+    //         //     LevelDesign.getInstance().currentDestination.push({x:this.WidthCount -1,y:i})
+    //         // }
+    //         // LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.reduce((pre, cur) => {
+    //         //     var exists = pre.find(item => JSON.stringify(item) === JSON.stringify(cur));
+    //         //     if (!exists) {
+    //         //         pre.push(cur);
+    //         //     }
+    //         //     return pre;
+    //         // }, []);
+    //     }
+    // }
 }

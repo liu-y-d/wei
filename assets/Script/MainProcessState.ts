@@ -1,5 +1,5 @@
 
-import {find,Node,sys} from 'cc';
+import {find,Node,director} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -45,6 +45,7 @@ export class MainProcessState implements IProcessStateNode {
             })
             UIManager.getInstance().mainMenu();
         }, this);
+
 
     }
     simulation() {

@@ -111,7 +111,13 @@ export class UIManager{
     }
 
     public backMain() {
-        director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
+        let node = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName('DetailPanel');
+        if (node){
+            director.getScheduler().unscheduleAllForTarget(node); // 取消targetNode的所有定时器
+        }
+        director.loadScene("Main",()=>{
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
+        });
     }
     public gameContinue() {
         this.closeMaskGlobal()
@@ -137,18 +143,43 @@ export class UIManager{
         let detailPanel = content.getChildByName("DetailPanel");
         let g1p = content.getComponent(UITransform).convertToWorldSpaceAR(detailPanel.getPosition())
         g1p.y = g1p.y-detailPanel.getComponent(UITransform).contentSize.height
+
         guides.push({pos:{x:g1p.x,y:g1p.y},tip:"这是<b>获胜目标</b>哦!"});
         if (LevelDesign.getInstance().showGhostDirection) {
             let g2p = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(Global.getInstance().predictCoord.x, Global.getInstance().predictCoord.y))
-            g2p = Global.getInstance().playArea.getComponent(UITransform).convertToWorldSpaceAR(g2p)
-            let angle = g2p.y > Global.getInstance().currentGhostVec2.y?180:0;
-            guides.push({pos:{x:g2p.x,y:g2p.y},tip:"这是布布的<b>下一步位置</b>哦!",angle:angle});
+            let g2p1 = Global.getInstance().playArea.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(g2p.x,g2p.y,0))
+            let angle = g2p1.y > Global.getInstance().currentGhostVec2.y?180:0;
+            guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:"这是布布的<b>下一步位置</b>哦!",angle:angle});
         }
 
-        let gamePros = content.getChildByName("GameProps");
-        let g3p = content.getComponent(UITransform).convertToWorldSpaceAR(gamePros.getPosition())
-        g3p.y = g3p.y + detailPanel.getComponent(UITransform).contentSize.height/2;
-        guides.push({pos:{x:g3p.x,y:g3p.y},tip:"如果觉得困难别忘了使用下方道具呦!",angle:180});
+        // let gamePros = content.getChildByName("GameProps");
+        // let g3p = content.getComponent(UITransform).convertToWorldSpaceAR(gamePros.getPosition())
+        // g3p.y = g3p.y + detailPanel.getComponent(UITransform).contentSize.height/2;
+        // guides.push({pos:{x:g3p.x,y:g3p.y},tip:"如果觉得困难别忘了使用下方道具呦!",angle:180});
+
+
+        let view = content.getChildByName("GameProps").getChildByName("ScrollView").getChildByName("view").getChildByName("content");
+
+        let rest = view.getChildByName("障碍物重置");
+        let g3p = view.getComponent(UITransform).convertToWorldSpaceAR(rest.getPosition())
+        g3p.y = g3p.y + rest.getComponent(UITransform).contentSize.height/2;
+        guides.push({pos:{x:g3p.x,y:g3p.y},tip:"初始障碍物分布不满意，可使用此道具重置",angle:180});
+
+        let back = view.getChildByName("后退");
+        let g4p = view.getComponent(UITransform).convertToWorldSpaceAR(back.getPosition())
+        g4p.y = g4p.y + back.getComponent(UITransform).contentSize.height/2;
+        guides.push({pos:{x:g4p.x,y:g4p.y},tip:"不小心走错了，可使用此道具回退",angle:180});
+
+        let freeze = view.getChildByName("冻结");
+        let g5p = view.getComponent(UITransform).convertToWorldSpaceAR(freeze.getPosition())
+        g5p.y = g5p.y + freeze.getComponent(UITransform).contentSize.height/2;
+        guides.push({pos:{x:g5p.x,y:g5p.y},tip:"可使用此道具将布布冻结",angle:180,scaleX:-1});
+        // let gamePros = content.getChildByName("GameProps");
+        // let g3p = content.getComponent(UITransform).convertToWorldSpaceAR(gamePros.getPosition())
+        // g3p.y = g3p.y + detailPanel.getComponent(UITransform).contentSize.height/2;
+        // guides.push({pos:{x:g3p.x,y:g3p.y},tip:"如果觉得困难别忘了使用下方道具呦!",angle:180});
+
+
         popup.guides = guides;
         UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.GUIDE);
 

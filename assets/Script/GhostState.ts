@@ -8,6 +8,7 @@ import {Shape} from "db://assets/Script/Shape";
 import {Ghost} from "db://assets/Script/Ghost";
 import {UIManager} from "db://assets/Script/UIManager";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
+import {GamePropsEnum} from "db://assets/Script/BaseProps";
 
 export class GhostState implements IProcessStateNode {
     readonly key = ProcessStateEnum.ghost;
@@ -58,7 +59,6 @@ export class GhostState implements IProcessStateNode {
         let nearHexagonCoords = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords();
 
         let randomIndex = LevelDesign.getInstance().ghostMoveAlgorithms(Global.getInstance().currentGhostVec2.x, Global.getInstance().currentGhostVec2.y);
-
         if (randomIndex == -1) {
             this.win();
             return;

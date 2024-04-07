@@ -1,11 +1,11 @@
 import {PopupBase} from "db://assets/Script/PopupBase";
 import {PopupEnum, UIManager} from "db://assets/Script/UIManager";
-import {Node, instantiate, Prefab, UITransform, tween, Toggle, Vec3} from 'cc';
+import {Node, instantiate, Prefab, UITransform, tween, RichText, Vec3} from 'cc';
 import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {Popup} from "db://assets/Script/Popup";
 
-export type Guide = { pos: { x: number, y: number }, tip: string, angle?: number }
+export type Guide = { pos: { x: number, y: number }, tip: string, angle?: number,scaleX?:number }
 
 export class PopupGuide implements PopupBase {
 	type: number = PopupEnum.GUIDE;
@@ -20,7 +20,7 @@ export class PopupGuide implements PopupBase {
 		if (!guide) {
 			// 实例化预制体
 			guide = instantiate(UIManager.getInstance().maskGlobal.getChildByName("Popup").getComponent(Popup).guide);
-			// guide.scale = new Vec3(0,0,1);
+			guide.scale = new Vec3(0,0,1);
 			let guideIndex = 0;
 			let self = this;
 
@@ -31,45 +31,49 @@ export class PopupGuide implements PopupBase {
 						guide.angle = guideMode.angle
 						guide.getChildByName("Text").angle = guideMode.angle
 					}
-					let pos = component.convertToNodeSpaceAR(new Vec3(guideMode.x, guideMode.y,0))
+					if (guideMode.scaleX) {
+						guide.scale = new Vec3(guideMode.scaleX,0,1)
+						guide.getChildByName("Text").scale = new Vec3(guideMode.scaleX,1,1)
+					}
+					guide.getChildByName("Text").getChildByName("RichText").getComponent(RichText).string = guideMode.tip;
+					let pos = popup.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(guideMode.pos.x, guideMode.pos.y,0))
+					function adjustPos() {
+						if (guideMode.angle) {
+							pos.y = pos.y + guide.getComponent(UITransform).height/2;
+							if (guideMode.scaleX) {
+								pos.x = pos.x - guide.getComponent(UITransform).width * 0.2;
+							}else {
+								pos.x = pos.x + guide.getComponent(UITransform).width * 0.2;
+							}
+						}else {
+							pos.y = pos.y - guide.getComponent(UITransform).height/2;
+
+							if (guideMode.scaleX) {
+								pos.x = pos.x + guide.getComponent(UITransform).width * 0.2;
+							}else {
+								pos.x = pos.x - guide.getComponent(UITransform).width * 0.2;
+							}
+						}
+
+
+					}
+					adjustPos()
 					let tween1 = tween(guide);
-					tween1.to(0, {scale: new Vec3(0, 0, 1)});
+					if (guide.scale.x != 0) {
+						tween1.to(0.2, {scale: new Vec3(0, 0, 1)});
+					}
 					if (guideMode.angle) {
 						tween1.to(0, {angle: guideMode.angle})
 					}
 					tween1
 						.to(0, {position: pos})
-						.to(0.2, {scale: new Vec3(1, 1, 1)}).call(() => {
-						console.log(123123)
+						.to(0.2, {scale: new Vec3(guideMode.scaleX?guideMode.scaleX:1, 1, 1)}).call(() => {
 						guideIndex++;
 					}).start();
 				}
 
 
 			}
-
-			// guide.getChildByName("Close").on(Node.EventType.TOUCH_END,()=>{
-			//     UIManager.getInstance().closeMaskGlobal();
-			// })
-			//
-			// let music = guide.getChildByName("ToggleGroup").getChildByName('Music')
-			// music.getComponent(Toggle).isChecked = Global.getInstance().getMusicState();
-			// music.on('toggle', (node)=>{
-			//     // 判断下次点击道具是否弹出提示
-			//     Global.getInstance().setMusicState(node.isChecked)
-			// }, music);
-			// let soundEffect = guide.getChildByName("ToggleGroup").getChildByName('SoundEffect');
-			// soundEffect.getComponent(Toggle).isChecked = Global.getInstance().getSoundEffectState();
-			// soundEffect.on('toggle', (node)=>{
-			//     // 判断下次点击道具是否弹出提示
-			//     Global.getInstance().setSoundEffectState(node.isChecked)
-			// }, soundEffect);
-			// let Shake = guide.getChildByName("ToggleGroup").getChildByName('Shake');
-			// Shake.getComponent(Toggle).isChecked = Global.getInstance().getShakeState();
-			// Shake.on('toggle', (node)=>{
-			//     // 判断下次点击道具是否弹出提示
-			//     Global.getInstance().setShakeState(node.isChecked)
-			// }, Shake);
 			// 将实例化的预制体添加到场景中
 			popup.addChild(guide)
 			// // 取消监听
@@ -81,7 +85,11 @@ export class PopupGuide implements PopupBase {
 			}, background);
 			guide.off(Node.EventType.TOUCH_END);
 			guide.on(Node.EventType.TOUCH_END, function (event) {
-				showGuide();
+				if (guideIndex >= self.guides.length) {
+					UIManager.getInstance().closeMaskGlobal();
+				}else {
+					showGuide();
+				}
 			}, guide);
 			// background.setSiblingIndex(1)
 			showGuide();

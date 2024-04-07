@@ -188,7 +188,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 260,
-      "height": 25.2
+      "height": 31.5
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -213,11 +213,11 @@
     "__prefab": {
       "__id__": 7
     },
-    "_lineHeight": 20,
+    "_lineHeight": 25,
     "_string": "阿斯顿发送到",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_fontSize": 20,
+    "_fontSize": 25,
     "_fontColor": {
       "__type__": "cc.Color",
       "r": 1,
