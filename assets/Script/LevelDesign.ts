@@ -10,6 +10,17 @@ import {PropsObstacleReset} from "db://assets/Script/PropsObstacleReset";
 import {BaseProps} from "db://assets/Script/BaseProps";
 import {PropsFreeze} from "db://assets/Script/PropsFreeze";
 
+export type LevelSettings = {
+    Easy: LevelSetting,
+    Medium: LevelSetting,
+    Hard: LevelSetting,
+}
+export type LevelSetting ={
+    initialObstacleCount: number,
+    moveProbability: { random: number, towardsTarget: number },
+    directions: number,
+    targetPoints:number
+}
 export class LevelDesign{
 
     private static _instance: LevelDesign;
@@ -39,6 +50,29 @@ export class LevelDesign{
         Easy: { bgColor: '#90EE90',fontColor: '#333333', description: '简单' },
         Medium: { bgColor: '#4682B4',fontColor: '#FFFFFF', description: '普通' },
         Hard: { bgColor: '#C0392B',fontColor: '#FFFFFF', description: '困难' },
+    };
+
+    // 定义难度循环周期
+    public difficultyCycleLength = 15; // 假设30关为一个难度循环周期
+    public difficultySettings:LevelSettings  = {
+        Easy: {
+            initialObstacleCount: 10,
+            moveProbability: { random: 0.8, towardsTarget: 0.2 }, // 简单难度下随机移动较多
+            directions: 4, // 简单难度下只有上下左右移动
+            targetPoints:10
+        },
+        Medium: {
+            initialObstacleCount: 8,
+            moveProbability: { random: 0.5, towardsTarget: 0.5 }, // 中等难度下随机和最近目标移动均衡
+            directions: 6, // 中等难度6
+            targetPoints:9
+        },
+        Hard: {
+            initialObstacleCount: 6,
+            moveProbability: { random: 0.2, towardsTarget: 0.8 }, // 困难难度下最近目标移动较多
+            directions: 8, // 困难难度下支持上下左右和对角线移动
+            targetPoints:8
+        },
     };
     /**
      * 显示鬼的行进方向
@@ -71,49 +105,94 @@ export class LevelDesign{
     /**
      * 鬼移动算法
      */
-    public ghostMoveAlgorithms:Function = randomSolver;
+    public ghostMoveAlgorithms:Function = this.ghostMoveSelect;
+
+    ghostMoveSelect (...param) {
+        let difficultyLevel = this.calculateDifficultyLevel(Global.getInstance().getPlayerInfo().gameLevel);
+        let difficultyParametersForLevel = this.getDifficultyParametersForLevel(difficultyLevel);
+        // 生成一个随机数，范围在0到1之间
+        let randomValue = Math.random();
+        if (randomValue <= difficultyParametersForLevel.moveProbability.random) {
+            // 随机移动
+            this.ghostMoveAlgorithms = randomSolver;
+        } else {
+            // 向目标点移动
+            this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
+        }
+        return this.ghostMoveAlgorithms(...param)
+
+    }
 
     init(){
         this.shapeManagers.set(ShapeEnum.SIX, new HexagonManager())
         this.shapeManagers.set(ShapeEnum.FOUR, new SquareManager())
         this.bulletArray = new Array<string>();
-
+        let difficultyLevel = this.calculateDifficultyLevel(Global.getInstance().getPlayerInfo().gameLevel);
+        let difficultyParametersForLevel = this.getDifficultyParametersForLevel(difficultyLevel);
         // this.showGhostDirection = true;
         // this.difficultyLevel = DifficultyLevelEnum.Easy;
         // this.currentShapeEnum = ShapeEnum.SIX;
         // Global.getInstance().defaultObstacleNum = 10;
         // this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
-        if (Global.getInstance().getPlayerInfo().gameLevel % 5 == 0) {
 
-
-            let random = Math.floor(Math.random() * 10);
-            this.showGhostDirection = false;
-            Global.getInstance().defaultObstacleNum = 10;
-            this.difficultyLevel = DifficultyLevelEnum.Hard;
-            if ((random &1) == 1) {
-                this.currentShapeEnum = ShapeEnum.SIX;
-                this.currentMovableDirection = 6;
-                this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
-                this.bulletArray.push(BulletEnum.SixDirection,BulletEnum.SmartMove)
-            }else {
-                this.currentShapeEnum = ShapeEnum.FOUR;
-                this.currentMovableDirection = 8;
-                this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
-                this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
-            }
-
-
-
+        this.difficultyLevel = difficultyLevel
+        if (Global.getInstance().getPlayerInfo().gameLevel == 1) {
+            this.showGhostDirection = true;
+            this.bulletArray.push(BulletEnum.ShowNext)
         }else {
-
-            this.difficultyLevel = DifficultyLevelEnum.Easy;
-            this.currentShapeEnum = ShapeEnum.FOUR;
-            this.currentMovableDirection = 4;
-            Global.getInstance().defaultObstacleNum = 10;
-            this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
+            this.showGhostDirection = false;
         }
         this.showGhostDirection = Global.getInstance().getPlayerInfo().gameLevel == 1;
-        this.shapeManagers.get(this.currentShapeEnum).initDestination()
+        if (difficultyParametersForLevel) {
+            switch (this.difficultyLevel) {
+                case DifficultyLevelEnum.Easy:
+                    this.currentShapeEnum = ShapeEnum.FOUR;
+                    this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.SmartMove,BulletEnum.RandomMove)
+                    break;
+                case DifficultyLevelEnum.Medium:
+                    this.currentShapeEnum = ShapeEnum.SIX;
+                    this.bulletArray.push(BulletEnum.SixDirection,BulletEnum.SmartMove,BulletEnum.RandomMove)
+                    break;
+                case DifficultyLevelEnum.Hard:
+                    this.currentShapeEnum = ShapeEnum.FOUR;
+                    this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove,BulletEnum.RandomMove)
+                    break;
+            }
+            Global.getInstance().defaultObstacleNum = difficultyParametersForLevel.initialObstacleCount;
+            this.currentMovableDirection = difficultyParametersForLevel.directions;
+        }
+
+
+        // if (Global.getInstance().getPlayerInfo().gameLevel % 5 == 0) {
+        //
+        //
+        //     let random = Math.floor(Math.random() * 10);
+        //     this.showGhostDirection = false;
+        //     Global.getInstance().defaultObstacleNum = 10;
+        //     this.difficultyLevel = DifficultyLevelEnum.Hard;
+        //     if ((random &1) == 1) {
+        //         this.currentShapeEnum = ShapeEnum.SIX;
+        //         this.currentMovableDirection = 6;
+        //         this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
+        //         this.bulletArray.push(BulletEnum.SixDirection,BulletEnum.SmartMove)
+        //     }else {
+        //         this.currentShapeEnum = ShapeEnum.FOUR;
+        //         this.currentMovableDirection = 8;
+        //         this.ghostMoveAlgorithms = nearestAndMoreRoutesSolver;
+        //         this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove)
+        //     }
+        //
+        //
+        //
+        // }else {
+        //
+        //     this.difficultyLevel = DifficultyLevelEnum.Easy;
+        //     this.currentShapeEnum = ShapeEnum.FOUR;
+        //     this.currentMovableDirection = 4;
+        //     Global.getInstance().defaultObstacleNum = 10;
+        //     this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.RandomMove,BulletEnum.ShowNext)
+        // }
+        this.shapeManagers.get(this.currentShapeEnum).initDestination(difficultyParametersForLevel.targetPoints)
         this.propsInit();
     }
     propsInit() {
@@ -147,6 +226,30 @@ export class LevelDesign{
     }
 
 
+
+
+    // 计算当前难度等级
+    calculateDifficultyLevel(currentLevel) {
+        const withinCycleLevel = currentLevel % this.difficultyCycleLength;
+
+        // 根据循环内关卡数决定难度等级
+        if (withinCycleLevel < this.difficultyCycleLength / 3) {
+            return DifficultyLevelEnum.Easy;
+        } else if (withinCycleLevel < 2 * this.difficultyCycleLength / 3) {
+            return DifficultyLevelEnum.Medium;
+        } else {
+            return DifficultyLevelEnum.Hard;
+        }
+    }
+
+    // 获取特定关卡的难度参数
+    getDifficultyParametersForLevel(difficultyLevel):LevelSetting {
+        const baseSetting = this.difficultySettings[difficultyLevel];
+
+        return {
+            ...baseSetting
+        };
+    }
 }
 interface DifficultyInfo {
     bgColor: string;

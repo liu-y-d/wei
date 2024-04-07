@@ -53,7 +53,11 @@ export abstract class ShapeManager {
 
 	abstract createDefaultObstacle();
 
-	abstract initDestination();
+	// abstract initDestination();
+
+    initDestination(num) {
+        LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, num);
+    }
 
 	generateRandomCoordinatesOnSides(length, n) {
         const edgePoints = new Array<Coord>();

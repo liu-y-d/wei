@@ -16,7 +16,9 @@ import {
     SpriteFrame,
     tween,
     UITransform,
-    Vec3
+    Vec3,
+    Color,
+    Component
 } from "cc";
 import {GameCtrl} from "db://assets/Script/GameCtrl";
 import {Draw} from "db://assets/Script/Draw";
@@ -27,6 +29,7 @@ import {ObstacleMessage} from "db://assets/Script/ObstacleState";
 import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {PrefabController} from "db://assets/Script/PrefabController";
+import {UIManager} from "db://assets/Script/UIManager";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -49,11 +52,20 @@ export class GameProcessState implements IProcessStateNode {
         let gameCtrl = Global.getInstance().gameCanvas.getComponent(GameCtrl);
         // LevelDesign.getInstance().init();
         this.playAreaInit(gameCtrl)
-        this.propsAreaInit(gameCtrl)
-        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.panel);
-        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
-        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.destination);
-
+        this.propsAreaInit(gameCtrl,()=>{
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.panel);
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.ghost);
+            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.destination);
+            if (Global.getInstance().getPlayerInfo().gameLevel == 1) {
+                UIManager.getInstance().showFistGuide();
+            }
+        })
+        let detailPanel = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName('DetailPanel');
+        let Detail = detailPanel.getChildByName("Detail");
+        let DetailTip = detailPanel.getChildByName("DetailTip");
+        DetailTip.getChildByName("Label").getComponent(Label).string = "移动方向："+LevelDesign.getInstance().currentMovableDirection
+        let color = new Color();
+        detailPanel.getChildByName("SpriteSplash").getComponent(Sprite).color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
     }
 
     onUpdate() {
@@ -63,10 +75,10 @@ export class GameProcessState implements IProcessStateNode {
         let info = Global.getInstance().getPlayerInfo();
         if (!info) {
             info = {
-                playerId:'1',
-                nickName:'玩家',
-                gameLevel:1,
-                avatarUrl:null
+                playerId: '1',
+                nickName: '玩家',
+                gameLevel: 1,
+                avatarUrl: null
             }
             Global.getInstance().setPlayerInfo(info)
         }
@@ -74,34 +86,36 @@ export class GameProcessState implements IProcessStateNode {
         // LevelDesign.getInstance().showGhostDirection = true;
         // LevelDesign.getInstance().init();
     }
-    propsAreaInit(gameCtrl:GameCtrl) {
+
+    propsAreaInit(gameCtrl: GameCtrl,callback:Function) {
         let gamePropsArea = Global.getInstance().gameCanvas.getChildByName('Content').getChildByName('GameProps');
         let propsContent = gamePropsArea.getChildByName('ScrollView').getChildByName('view').getChildByName('content');
         propsContent.removeAllChildren();
         let levelPropsArray = LevelDesign.getInstance().levelPropsArray;
         let propsUsableConfig = LevelDesign.getInstance().propsUsableConfig;
+
         /**
          * 初始化道具节点
          * @param spriteFrame
          * @param props
          * @param propsContent
          */
-        function propsNodeInit(spriteFrame:SpriteFrame,props,propsContent){
+        function propsNodeInit(spriteFrame: SpriteFrame, props, propsContent) {
             // 创建一个新的节点
             const iconNode = new Node("icon");
-            iconNode.layer =Layers.Enum.UI_2D;
+            iconNode.layer = Layers.Enum.UI_2D;
             // 将 Sprite 组件添加到节点上
             iconNode.addComponent(Sprite);
             let sprite = iconNode.getComponent(Sprite);
             sprite.spriteFrame = spriteFrame;
             iconNode.addComponent(Button);
             iconNode.on(Button.EventType.CLICK, props.inure, props);
-            iconNode.getComponent(UITransform).setContentSize(iconNode.getComponent(UITransform).contentSize.width - 20,iconNode.getComponent(UITransform).contentSize.height - 20,);
+            iconNode.getComponent(UITransform).setContentSize(iconNode.getComponent(UITransform).contentSize.width - 20, iconNode.getComponent(UITransform).contentSize.height - 20,);
 
 
             const newNodeParent = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).props);
             newNodeParent.name = props.name;
-            newNodeParent.layer =Layers.Enum.UI_2D;
+            newNodeParent.layer = Layers.Enum.UI_2D;
             // newNodeParent.addComponent(UITransform);
             // newNodeParent.getComponent(UITransform).setContentSize(110,110);
             // newNodeParent.addComponent(Sprite);
@@ -109,12 +123,12 @@ export class GameProcessState implements IProcessStateNode {
             // newNodeParent.addComponent(Graphics);
             // newNodeParent.addComponent(PropsNum);
             const propsNum = new Node("propsNum");
-            propsNum.layer =Layers.Enum.UI_2D;
+            propsNum.layer = Layers.Enum.UI_2D;
             propsNum.addComponent(UITransform);
             propsNum.addComponent(Graphics);
             propsNum.addComponent(PropsNum);
             const propsNumLabel = new Node("propsNumLabel");
-            propsNumLabel.layer =Layers.Enum.UI_2D;
+            propsNumLabel.layer = Layers.Enum.UI_2D;
             propsNumLabel.addComponent(Label);
             propsNum.addChild(propsNumLabel);
             newNodeParent.addChild(propsNum);
@@ -125,8 +139,10 @@ export class GameProcessState implements IProcessStateNode {
             props.target = newNodeParent;
             props.setNum(props.defaultNum);
         }
+
         let currentIndex = 0;
         let num = 0;
+
         /**
          * 动态调整道具分布
          */
@@ -135,15 +151,16 @@ export class GameProcessState implements IProcessStateNode {
             let realWidth = num * 110 + (num + 1) * 50;
             let pitch = 50;
             if (realWidth <= totalWidth) {
-                pitch +=(totalWidth - realWidth) == 0?0:(totalWidth - realWidth) / (num + 1)
+                pitch += (totalWidth - realWidth) == 0 ? 0 : (totalWidth - realWidth) / (num + 1)
                 propsContent.getComponent(Layout).paddingLeft = pitch;
                 propsContent.getComponent(Layout).paddingRight = pitch;
                 propsContent.getComponent(Layout).spacingX = pitch;
-            }else {
+            } else {
                 propsContent.getComponent(Layout).paddingLeft = pitch;
                 propsContent.getComponent(Layout).spacingX = pitch;
             }
         }
+
         /**
          * 加载道具资源
          */
@@ -151,9 +168,11 @@ export class GameProcessState implements IProcessStateNode {
             if (currentIndex >= levelPropsArray.size) {
                 console.log('所有资源已按顺序加载完毕');
                 dynamicDistributingProps(propsContent.children.length);
-                propsContent.children.forEach(n=>{
+                propsContent.children.forEach(n => {
                     n.active = true;
                 })
+                propsContent.getComponent(Layout).updateLayout()
+                callback();
                 return;
             }
 
@@ -161,33 +180,33 @@ export class GameProcessState implements IProcessStateNode {
 
             if (props && props.init()) {
                 resources.load(props.spriteFrameUrl, SpriteFrame, (err: any, spriteFrame) => {
-                    propsNodeInit(spriteFrame,props,propsContent);
+                    propsNodeInit(spriteFrame, props, propsContent);
                     currentIndex++;
                     num++;
                     loadPropsResources();
                 });
-            }else {
+            } else {
                 currentIndex++;
                 loadPropsResources();
             }
 
         }
+
         loadPropsResources();
-
-
 
 
     }
 
-    playAreaInit(gameCtrl:GameCtrl) {
+    playAreaInit(gameCtrl: GameCtrl) {
         let playArea = Global.getInstance().gameCanvas.getChildByName('Content').getChildByName('PlayArea');
-        playArea.on(Node.EventType.TOUCH_END,this.onClick,this);
+        playArea.on(Node.EventType.TOUCH_END, this.onClick, this);
 
         let moveLock = Global.getInstance().gameCanvas.getChildByName('Content').getChildByName('MoveLock');
-        moveLock.on(Node.EventType.TOUCH_START,()=>{},this);
+        moveLock.on(Node.EventType.TOUCH_START, () => {
+        }, this);
         Global.getInstance().moveLock = moveLock;
-        playArea.getChildByName('Direct').setPosition(320,1050)
-        let size: Size= playArea.getComponent(UITransform).contentSize;
+        playArea.getChildByName('Direct').setPosition(320, 1050)
+        let size: Size = playArea.getComponent(UITransform).contentSize;
         // playArea.getComponent(Graphics)
         Global.getInstance().pathInit();
         this.simulation()
@@ -203,28 +222,30 @@ export class GameProcessState implements IProcessStateNode {
             if (!Global.getInstance().tileMap[shape.x]) {
                 Global.getInstance().tileMap[shape.x] = new Array<Node>();
             }
-            Global.getInstance().tileMap[shape.x].splice(shape.y,0,tile);
+            Global.getInstance().tileMap[shape.x].splice(shape.y, 0, tile);
         }
 
     }
-    clearTile(){
+
+    clearTile() {
         let tileMap = Global.getInstance().tileMap;
-        if ( tileMap != null) {
-            Object.keys(tileMap).forEach(key=>{
-                for(let i= 0; i < tileMap[key].length; i++ ) {
-                    if(tileMap[key][i].parent) {
+        if (tileMap != null) {
+            Object.keys(tileMap).forEach(key => {
+                for (let i = 0; i < tileMap[key].length; i++) {
+                    if (tileMap[key][i].parent) {
                         tileMap[key][i].parent.removeChild(tileMap[key][i]);
                     }
                 }
             })
         }
     }
+
     // 自定义的辅助函数示例，根据实际情况修改
     isPrefabInstance(node) {
         return node._name == 'Tile'; // 或者通过预制体特有的组件来判断
     }
 
-    onClick(event :EventTouch) {
+    onClick(event: EventTouch) {
         if (Global.getInstance().defaultObstacleNum == Global.getInstance().obstacleCoords.length) {
             Global.getInstance().gameState = GameStateEnum.ing;
         }
@@ -232,32 +253,43 @@ export class GameProcessState implements IProcessStateNode {
         if (Global.getInstance().gameState != GameStateEnum.ing || Global.getInstance().ghostMoving == true) {
             return;
         }
-        let vec2= event.getUILocation();
-        let vec3 = Global.getInstance().playArea.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(vec2.x,vec2.y,0))
-        let coord = LevelDesign.getInstance().getShapeManager().getShape(vec3.x,vec3.y);
-        if (!coord || coord.x <0 || coord.y<0 || coord.x > LevelDesign.getInstance().getShapeManager().WidthCount - 1 || coord.y > LevelDesign.getInstance().getShapeManager().HeightCount - 1) {
+        let vec2 = event.getUILocation();
+        let vec3 = Global.getInstance().playArea.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(vec2.x, vec2.y, 0))
+        let coord = LevelDesign.getInstance().getShapeManager().getShape(vec3.x, vec3.y);
+        if (!coord || coord.x < 0 || coord.y < 0 || coord.x > LevelDesign.getInstance().getShapeManager().WidthCount - 1 || coord.y > LevelDesign.getInstance().getShapeManager().HeightCount - 1) {
             return;
         }
         let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
-        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle) {
+        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle||tile.isDestination) {
             // if (!this.isTweening) {
             //     this.isTweening = true;
-                let self = this;
-                let angle = 20;
-
-                tween(Global.getInstance().tileMap[coord.x][coord.y])
-                    .to(0.1,{angle: -angle})
-                    .to(0.1,{angle:angle})
-                    .to(0.1,{angle:0})
-                    .call(()=>{
-                        // self.isTweening = false;
-                    })
-                    .start();
+            let self = this;
+            let angle = 20;
+            const wx = window['wx'];
+            if (wx) {
+                wx.vibrateShort({
+                    type: 'medium'
+                })
+            }
+            tween(Global.getInstance().tileMap[coord.x][coord.y])
+                .to(0.1, {angle: -angle})
+                .to(0.1, {angle: angle})
+                .to(0.1, {angle: 0})
+                .call(() => {
+                    // self.isTweening = false;
+                })
+                .start();
             // }
             return;
         }
-        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle,ObstacleMessage.create,coord);
-        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost,GhostMessage.move)
+        const wx = window['wx'];
+        if (wx) {
+            wx.vibrateShort({
+                type: 'light'
+            })
+        }
+        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
+        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
     }
 
 }
