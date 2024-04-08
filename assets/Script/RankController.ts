@@ -9,26 +9,33 @@ export class RankController extends Component {
     @property(Node)
     private closeBtnNode: Node = null;
 
-    private static instance: RankController = null;
+    public onLoad() {
 
-    protected onLoad() {
-        RankController.instance = this;
+        window['wx'].setUserCloudStorage({
+            KVDataList: [{"key":'friendRank', "value": `{"actual_score":"${Global.getInstance().getPlayerInfo().gameLevel}"}`}]
+            // KVDataList: [{"key":'friendRank', "value": '19'}]
+        }).then(res=>{
+            /**
+             * 向开放数据域发送消息
+             */
+            window['wx'].getOpenDataContext().postMessage({
+                value: 'rankData',
+                userId: Global.getInstance().getPlayerInfo().playerId
+            });
+        }).catch(err=>{
+        });
 
         // RankController.instance.node.addChild(instantiate(find('Canvas').getComponent(PrefabController).loading));
 
         // this.closeBtnNode.on('touchend', RankController.hide, this);
-        this.closeBtnNode.on(Button.EventType.CLICK, RankController.hide, this);
-        /**
-         * 向开放数据域发送消息
-         */
-        window['wx'].getOpenDataContext().postMessage({
-            value: 'rankData',
-            userId: Global.getInstance().getPlayerInfo().playerId
-        });
+        this.closeBtnNode.on(Button.EventType.CLICK, this.hide, this);
+        this.node.getChildByName("Background").on(Node.EventType.TOUCH_START, ()=>{}, this)
+
     }
 
-    public static hide() {
-        RankController.instance.node.removeFromParent();
+    public hide() {
+        // this.node.removeFromParent();
+        this.node.active = false;
     }
 
     update () {

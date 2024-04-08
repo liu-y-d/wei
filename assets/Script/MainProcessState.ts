@@ -19,19 +19,7 @@ export class MainProcessState implements IProcessStateNode {
     }
 
     onInit() {
-        // window['wx'].getUserInteractiveStorage({
-        //     keyList :["friendRank"],
-        //     success: (res)=>{
-        //         console.log(res)
-        //     }
-        // })
-        // window['wx'].setUserCloudStorage({
-        //     KVDataList: [{"key":'friendRank', "value": '{"actual_rank":"大神2", "actual_score":"90"}'}]
-        //     // KVDataList: [{"key":'friendRank', "value": '19'}]
-        // }).then(res=>{
-        //     console.log("上传成功")
-        // }).catch(err=>{
-        // });
+
         let my = this;
         let canvas = find('Canvas');
 

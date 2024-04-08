@@ -20,6 +20,7 @@ export class LoginProcessState implements IProcessStateNode {
     onInit() {
 
 
+
         try {
             const wx = window['wx'];//避开ts语法检测
             const info = wx.getSystemInfoSync();//立即获取系统信息
@@ -32,32 +33,12 @@ export class LoginProcessState implements IProcessStateNode {
                 gameLevel: 1
             };
             let enter = find('Canvas/Content/Enter');
+            enter.active = true;
             if (sys.platform === sys.Platform.WECHAT_GAME) {
                 wx.login({
                     success(res) {
                         if (res.code) {
-                            // window.wx.getSystemInfoSync().screenHeight
-                            // window.wx.getSystemInfoSync().screenHeight
                             let code = res.code
-
-                            // wx.request({
-                            //     method: 'POST',
-                            //     url: 'http://localhost:8088/api/base/gameLogin', //仅为示例，并非真实的接口地址
-                            //     data: {
-                            //         code:code,
-                            //         // rawData: res.rawData,
-                            //         // signature:res.signature,
-                            //         // encryptedData:res.encryptedData,
-                            //         // iv:res.iv
-                            //     },
-                            //     header: {
-                            //         'content-type': 'application/json' // 默认值
-                            //     },
-                            //     success (res) {
-                            //         console.log(res.data)
-                            //     }
-                            // })
-
                             // 通过 wx.getSetting 查询用户是否已授权头像昵称信息
                             wx.getSetting({
                                 success(res) {
@@ -66,7 +47,6 @@ export class LoginProcessState implements IProcessStateNode {
                                         wx.getUserInfo({
                                             withCredentials: true,
                                             success: function (res) {
-                                                console.log(res)
                                                 playerInfo.nickName = res.userInfo.nickName;
                                                 playerInfo.avatarUrl = res.userInfo.avatarUrl;
                                                 playerInfo.gameLevel = 1;
@@ -88,8 +68,11 @@ export class LoginProcessState implements IProcessStateNode {
                                                         'content-type': 'application/json' // 默认值
                                                     },
                                                     success (res) {
+                                                        let existPlayer = Global.getInstance().getPlayerInfo();
+                                                        existPlayer.playerId = res.data.data.playerId;
+                                                        Global.getInstance().setPlayerInfo(existPlayer)
                                                         Global.getInstance().setToken(res.data.data.token)
-                                                        enter.active = true;
+
                                                         enter.off(Node.EventType.TOUCH_END)
                                                         if (Global.getInstance().getMusicState()) {
                                                             AudioMgr.inst.play('audio/bgm',0.5)
@@ -124,13 +107,12 @@ export class LoginProcessState implements IProcessStateNode {
                                         button.onTap((res) => {
                                             // 用户同意授权后回调，通过回调可获取用户头像昵称信息
                                             if (!this.flag) {
-                                                if ('errno' in res) {
+                                                if ('errno' in res || !('userInfo' in res)) {
+
                                                     console.log("用户拒绝授权！")
                                                     return;
                                                 }
                                                 this.flag = true;
-                                                // 此处可以获取到用户信息
-                                                console.log("userInfo", res)
                                                 playerInfo.nickName = res.userInfo.nickName;
                                                 playerInfo.avatarUrl = res.userInfo.avatarUrl;
                                                 playerInfo.gameLevel = 1;
@@ -154,7 +136,9 @@ export class LoginProcessState implements IProcessStateNode {
                                                     },
                                                     success (res) {
                                                         Global.getInstance().setToken(res.data.data.token)
-                                                        enter.active = true;
+                                                        let existPlayer = Global.getInstance().getPlayerInfo();
+                                                        existPlayer.playerId = res.data.data.playerId;
+                                                        Global.getInstance().setPlayerInfo(existPlayer)
                                                         enter.off(Node.EventType.TOUCH_END)
                                                         if (Global.getInstance().getMusicState()) {
                                                             AudioMgr.inst.play('audio/bgm',0.5)

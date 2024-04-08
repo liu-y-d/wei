@@ -90,14 +90,7 @@ export class UIManager{
     }
 
     public gameOver(state:GameStateEnum) {
-        // 目前单机
-        // window['wx'].setUserCloudStorage({
-        //     KVDataList: [{"key":'friendRank', "value": `{"actual_rank":"大神1", "actual_score":"${LevelDesign.getInstance().currentLevel}"}`}]
-        //     // KVDataList: [{"key":'friendRank', "value": '19'}]
-        // }).then(res=>{
-        //     console.log("上传成功")
-        // }).catch(err=>{
-        // });
+
         let orgLevel = Global.getInstance().getPlayerInfo().gameLevel
 
         let my = this
@@ -105,7 +98,16 @@ export class UIManager{
             if (addStatus) {
                 if (state == GameStateEnum.win) {
                     Global.getInstance().playerNext();
+                    // 目前单机
+                    window['wx'].setUserCloudStorage({
+                        KVDataList: [{"key":'friendRank', "value": `{"actual_rank":"大神1", "actual_score":"${orgLevel}"}`}]
+                        // KVDataList: [{"key":'friendRank', "value": '19'}]
+                    }).then(res=>{
+                        console.log("上传成功")
+                    }).catch(err=>{
+                    });
                 }
+
             }
             my.openMaskGlobal()
             let popup = UIManager.getInstance().popupMap.get(PopupEnum.GAME_OVER) as PopupGameOver;
