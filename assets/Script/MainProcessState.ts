@@ -30,13 +30,15 @@ export class MainProcessState implements IProcessStateNode {
             Global.getInstance().propsConfigInit();
             canvas.getChildByName('BulletScreen').active = true;
             canvas.getChildByName('GameLevel').getComponent(GameLevel).drawCustomer();
-            canvas.getChildByName('GameLevel').getChildByName("Menu").on(Node.EventType.TOUCH_END, ()=>{
+            canvas.getChildByName('Top').getChildByName("Menu").on(Node.EventType.TOUCH_END, ()=>{
                 UIManager.getInstance().mainMenu();
             }, this);
         }
         canvas.getChildByName('BulletScreen').active = false;
 
-        getCurrentUserGameLevelReq(init);
+        // 本地调试
+        init(5)
+        // getCurrentUserGameLevelReq(init);
 
 
 

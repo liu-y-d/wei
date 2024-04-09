@@ -53,7 +53,7 @@ export class LevelDesign{
     };
 
     // 定义难度循环周期
-    public difficultyCycleLength = 15; // 假设30关为一个难度循环周期
+    public difficultyCycleLength = 15;
     public difficultySettings:LevelSettings  = {
         Easy: {
             initialObstacleCount: 10,

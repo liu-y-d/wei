@@ -1,4 +1,4 @@
-import { _decorator, Component, Node,Button,find,instantiate,director } from 'cc';
+import { _decorator, Component, Node,Button,find,instantiate,director,tween,Vec3 } from 'cc';
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
@@ -10,13 +10,22 @@ export class ButtonsController extends Component {
 
     @property(Node)
     private RankBtn:Node = null;
+    @property(Node)
+    private FriendRankBtn:Node = null;
+    @property(Node)
+    private WorldRankBtn:Node = null;
 
     @property(Node)
-    private CreateCustomBtn: Node = null;
+    private BeginBtn: Node = null;
+
+    private isFriendRankProcessingClick = false;
+    private isRankProcessingClick = false;
 
     onLoad() {
+        this.FriendRankBtn.on(Button.EventType.CLICK, this.friendRankOnClick, this);
+        this.WorldRankBtn.on(Button.EventType.CLICK, this.worldRankOnClick, this);
         this.RankBtn.on(Button.EventType.CLICK, this.rankOnClick, this);
-        this.CreateCustomBtn.on(Button.EventType.CLICK, this.begin, this);
+        this.BeginBtn.on(Button.EventType.CLICK, this.begin, this);
     }
     start() {
 
@@ -25,8 +34,36 @@ export class ButtonsController extends Component {
     update(deltaTime: number) {
         
     }
-    rankOnClick() {
+    rankOnClick(){
+        if (this.isRankProcessingClick) return;
+        this.isRankProcessingClick = true;
+        let rankPanel = this.RankBtn.parent.getChildByName("RankPanel");
+        if (rankPanel.scale.x == 0) {
+            tween(rankPanel)
+                .to(0.2,{scale: new Vec3(1.2,1,1)})
+                .to(0.1,{scale: new Vec3(1,1,1)})
+                .call(()=>{
+                    this.FriendRankBtn.scale = new Vec3(1,1,1);
+                    this.WorldRankBtn.scale = new Vec3(1,1,1);
+                })
+                .start();
+        }else {
+            tween(rankPanel)
+                .to(0.2,{scale: new Vec3(0,1,1)})
+                .call(()=>{
+                    this.FriendRankBtn.scale = new Vec3(0,0,1);
+                    this.WorldRankBtn.scale = new Vec3(0,0,1);
 
+                })
+                .start();
+        }
+        setTimeout(() => {
+            this.isRankProcessingClick = false;
+        }, 500); //
+    }
+    friendRankOnClick() {
+        if (this.isFriendRankProcessingClick) return;
+        this.isFriendRankProcessingClick = true;
         window['wx'].getUserInteractiveStorage({
             keyList :["friendRank"],
             success: (res)=>{
@@ -59,8 +96,13 @@ export class ButtonsController extends Component {
                 });
             }
         })
-
-
+        setTimeout(() => {
+            this.isFriendRankProcessingClick = false;
+        }, 500); // Adjust the delay as needed
+    }
+    worldRankOnClick(){
+        let canvas = find('Canvas');
+        canvas.addChild(instantiate(canvas.getComponent(PrefabController).WorldRankPrefab));
 
 
     }

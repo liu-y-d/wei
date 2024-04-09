@@ -1,4 +1,4 @@
-import {_decorator, Component, Graphics, Label,Vec2,Sprite,Color,Node,find,UITransform,tween,Vec3} from 'cc';
+import {_decorator, Component, Graphics, Label,Vec2,Sprite,Color,Node,find,Layers,tween,Vec3} from 'cc';
 import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {Global} from "db://assets/Script/Global";
 import {ShapeEnum} from "db://assets/Script/ShapeManager";
@@ -18,13 +18,13 @@ export class GameLevel extends Component {
         switch (LevelDesign.getInstance().getShapeManager().shapeEnum) {
             case ShapeEnum.FOUR:
                 if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
-                    this.initShapeFourEightDirection();
+                    this.initShapeFourEightDirectionNode();
                 }else {
-                    this.initShapeFour();
+                    this.initShapeFourNode();
                 }
                 break;
             case ShapeEnum.SIX:
-                this.initShapeSix();
+                this.initShapeSixNode();
                 break;
         }
     }
@@ -82,6 +82,94 @@ export class GameLevel extends Component {
             .to(0,{position:new Vec3(0,-edgeLength -10,0)})
             .to(0.5,{scale:new Vec3(1,1,1)})
             .to(0.5,{scale:new Vec3(0,0,1)}).union().repeatForever().start();
+    }
+
+    initShapeFourNode() {
+        let detail = this.node.getChildByName('Detail');
+        const graphics = detail.getComponent(Graphics);
+        graphics.clear();
+        const edgeLength = 100;
+        const offset = 10; // Additional offset
+        const nodesData = [
+            { name: "centerNode", position: new Vec3(0, 0, 0) },
+            { name: "rightNode", position: new Vec3(edgeLength + offset, 0, 0) },
+            { name: "leftNode", position: new Vec3(-edgeLength - offset, 0, 0) },
+            { name: "topNode", position: new Vec3(0, edgeLength + offset, 0) },
+            { name: "bottomNode", position: new Vec3(0, -edgeLength - offset, 0) },
+            // { name: "rightTopNode", position: new Vec3(edgeLength + offset, edgeLength + offset, 0) },
+            // { name: "rightBottomNode", position: new Vec3(edgeLength + offset, -edgeLength - offset, 0) },
+            // { name: "leftTopNode", position: new Vec3(-edgeLength - offset, edgeLength + offset, 0) },
+            // { name: "leftBottomNode", position: new Vec3(-edgeLength - offset, -edgeLength - offset, 0) },
+        ];
+
+        const createdNodes = nodesData.map((data) => {
+            const node = new Node(data.name);
+            node.layer = Layers.Enum.UI_2D;
+            node.setPosition(data.position);
+            node.addComponent(Graphics);
+            let graphics = node.getComponent(Graphics);
+            graphics.roundRect(0 - edgeLength/2, 0- edgeLength/2, edgeLength, edgeLength,10);
+            // 结束当前路径并填充或描边
+            graphics.fill();
+            // 或者如果你想只描边不填充
+            graphics.stroke();
+            detail.addChild(node);
+            return node;
+        });
+
+        const nodesMap = {};
+        createdNodes.forEach((node, index) => {
+            nodesMap[nodesData[index].name] = node;
+        });
+        let boolBool = detail.getChildByName('BoolBool');
+        boolBool.setSiblingIndex(999)
+        boolBool.setPosition(nodesMap["rightNode"].getPosition())
+        let duration = 0.5;
+
+        const targetNodes = [
+            nodesMap['rightNode'],
+            // nodesMap['rightTopNode'],
+            nodesMap['topNode'],
+            // nodesMap['leftTopNode'],
+            nodesMap['leftNode'],
+            // nodesMap['leftBottomNode'],
+            nodesMap['bottomNode'],
+            // nodesMap['rightBottomNode']
+        ];
+
+        function animateNodeScale(node: Node, onComplete?: () => void): void {
+            tween(node)
+                .to(duration, { scale: new Vec3(1.3, 1.3, 1) })
+                .to(duration, { scale: new Vec3(1, 1, 1) })
+                .call(onComplete)
+                .start();
+        }
+
+        function animateNodeMovementAndScale(
+            currentTargetIndex: number,
+            onComplete?: () => void
+        ): void {
+            const boolBool = detail.getChildByName('BoolBool');
+            const targetNode = targetNodes[currentTargetIndex];
+
+            if (!targetNode) {
+                if (onComplete) {
+                    onComplete();
+                }
+                return;
+            }
+
+            boolBool.setPosition(targetNode.getPosition());
+
+            animateNodeScale(targetNode, () => {
+                animateNodeMovementAndScale(currentTargetIndex + 1 > targetNodes.length -1?0:currentTargetIndex + 1, onComplete);
+            });
+        }
+
+        // 启动整个动画序列
+        animateNodeMovementAndScale(0, () => {
+            animateNodeScale(nodesMap['rightNode'])
+        });
     }
     initShapeFourEightDirection() {
         let detail = this.node.getChildByName('Detail');
@@ -177,6 +265,94 @@ export class GameLevel extends Component {
             .to(0.5,{scale:new Vec3(0,0,1)})
             .union().repeatForever().start();
     }
+
+    initShapeFourEightDirectionNode() {
+        let detail = this.node.getChildByName('Detail');
+        const graphics = detail.getComponent(Graphics);
+        graphics.clear();
+        const edgeLength = 100;
+        const offset = 10; // Additional offset
+        const nodesData = [
+            { name: "centerNode", position: new Vec3(0, 0, 0) },
+            { name: "rightNode", position: new Vec3(edgeLength + offset, 0, 0) },
+            { name: "leftNode", position: new Vec3(-edgeLength - offset, 0, 0) },
+            { name: "topNode", position: new Vec3(0, edgeLength + offset, 0) },
+            { name: "bottomNode", position: new Vec3(0, -edgeLength - offset, 0) },
+            { name: "rightTopNode", position: new Vec3(edgeLength + offset, edgeLength + offset, 0) },
+            { name: "rightBottomNode", position: new Vec3(edgeLength + offset, -edgeLength - offset, 0) },
+            { name: "leftTopNode", position: new Vec3(-edgeLength - offset, edgeLength + offset, 0) },
+            { name: "leftBottomNode", position: new Vec3(-edgeLength - offset, -edgeLength - offset, 0) },
+        ];
+
+        const createdNodes = nodesData.map((data) => {
+            const node = new Node(data.name);
+            node.layer = Layers.Enum.UI_2D;
+            node.setPosition(data.position);
+            node.addComponent(Graphics);
+            let graphics = node.getComponent(Graphics);
+            graphics.roundRect(0 - edgeLength/2, 0- edgeLength/2, edgeLength, edgeLength,10);
+            // 结束当前路径并填充或描边
+            graphics.fill();
+            // 或者如果你想只描边不填充
+            graphics.stroke();
+            detail.addChild(node);
+            return node;
+        });
+
+        const nodesMap = {};
+        createdNodes.forEach((node, index) => {
+            nodesMap[nodesData[index].name] = node;
+        });
+        let boolBool = detail.getChildByName('BoolBool');
+        boolBool.setSiblingIndex(999)
+        boolBool.setPosition(nodesMap["rightNode"].getPosition())
+        let duration = 0.5;
+
+        const targetNodes = [
+            nodesMap['rightNode'],
+            nodesMap['rightTopNode'],
+            nodesMap['topNode'],
+            nodesMap['leftTopNode'],
+            nodesMap['leftNode'],
+            nodesMap['leftBottomNode'],
+            nodesMap['bottomNode'],
+            nodesMap['rightBottomNode']
+        ];
+
+        function animateNodeScale(node: Node, onComplete?: () => void): void {
+            tween(node)
+                .to(duration, { scale: new Vec3(1.3, 1.3, 1) })
+                .to(duration, { scale: new Vec3(1, 1, 1) })
+                .call(onComplete)
+                .start();
+        }
+
+        function animateNodeMovementAndScale(
+            currentTargetIndex: number,
+            onComplete?: () => void
+        ): void {
+            const boolBool = detail.getChildByName('BoolBool');
+            const targetNode = targetNodes[currentTargetIndex];
+
+            if (!targetNode) {
+                if (onComplete) {
+                    onComplete();
+                }
+                return;
+            }
+
+            boolBool.setPosition(targetNode.getPosition());
+
+            animateNodeScale(targetNode, () => {
+                animateNodeMovementAndScale(currentTargetIndex + 1 > targetNodes.length -1?0:currentTargetIndex + 1, onComplete);
+            });
+        }
+
+        // 启动整个动画序列
+        animateNodeMovementAndScale(0, () => {
+            animateNodeScale(nodesMap['rightNode'])
+        });
+    }
     initShapeSix() {
         let shapeCenterArray = new Array<Vec2>()
         let outerRadius = 50;
@@ -204,6 +380,70 @@ export class GameLevel extends Component {
             angle += 60
         }
         t.union().repeatForever().start();
+    }
+
+    initShapeSixNode() {
+
+        let hexagonCenters1 = this.getCirclePoints(0,0,110);
+        let detail = this.node.getChildByName('Detail');
+
+        let duration = 0.5;
+        const centerNode = new Node(0+"");
+        centerNode.layer = Layers.Enum.UI_2D;
+        centerNode.setPosition(0,0);
+        centerNode.addComponent(Graphics);
+        let graphics = centerNode.getComponent(Graphics);
+        this.drawShapeSix(graphics,new Vec2(0,0),50,this.hex_corner)
+        detail.addChild(centerNode);
+        // let t = tween(boolBool);
+        // let angle =0;
+        const createdNodes = hexagonCenters1.map((data,index) => {
+            const node = new Node(index+1+"");
+            node.layer = Layers.Enum.UI_2D;
+            node.setPosition(data.x,data.y);
+            node.addComponent(Graphics);
+            let graphics = node.getComponent(Graphics);
+            this.drawShapeSix(graphics,new Vec2(0,0),50,this.hex_corner)
+            detail.addChild(node);
+            return node;
+        });
+        let boolBool = detail.getChildByName('BoolBool');
+        boolBool.setSiblingIndex(9999999)
+        boolBool.setPosition(hexagonCenters1[0].x,hexagonCenters1[0].y)
+
+        function animateNodeScale(node: Node, onComplete?: () => void): void {
+            tween(node)
+                .to(duration, { scale: new Vec3(1.3, 1.3, 1) })
+                .to(duration, { scale: new Vec3(1, 1, 1) })
+                .call(onComplete)
+                .start();
+        }
+
+        function animateNodeMovementAndScale(
+            currentTargetIndex: number,
+            onComplete?: () => void
+        ): void {
+            const boolBool = detail.getChildByName('BoolBool');
+            const targetNode = createdNodes[currentTargetIndex];
+
+            if (!targetNode) {
+                if (onComplete) {
+                    onComplete();
+                }
+                return;
+            }
+            boolBool.setPosition(targetNode.getPosition());
+
+            animateNodeScale(targetNode, () => {
+                animateNodeMovementAndScale(currentTargetIndex + 1 > createdNodes.length -1?0:currentTargetIndex + 1, onComplete);
+            });
+        }
+
+        // 启动整个动画序列
+        animateNodeMovementAndScale(0, () => {
+            animateNodeScale(createdNodes[0])
+        });
+
     }
     hex_corner(center, size, i) {
         // var angle_deg = 60 * i + (this.layout ===0?30:0);

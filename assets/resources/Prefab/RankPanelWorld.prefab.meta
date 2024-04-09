@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "97830d37-4260-4987-beee-048a06b60e09",
+  "uuid": "1da10b3c-508d-4862-8dff-b2f323525863",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "RankPanel"
+    "syncNodeName": "RankPanelWorld"
   }
 }

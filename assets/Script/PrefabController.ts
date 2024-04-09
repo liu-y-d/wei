@@ -7,6 +7,8 @@ export class PrefabController extends Component {
 
     @property(Prefab)
     public rankPrefab: Prefab = null;
+    @property(Prefab)
+    public WorldRankPrefab:Prefab;
 
     @property(Prefab)
     public loading: Prefab = null;

@@ -127,7 +127,7 @@ export class UIManager{
             director.getScheduler().unscheduleAllForTarget(node); // 取消targetNode的所有定时器
         }
         director.loadScene("Main",()=>{
-            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
+            // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
         });
     }
     public gameContinue() {
