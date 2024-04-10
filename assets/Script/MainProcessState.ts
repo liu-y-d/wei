@@ -37,8 +37,8 @@ export class MainProcessState implements IProcessStateNode {
         canvas.getChildByName('BulletScreen').active = false;
 
         // 本地调试
-        init(5)
-        // getCurrentUserGameLevelReq(init);
+        // init(5)
+        getCurrentUserGameLevelReq(init);
 
 
 

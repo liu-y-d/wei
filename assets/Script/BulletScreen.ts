@@ -89,7 +89,7 @@ export class BulletScreen extends Component {
                 bullet.getComponent(Bullet).hoverTime = 5;
                 component.fontColor = this.randomColor();
                 bullet.getComponent(Bullet).speed = this.randomSpeed();
-                bullet.setPosition(this.node.getComponent(UITransform).contentSize.width/2,this.randomStartPosY());
+                bullet.setPosition(this.node.getComponent(UITransform).contentSize.width/2,director.getScene().name == 'Load'?0:this.randomStartPosY());
                 this.bulletsArray.length = 0;
                 this.bulletsArray.push(bullet);
                 break;
@@ -99,7 +99,7 @@ export class BulletScreen extends Component {
                 this.bulletsArray.push(bullet);
                 component.fontColor = this.randomColor();
                 bullet.getComponent(Bullet).speed = this.randomSpeed();
-                bullet.setPosition(this.node.getComponent(UITransform).contentSize.width/2,this.randomStartPosY());
+                bullet.setPosition(this.node.getComponent(UITransform).contentSize.width/2,director.getScene().name == 'Load'?0:this.randomStartPosY());
             }
 
         }
