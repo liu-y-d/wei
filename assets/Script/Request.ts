@@ -40,6 +40,20 @@ export function gameOverReq(gameLevel, status, callback:Function) {
         }
     })
 }
+
+export function getWorldRank(callback:Function) {
+    wx.request({
+        method: 'GET',
+        url: Global.getInstance().getPath('game/worldRank'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success (res) {
+            callback(res.data.data.worldRank);
+        }
+    })
+}
 function base64ReplaceSpecialChar(str:string):string{
     let regex = /\+/g;
     let regex1 = /\//g;

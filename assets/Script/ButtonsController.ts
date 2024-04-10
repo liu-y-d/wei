@@ -102,6 +102,10 @@ export class ButtonsController extends Component {
     }
     worldRankOnClick(){
         let canvas = find('Canvas');
+        let childByName = canvas.getChildByName("RankPanelWorld");
+        if (childByName) {
+            childByName.removeFromParent();
+        }
         canvas.addChild(instantiate(canvas.getComponent(PrefabController).WorldRankPrefab));
 
 
