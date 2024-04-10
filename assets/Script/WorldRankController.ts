@@ -25,9 +25,9 @@ export class WorldRankController extends Component {
 
         function renderWorldRank(datas) {
 
-            for (let i = 0; i < 100; i++) {
-                datas.push(datas[0])
-            }
+            // for (let i = 0; i < 100; i++) {
+            //     datas.push(datas[0])
+            // }
             if (datas && datas.length > 0) {
                 let content = self.node.getChildByPath("Panel/ScrollView/view/content");
                 let no1 = self.node.getChildByPath("Panel/1");
@@ -102,13 +102,15 @@ export class WorldRankController extends Component {
                 selfNode.getChildByName("Username").getComponent(Label).string = Global.getInstance().getPlayerInfo().nickName
                 selfNode.getChildByName("Number").getComponent(Label).string = Global.getInstance().getPlayerInfo().gameLevel + "关"
                 let sp = selfNode.getChildByPath("Avatar/Img").getComponent(Sprite);
-                assetManager.loadRemote<ImageAsset>(Global.getInstance().getPlayerInfo().avatarUrl, {ext: '.png'}, function (err, imageAsset) {
-                    const spriteFrame = new SpriteFrame();
-                    const texture = new Texture2D();
-                    texture.image = imageAsset;
-                    spriteFrame.texture = texture;
-                    sp.spriteFrame = spriteFrame;
-                });
+                if (Global.getInstance().getPlayerInfo().avatarUrl) {
+                    assetManager.loadRemote<ImageAsset>(Global.getInstance().getPlayerInfo().avatarUrl, {ext: '.png'}, function (err, imageAsset) {
+                        const spriteFrame = new SpriteFrame();
+                        const texture = new Texture2D();
+                        texture.image = imageAsset;
+                        spriteFrame.texture = texture;
+                        sp.spriteFrame = spriteFrame;
+                    });
+                }
 
 
                 self.node.getChildByName("LoadingPanel").active = false;
@@ -118,16 +120,16 @@ export class WorldRankController extends Component {
         }
 
 
-        // getWorldRank(renderWorldRank)
+        getWorldRank(renderWorldRank)
 
 
-        let datas = [{
-        avatar: "https://thirdwx.qlogo.cn/mmopen/vi_32/t3CJeicp0rMiazAos6w9V6DZqBTiaYlVYDicMDFH3FZGcefEfkxaPE2WODlODTkVgdI9nQYA4VEoQx1syOhibL3bflnsL44xEGpXj0gV1icVYl9dQ/132",
-        gameLevel: 5,
-        playerId: "oCe_s0BUXGMmbfx30iYe8QzFMT4k",
-        username: "666🥲"
-        }]
-        renderWorldRank(datas)
+        // let datas = [{
+        // avatar: "https://thirdwx.qlogo.cn/mmopen/vi_32/t3CJeicp0rMiazAos6w9V6DZqBTiaYlVYDicMDFH3FZGcefEfkxaPE2WODlODTkVgdI9nQYA4VEoQx1syOhibL3bflnsL44xEGpXj0gV1icVYl9dQ/132",
+        // gameLevel: 5,
+        // playerId: "oCe_s0BUXGMmbfx30iYe8QzFMT4k",
+        // username: "666🥲"
+        // }]
+        // renderWorldRank(datas)
     }
 
 

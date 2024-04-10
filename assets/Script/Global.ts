@@ -181,7 +181,10 @@ fQIDAQAB
         }
     }
     public getPropsConfig(): PropsConfig[] {
-        return JSON.parse(sys.localStorage.getItem('propsConfig'))
+        let item = sys.localStorage.getItem('propsConfig');
+        if (item){
+            return item as PropsConfig[]
+        }
     }
     public getPropsConfigById(id:number): PropsConfig {
         let allConfig = JSON.parse(sys.localStorage.getItem('propsConfig')) as PropsConfig[];
@@ -201,12 +204,17 @@ fQIDAQAB
     }
 
     propsConfigInit() {
-        let allPropsConfig: PropsConfig[]= [
-            {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: true},
-            {propsId:GamePropsEnum.BACK, showTip: true},
-            {propsId:GamePropsEnum.FORECAST, showTip: true},
-            {propsId:GamePropsEnum.FREEZE, showTip: true},
-        ];
-        this.setPropsConfig(allPropsConfig);
+
+        let custom = this.getPropsConfig();
+        if (!custom){
+            let allPropsConfig: PropsConfig[]= [
+                {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: true},
+                {propsId:GamePropsEnum.BACK, showTip: true},
+                {propsId:GamePropsEnum.FORECAST, showTip: true},
+                {propsId:GamePropsEnum.FREEZE, showTip: true},
+            ];
+            this.setPropsConfig(allPropsConfig);
+
+        }
     }
 }

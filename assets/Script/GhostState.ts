@@ -236,7 +236,7 @@ export class GhostState implements IProcessStateNode {
         // ice.active = true;
 
         let color = new Color();
-        target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#0f87ff")
+        target.ghostNode.getComponent(Sprite).color = Color.fromHEX(color, "#000000")
         target.ghostNode.getComponent(Animation).pause();
         freezeNum.getComponent(Label).string = Global.getInstance().ghostFreezeNum.toString();
     }

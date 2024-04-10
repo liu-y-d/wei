@@ -22,9 +22,9 @@ export function getFriendRankData(key,userId, callback) {
         success: res => {
             friendRankData.data = res.data;
 
-            for (let i = 0; i < 50; i++) {
-                friendRankData.data.push(res.data[0])
-            }
+            // for (let i = 0; i < 50; i++) {
+            //     friendRankData.data.push(res.data[0])
+            // }
             friendRankData.data.sort((a, b) => {
                 return b.KVDataList[0].value.actual_score - a.KVDataList[0].value.actual_score
             });

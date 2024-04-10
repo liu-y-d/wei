@@ -32,7 +32,7 @@ export class ButtonsController extends Component {
     }
 
     update(deltaTime: number) {
-        
+
     }
     rankOnClick(){
         if (this.isRankProcessingClick) return;
@@ -43,16 +43,16 @@ export class ButtonsController extends Component {
                 .to(0.2,{scale: new Vec3(1.2,1,1)})
                 .to(0.1,{scale: new Vec3(1,1,1)})
                 .call(()=>{
-                    this.FriendRankBtn.scale = new Vec3(1,1,1);
-                    this.WorldRankBtn.scale = new Vec3(1,1,1);
+                    this.FriendRankBtn.active = true;
+                    this.WorldRankBtn.active = true;
                 })
                 .start();
         }else {
             tween(rankPanel)
                 .to(0.2,{scale: new Vec3(0,1,1)})
                 .call(()=>{
-                    this.FriendRankBtn.scale = new Vec3(0,0,1);
-                    this.WorldRankBtn.scale = new Vec3(0,0,1);
+                    this.FriendRankBtn.active = false;
+                    this.WorldRankBtn.active = false;
 
                 })
                 .start();
@@ -69,7 +69,12 @@ export class ButtonsController extends Component {
             success: (res)=>{
                 console.log(res)
                 let canvas = find('Canvas');
-                canvas.addChild(instantiate(canvas.getComponent(PrefabController).rankPrefab));
+                let childByName = canvas.getChildByName("RankPanel");
+                if (childByName) {
+                    childByName.active = true;
+                }else {
+                    canvas.addChild(instantiate(canvas.getComponent(PrefabController).rankPrefab));
+                }
             },
             fail: (res)=>{
                 // 检查授权状态
@@ -104,9 +109,12 @@ export class ButtonsController extends Component {
         let canvas = find('Canvas');
         let childByName = canvas.getChildByName("RankPanelWorld");
         if (childByName) {
-            childByName.removeFromParent();
+            // childByName.removeFromParent();
+            childByName.active = true;
+        }else {
+
+            canvas.addChild(instantiate(canvas.getComponent(PrefabController).WorldRankPrefab));
         }
-        canvas.addChild(instantiate(canvas.getComponent(PrefabController).WorldRankPrefab));
 
 
     }
