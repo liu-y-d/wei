@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "1d2dcbd2-5860-4985-9ed0-fc4ccbeddb2a",
+  "uuid": "20dd8540-e698-4f00-ae5f-2165e868f56f",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "Leaf"
+    "syncNodeName": "TooltipBroadcast"
   }
 }

@@ -30,6 +30,7 @@ import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {UIManager} from "db://assets/Script/UIManager";
+import {DestinationMessage} from "db://assets/Script/DestinationProcessState";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -66,6 +67,9 @@ export class GameProcessState implements IProcessStateNode {
         DetailTip.getChildByName("Label").getComponent(Label).string = "移动方向："+LevelDesign.getInstance().currentMovableDirection
         let color = new Color();
         detailPanel.getChildByName("SpriteSplash").getComponent(Sprite).color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
+
+        // #288319
+        //
     }
 
     onUpdate() {
@@ -288,8 +292,19 @@ export class GameProcessState implements IProcessStateNode {
                 type: 'light'
             })
         }
-        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
-        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+        let randomValue = Math.random();
+        if (randomValue > 0.5) {
+            ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.destination, DestinationMessage.CreateOne, coord,()=>{
+                UIManager.getInstance().showMapPropsGuide(()=>{
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+                },coord,"创建了一个新的目标点")
+
+            });
+        }else {
+            ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
+            ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+
+        }
     }
 
 }

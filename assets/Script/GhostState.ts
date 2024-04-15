@@ -40,7 +40,7 @@ export class GhostState implements IProcessStateNode {
         Global.getInstance().currentGhostVec2 = LevelDesign.getInstance().getShapeManager().center.clone();
         Global.getInstance().prevGhostVec2 = Global.getInstance().currentGhostVec2;
         let point = LevelDesign.getInstance().getShapeManager().getCenter(Global.getInstance().currentGhostVec2);
-        this.ghostNode.setPosition(point.x, point.y)
+        this.ghostNode.setPosition(point.x, point.y + 10)
         this.ghostNode.angle = 0;
         let  freezeNum = this.ghostNode.getChildByName("FreezeNum");
 
@@ -132,7 +132,7 @@ export class GhostState implements IProcessStateNode {
         tween(target.ghostNode)
             // 同时设置节点的位置，缩放和旋转
             .to(0.25, {angle: -angle})
-            .to(0.25, {position: new Vec3(point.x, point.y, 0)})
+            .to(0.25, {position: new Vec3(point.x, point.y + 10, 0)})
             .call(() => {
                 if (LevelDesign.getInstance().getShapeManager().isDestination(Global.getInstance().currentGhostVec2)) {
                     Global.getInstance().ghostMoving = false;
@@ -184,7 +184,7 @@ export class GhostState implements IProcessStateNode {
         tween(target.ghostNode)
             // 同时设置节点的位置，缩放和旋转
             .to(0.25, {angle: -angle})
-            .to(0.25, {position: new Vec3(point.x, point.y, 0)})
+            .to(0.25, {position: new Vec3(point.x, point.y + 10, 0)})
             .call(() => {
                 if (LevelDesign.getInstance().getShapeManager().isDestination(Global.getInstance().currentGhostVec2)) {
                     Global.getInstance().ghostMoving = false;

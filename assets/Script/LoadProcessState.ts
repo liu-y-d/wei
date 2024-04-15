@@ -6,6 +6,7 @@ import CommonProgressBar from "db://assets/Script/CommonProgressBar";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {AudioMgr} from "db://assets/Script/AudioMgr";
 import {Global} from "db://assets/Script/Global";
+import {TypeWriter} from "db://assets/Script/TypeWriter";
 
 export class LoadProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.load;
@@ -24,6 +25,7 @@ export class LoadProcessState implements IProcessStateNode {
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
         let progressBarNode = find('Canvas/Content/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
+        find('Canvas/Content/TypeWriter').getComponent(TypeWriter).begin();
         director.preloadScene("Main", (completedCount, totalCount, item) =>{
             progressBar.prevNum = progressBar.num;
             progressBar.num = completedCount / totalCount;

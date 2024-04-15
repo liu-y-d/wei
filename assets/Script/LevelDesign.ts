@@ -107,6 +107,9 @@ export class LevelDesign{
      */
     public ghostMoveAlgorithms:Function = this.ghostMoveSelect;
 
+
+    public currentMapProps;
+
     ghostMoveSelect (...param) {
         let difficultyLevel = this.calculateDifficultyLevel(Global.getInstance().getPlayerInfo().gameLevel);
         let difficultyParametersForLevel = this.getDifficultyParametersForLevel(difficultyLevel);

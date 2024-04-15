@@ -12,7 +12,7 @@ export let rankStyle = {
         width: 500,
         flexDirection: 'column',
         alignItems: 'center',
-        backgroundColor: '#ffffff',
+        // backgroundColor: '#ffffff',
         // borderBottomWidth: 0.5,
         // borderColor: 'rgba(0, 0, 0, 0.3)',
     },

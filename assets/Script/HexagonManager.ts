@@ -393,11 +393,85 @@ export class HexagonManager extends ShapeManager {
         // ctx.fillColor.fromHEX("#212529");
         ctx.fillColor.fromHEX("#3C6338");
         ctx.fill();
+
+        let center1 = new Vec2(0, 10);
+        // var hexagonWidth=HexagonManager.hexagonWidth-7;
+        // var hexagonheight=hexagonWidth * 0.866;
+        //一边
+
+        let p00 = this.hex_corner(center1, this.outerRadius, 0);
+        ctx.moveTo(p00.x, p00.y);
+
+        let p11 = this.hex_corner(center1, this.outerRadius, 1);
+
+        ctx.lineTo(p11.x, p11.y);
+
+        let p22 = this.hex_corner(center1, this.outerRadius, 2);
+        ctx.lineTo(p22.x, p22.y);
+        let p33 = this.hex_corner(center1, this.outerRadius, 3);
+        ctx.lineTo(p33.x, p33.y);
+
+        let p44 = this.hex_corner(center1, this.outerRadius, 4);
+        ctx.lineTo(p44.x, p44.y);
+
+        let p55 = this.hex_corner(center1, this.outerRadius, 5);
+        ctx.lineTo(p55.x, p55.y);
+        ctx.lineTo(p00.x, p00.y);
+
+        // ctx.circle(px,py,hexagonheight);
+        // ctx.strokeColor.fromHEX("#363333")
+        // ctx.circle(px,py,HexagonManager.hexagonWidth);
+        ctx.strokeColor.fromHEX("#ffffff");
+        ctx.stroke();
+        //4边
+        // ctx.fillColor.fromHEX("#212529");
+        ctx.fillColor.fromHEX("#a4c49f");
+        ctx.fill();
+    }
+
+    drawBottom(ctx, shape: Shape) {
+
+        ctx.clear();
+        ctx.lineWidth = 0;
+        // var px=this.getPx(shape);
+        // var py=this.getPy(shape);
+        let center = new Vec2(0, 0);
+        // var hexagonWidth=HexagonManager.hexagonWidth-7;
+        // var hexagonheight=hexagonWidth * 0.866;
+        //一边
+        let p0 = this.hex_corner(center, this.outerRadius, 0);
+        ctx.moveTo(p0.x, p0.y);
+
+        let p1 = this.hex_corner(center, this.outerRadius, 1);
+
+        ctx.lineTo(p1.x, p1.y);
+
+        let p2 = this.hex_corner(center, this.outerRadius, 2);
+        ctx.lineTo(p2.x, p2.y);
+        let p3 = this.hex_corner(center, this.outerRadius, 3);
+        ctx.lineTo(p3.x, p3.y);
+
+        let p4 = this.hex_corner(center, this.outerRadius, 4);
+        ctx.lineTo(p4.x, p4.y);
+
+        let p5 = this.hex_corner(center, this.outerRadius, 5);
+        ctx.lineTo(p5.x, p5.y);
+        ctx.lineTo(p0.x, p0.y);
+
+        // ctx.circle(px,py,hexagonheight);
+        // ctx.strokeColor.fromHEX("#363333")
+        // ctx.circle(px,py,HexagonManager.hexagonWidth);
+        ctx.strokeColor.fromHEX("#ffffff");
+        ctx.stroke();
+        //4边
+        // ctx.fillColor.fromHEX("#212529");
+        ctx.fillColor.fromHEX("#3C6338");
+        ctx.fill();
     }
 
     drawDestination(graphics, shape: Shape) {
 
-        this.draw(graphics,shape)
+        this.drawBottom(graphics,shape)
         // 设置五角星的中心点、外接圆半径和内切圆半径（可选）
         const centerX = 0; // 假设中心点在(0, 0)
         const centerY = 0;
@@ -466,7 +540,7 @@ export class HexagonManager extends ShapeManager {
     }
 
     creatorObstacle(ctx, shape: Shape) {
-        this.draw(ctx,shape);
+        this.drawBottom(ctx,shape);
         ctx.lineWidth = 0;
         // var px=this.getPx(shape);
         // var py=this.getPy(shape);
@@ -475,7 +549,7 @@ export class HexagonManager extends ShapeManager {
         ctx.fillColor.fromHEX("#BD9A8C")
         // ctx.circle(px,py,hexagonheight);
         // ctx.strokeColor.fromHEX("#363333")
-        ctx.circle(0, 0, this.hexagonHeight - 10);
+        ctx.circle(0, 0 , this.hexagonHeight - 10);
         ctx.stroke();
         ctx.fill();
         // this.node.getChildByName('Pianyi').getComponent(Label).string = "x:"+hexagon.x+",y:"+hexagon.y;

@@ -13,6 +13,47 @@ export function getCurrentUserGameLevelReq(callback:Function) {
         }
     })
 }
+export type Leaf = {remaining:number,infinity:string}
+export function getLeaf(callback:Function) {
+    wx.request({
+        method: 'GET',
+        url: Global.getInstance().getPath('game/getLeaf'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success (res) {
+            console.log(res)
+            callback(res.data.data.leaf as Leaf);
+        }
+    })
+}
+export function consumeLeaf(callback:Function) {
+    wx.request({
+        method: 'GET',
+        url: Global.getInstance().getPath('game/consumeLeaf'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success (res) {
+            callback(res.data.data.status);
+        }
+    })
+}
+export function infinityLeaf(callback:Function) {
+    wx.request({
+        method: 'GET',
+        url: Global.getInstance().getPath('game/infinityLeaf'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success (res) {
+            callback(res.data.data.status);
+        }
+    })
+}
 
 export function gameOverReq(gameLevel, status, callback:Function) {
     let flag;

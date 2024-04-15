@@ -1,8 +1,8 @@
-import { _decorator, Component, Node,Button,find,instantiate,director,tween,Vec3 } from 'cc';
+import {_decorator, Button, Component, director, find, instantiate, Node, tween, UITransform, Vec3} from 'cc';
 import {PrefabController} from "db://assets/Script/PrefabController";
-import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
-import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
-import {RankController} from "db://assets/Script/RankController";
+import {consumeLeaf, getLeaf, Leaf} from "db://assets/Script/Request";
+import {Global} from "db://assets/Script/Global";
+
 const { ccclass, property } = _decorator;
 
 @ccclass('ButtonsController')
@@ -20,6 +20,7 @@ export class ButtonsController extends Component {
 
     private isFriendRankProcessingClick = false;
     private isRankProcessingClick = false;
+    private isBeginProcessingClick = false;
 
     onLoad() {
         this.FriendRankBtn.on(Button.EventType.CLICK, this.friendRankOnClick, this);
@@ -119,9 +120,57 @@ export class ButtonsController extends Component {
 
     }
     begin() {
-        director.loadScene("Game",()=>{
-            // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
-        });
+        if (this.isBeginProcessingClick) return;
+        this.isBeginProcessingClick = true;
+        function f(leaf:Leaf) {
+            if (leaf.infinity && Global.getInstance().dateToSeconds(leaf.infinity) + 1200 - Global.getInstance().dateToSeconds(Date.now()) >= 0) {
+                // 无限体力
+                let canvas = find('Canvas');
+                let power = canvas.getChildByPath("Top/Power");
+                let leafFly = power.getChildByName("LeafFly");
+                let leafSlot = canvas.getChildByPath("Buttons/Begin/LeafSlot");
+                let convertToNodeSpaceAR = leafFly.getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
+                tween(leafFly).to(0.5,{position:convertToNodeSpaceAR}).call(()=>{
+                    let beginLeafFly = leafSlot.getChildByName("LeafFly");
+                    beginLeafFly.active=true;
+                    tween(beginLeafFly).to(0.1,{scale:new Vec3(1,1,1)}).call(()=>{}).start();
+
+                    director.loadScene("Game",()=>{
+                        // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
+                    });
+                }).start()
+            }
+            if (leaf.remaining >= 5) {
+                consumeLeaf((status)=>{
+                    if (status) {
+                        let canvas = find('Canvas');
+                        let power = canvas.getChildByPath("Top/Power");
+                        let leafFly = power.getChildByName("LeafFly");
+                        let leafSlot = canvas.getChildByPath("Buttons/Begin/LeafSlot");
+                        let convertToNodeSpaceAR = leafFly.getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
+                        tween(leafFly).to(0.5,{position:convertToNodeSpaceAR}).call(()=>{
+                            let beginLeafFly = leafSlot.getChildByName("LeafFly");
+                            beginLeafFly.active=true;
+                            tween(beginLeafFly).to(0.5,{scale:new Vec3(1,1,1)}).call(()=>{}).start();
+
+                            director.loadScene("Game",()=>{
+                                // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
+                            });
+                        }).start()
+                    }
+                })
+
+            }
+        }
+        getLeaf(f)
+
+        setTimeout(() => {
+            this.isBeginProcessingClick = false;
+        }, 1000); // Adjust the delay as needed
+
+
+
+
     }
 }
 

@@ -24,6 +24,11 @@ export class Popup extends Component {
     @property(Prefab)
     public guide:Prefab;
 
+    @property(Prefab)
+    public share:Prefab
+    @property(Prefab)
+    public mapPropsGuide:Prefab
+
 
 
     init(popupType:number) {

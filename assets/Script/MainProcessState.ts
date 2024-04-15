@@ -1,31 +1,38 @@
 
-import {find,Node,director} from 'cc';
+import {find,Node,Label,director,ProgressBar} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {GameLevel} from "db://assets/Script/GameLevel";
 import {Global} from "db://assets/Script/Global";
 import {UIManager} from "db://assets/Script/UIManager";
-import {getCurrentUserGameLevelReq} from "db://assets/Script/Request";
+import {getCurrentUserGameLevelReq, getLeaf, Leaf} from "db://assets/Script/Request";
+import {InfinityLeafScheduleAdapter} from "db://assets/Script/InfinityLeafScheduleAdapter";
+import {GhostMessage} from "db://assets/Script/GhostState";
 export class MainProcessState implements IProcessStateNode {
     readonly key =  ProcessStateEnum.main;
 
+
+    _listener: { [p: string]: (target, params) => (void | null) } = {};
     mainNode = null;
 
     onExit() {
     }
 
-    onHandlerMessage() {
+    onHandlerMessage(code: string, params) {
+        this._listener[code](this, params);
     }
 
     onInit() {
 
+        this._listener[MainMessage.INIT_LEAF] = this.initLeaf;
         let my = this;
         let canvas = find('Canvas');
 
         function init(gameLevel) {
             console.log("gameLevel",gameLevel)
             my.simulation(gameLevel);
+            my.initLeaf()
             LevelDesign.getInstance().init();
             Global.getInstance().propsConfigInit();
             canvas.getChildByName('BulletScreen').active = true;
@@ -43,6 +50,43 @@ export class MainProcessState implements IProcessStateNode {
 
 
     }
+
+    initLeaf(){
+
+        let canvas = find('Canvas');
+        function callBack(leaf:Leaf) {
+            let power = canvas.getChildByPath("Top/Power");
+            // power.getChildByName("PowerNum").getComponent(Label).string = leaf.infinity?'MAX':`${leaf.remaining}`
+            // power.getChildByName("PowerNum").getComponent(Label).string = leaf.infinity?'MAX':`${leaf.remaining}`
+            let progress = power.getChildByName("Progress");
+            progress.getComponent(ProgressBar).progress = leaf.infinity?1:leaf.remaining/100
+            progress.on(Node.EventType.TOUCH_END,()=>{
+                UIManager.getInstance().openShare()
+            },this)
+
+            if (leaf.infinity) {
+                let seconds = Global.getInstance().dateToSeconds(leaf.infinity);
+                console.log(seconds)
+                console.log(seconds + 1200)
+                console.log(Global.getInstance().dateToSeconds(Date.now()))
+                if (seconds + 1200 - Global.getInstance().dateToSeconds(Date.now()) >= 0) {
+                    // power.getChildByName("Time").active = true;
+                    // power.getChildByName("Time").getComponent(Label).string = leaf.infinity
+                    let component = power.getChildByName("PowerNum").getComponent(InfinityLeafScheduleAdapter);
+                    component.countDown(seconds,()=>{
+                        power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
+                    });
+                }else {
+                    power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
+                }
+            }else {
+                power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
+            }
+        }
+        getLeaf(callBack)
+    }
+
+
 
     simulation(gameLevel) {
         let info = Global.getInstance().getPlayerInfo();
@@ -65,6 +109,9 @@ export class MainProcessState implements IProcessStateNode {
     onUpdate() {
     }
 
-    _listener: { [p: string]: (target, params) => (void | null) };
 
+
+}
+export enum MainMessage {
+    INIT_LEAF = "INIT_LEAF"
 }

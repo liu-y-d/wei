@@ -10,8 +10,12 @@ import {Popup} from "db://assets/Script/Popup";
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {PopupMenu} from "db://assets/Script/PopupMenu";
 import {PopupMainMenu} from "db://assets/Script/PopupMainMenu";
-import {gameOverReq} from "db://assets/Script/Request";
+import {consumeLeaf, gameOverReq, getLeaf, infinityLeaf, Leaf} from "db://assets/Script/Request";
 import {Guide, PopupGuide} from "db://assets/Script/PopupGuide";
+import {PopupShare} from "db://assets/Script/PopupShare";
+import {GhostMessage} from "db://assets/Script/GhostState";
+import {MainMessage} from "db://assets/Script/MainProcessState";
+import {PopupMapPropsGuide} from "db://assets/Script/PopupMapPropsGuide";
 
 export enum PopupEnum {
     /**
@@ -27,7 +31,9 @@ export enum PopupEnum {
      */
     MENU,
     MAIN_MENU,
-    GUIDE
+    GUIDE,
+    SHARE,
+    mapPropsGuide
 }
 export class UIManager{
     private static _instance: UIManager;
@@ -47,11 +53,15 @@ export class UIManager{
             let popupMenu = new PopupMenu();
             let popupMainMenu = new PopupMainMenu();
             let popupGuide = new PopupGuide();
+            let popupShare = new PopupShare();
+            let popupMapPropsGuide = new PopupMapPropsGuide();
             this.popupMap.set(popupGameOver.type,popupGameOver);
             this.popupMap.set(propsPrompt.type,propsPrompt);
             this.popupMap.set(popupMenu.type,popupMenu);
             this.popupMap.set(popupMainMenu.type,popupMainMenu);
             this.popupMap.set(popupGuide.type,popupGuide);
+            this.popupMap.set(popupShare.type,popupShare);
+            this.popupMap.set(popupMapPropsGuide.type,popupMapPropsGuide);
         }
 
     }
@@ -131,9 +141,25 @@ export class UIManager{
         });
     }
     public gameContinue() {
-        this.closeMaskGlobal()
-        LevelDesign.getInstance().init();
-        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game);
+
+        let self = this;
+        function f(leaf:Leaf) {
+            if ((leaf.infinity && Global.getInstance().dateToSeconds(leaf.infinity) + 1200 - Global.getInstance().dateToSeconds(Date.now()) >= 0)||leaf.remaining >= 5) {
+                consumeLeaf((status)=>{
+                    if (status) {
+
+                        self.closeMaskGlobal()
+                        LevelDesign.getInstance().init();
+                        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game);
+                    }
+                })
+
+            }else {
+                self.backMain();
+            }
+        }
+        getLeaf(f)
+
     }
 
     public showPropsTip(title:string,tip:string,resume:Function){
@@ -196,6 +222,28 @@ export class UIManager{
 
     }
 
+    public showMapPropsGuide(resume:Function,coord,tip) {
+        this.openMaskGlobal();
+        let popup = UIManager.getInstance().popupMap.get(PopupEnum.mapPropsGuide) as PopupMapPropsGuide;
+        popup.resume = resume;
+        let guides:Guide[] = [];
+        // let content = Global.getInstance().gameCanvas.getChildByName("Content");
+        // if (LevelDesign.getInstance().showGhostDirection) {
+            let g2p = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x, coord.y))
+            let g2p1 = Global.getInstance().playArea.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(g2p.x,g2p.y,0))
+            let angle = g2p1.y > Global.getInstance().currentGhostVec2.y?180:0;
+            if (coord.x== LevelDesign.getInstance().getShapeManager().WidthCount - 1) {
+                guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:tip,angle:angle,scaleX:-1});
+            }else {
+                guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:tip,angle:angle});
+            }
+        // }
+
+
+        popup.guides = guides;
+        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.mapPropsGuide);
+    }
+
     public pause(){
         this.openMaskGlobal();
         UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.MENU);
@@ -205,6 +253,20 @@ export class UIManager{
         UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.MAIN_MENU);
     }
 
+    public openShare(){
+        this.openMaskGlobal();
+        let popup = UIManager.getInstance().popupMap.get(PopupEnum.SHARE) as PopupPropsPrompt;
+        popup.resume = () =>{
+            window['wx'].shareAppMessage()
+            infinityLeaf((status)=>{
+                if (status) {
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.main, MainMessage.INIT_LEAF)
+                }
+            })
+        };
+        let component = UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup);
+        component.init(PopupEnum.SHARE);
+    }
     public adapterScale(node:Node){
         let srcScaleForShowAll = Math.min(screen.windowSize.width / node.getComponent(UITransform).contentSize.width, screen.windowSize.height / node.getComponent(UITransform).contentSize.height);
         let realWidth = node.getComponent(UITransform).contentSize.width * srcScaleForShowAll;
