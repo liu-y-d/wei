@@ -292,19 +292,38 @@ export class GameProcessState implements IProcessStateNode {
                 type: 'light'
             })
         }
-        let randomValue = Math.random();
-        if (randomValue > 0.5) {
-            ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.destination, DestinationMessage.CreateOne, coord,()=>{
-                UIManager.getInstance().showMapPropsGuide(()=>{
-                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
-                },coord,"创建了一个新的目标点")
 
-            });
+        let hasMapProps = false;
+        let mapProps
+        for (let i = 0; i <LevelDesign.getInstance().currentMapProps.length - 1; i++) {
+            if (LevelDesign.getInstance().currentMapProps[i].coord.x==coord.x && LevelDesign.getInstance().currentMapProps[i].coord.y == coord.y) {
+                hasMapProps = true;
+                mapProps = LevelDesign.getInstance().currentMapProps[i].mapProps;
+            }
+        }
+        if (hasMapProps&&mapProps) {
+            UIManager.getInstance().showMapPropsGuide(()=>{
+                mapProps.exec(coord,()=>{
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+                })
+            },coord,mapProps.tip)
         }else {
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
-
         }
+        // let randomValue = Math.random();
+        // if (randomValue > 0.5) {
+        //     ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.destination, DestinationMessage.CreateOne, coord,()=>{
+        //         UIManager.getInstance().showMapPropsGuide(()=>{
+        //             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+        //         },coord,"创建了一个新的目标点")
+        //
+        //     });
+        // }else {
+        //     ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
+        //     ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+        //
+        // }
     }
 
 }

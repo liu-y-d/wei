@@ -21,6 +21,16 @@ export type LevelSetting ={
     directions: number,
     targetPoints:number
 }
+export type MapProps = {
+    id:number,
+    name:string,
+    tip:string,
+    exec:Function
+}
+export type MapPropsConfig = {
+    coord:Coord,
+    mapProps:MapProps
+}
 export class LevelDesign{
 
     private static _instance: LevelDesign;
@@ -108,7 +118,7 @@ export class LevelDesign{
     public ghostMoveAlgorithms:Function = this.ghostMoveSelect;
 
 
-    public currentMapProps;
+    public currentMapProps:MapPropsConfig[] = [];
 
     ghostMoveSelect (...param) {
         let difficultyLevel = this.calculateDifficultyLevel(Global.getInstance().getPlayerInfo().gameLevel);

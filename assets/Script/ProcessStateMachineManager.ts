@@ -7,6 +7,7 @@ import {LoginProcessState} from "db://assets/Script/LoginProcessState";
 import {MainProcessState} from "db://assets/Script/MainProcessState";
 import {PanelProcessState} from "db://assets/Script/PanelProcessState";
 import {DestinationProcessState} from "db://assets/Script/DestinationProcessState";
+import {MapPropsProcessState} from "db://assets/Script/MapPropsProcessState";
 
 
 /**
@@ -20,7 +21,7 @@ export class ProcessStateMachineManager {
         }
         return this._instance;
     }
-    
+
     private _state_machine : ProcessStateMachine = new ProcessStateMachine();
 
     public init():void {
@@ -41,6 +42,8 @@ export class ProcessStateMachineManager {
         this._state_machine.addNode(panelProcessState.key,panelProcessState);
         let destinationProcessState = new DestinationProcessState();
         this._state_machine.addNode(destinationProcessState.key,destinationProcessState);
+        let mapPropsProcessState = new MapPropsProcessState();
+        this._state_machine.addNode(mapPropsProcessState.key,mapPropsProcessState);
     }
 
     /**

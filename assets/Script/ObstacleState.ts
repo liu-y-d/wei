@@ -30,6 +30,8 @@ export class ObstacleState implements IProcessStateNode{
     createDefaultObstacle(){
         Global.getInstance().moveLock.active = true;
         LevelDesign.getInstance().getShapeManager().createDefaultObstacle();
+        ProcessStateMachineManager.getInstance().change(ProcessStateEnum.mapProps);
+
     }
 
     createObstacle(params){

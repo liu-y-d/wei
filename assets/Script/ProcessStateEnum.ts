@@ -6,5 +6,6 @@ export enum ProcessStateEnum {
     ghost = "ghost",
     obstacle = "obstacle",
     panel = "panel",
-    destination = "destination"
+    destination = "destination",
+    mapProps = "mapProps"
 }
