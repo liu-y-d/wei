@@ -160,6 +160,14 @@ export class GhostState implements IProcessStateNode {
                 }
                 Global.getInstance().ghostMoving = false;
                 Global.getInstance().moveLock.active = false;
+                if (Global.getInstance().tileMap[Global.getInstance().currentGhostVec2.x][Global.getInstance().currentGhostVec2.y].getComponent(Draw).isMapPropsDirection) {
+                    let tile = Global.getInstance().tileMap[Global.getInstance().currentGhostVec2.x][Global.getInstance().currentGhostVec2.y];
+                    Global.getInstance().predictCoord = {
+                        x: tile.getComponent(Draw).mapPropsDirection.x,
+                        y: tile.getComponent(Draw).mapPropsDirection.y
+                    }
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+                }
             })
             .start();
 

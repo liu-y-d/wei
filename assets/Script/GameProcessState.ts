@@ -31,6 +31,7 @@ import {PropsNum} from "db://assets/Script/PropsNum";
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {UIManager} from "db://assets/Script/UIManager";
 import {DestinationMessage} from "db://assets/Script/DestinationProcessState";
+import {MapPropsMessage, MapPropsProcessState} from "db://assets/Script/MapPropsProcessState";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -264,7 +265,7 @@ export class GameProcessState implements IProcessStateNode {
             return;
         }
         let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
-        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle||tile.isDestination) {
+        if ((Global.getInstance().currentGhostVec2.x == coord.x && Global.getInstance().currentGhostVec2.y == coord.y) || tile.hasObstacle||tile.isDestination||tile.isMapPropsDirection) {
             // if (!this.isTweening) {
             //     this.isTweening = true;
             let self = this;
@@ -295,18 +296,16 @@ export class GameProcessState implements IProcessStateNode {
 
         let hasMapProps = false;
         let mapProps
-        for (let i = 0; i <LevelDesign.getInstance().currentMapProps.length - 1; i++) {
+        for (let i = 0; i <LevelDesign.getInstance().currentMapProps.length; i++) {
             if (LevelDesign.getInstance().currentMapProps[i].coord.x==coord.x && LevelDesign.getInstance().currentMapProps[i].coord.y == coord.y) {
                 hasMapProps = true;
                 mapProps = LevelDesign.getInstance().currentMapProps[i].mapProps;
             }
         }
         if (hasMapProps&&mapProps) {
-            UIManager.getInstance().showMapPropsGuide(()=>{
-                mapProps.exec(coord,()=>{
-                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
-                })
-            },coord,mapProps.tip)
+            mapProps.exec(coord,()=>{
+                ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+            })
         }else {
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)

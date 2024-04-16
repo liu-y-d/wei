@@ -9,6 +9,7 @@ import {PrefabController} from "db://assets/Script/PrefabController";
 export class SquareManager extends ShapeManager {
 
 
+
     shapeEnum: ShapeEnum = ShapeEnum.FOUR;
     shapeWidth: number;
     shapeHeight: number;
@@ -19,7 +20,7 @@ export class SquareManager extends ShapeManager {
     directNode: Node;
 
     creatorObstacle(ctx, shape: Shape) {
-        this.draw(ctx,shape);
+        this.drawBottom(ctx,shape);
         ctx.lineWidth = 0;
         // var px=this.getPx(shape);
         // var py=this.getPy(shape);
@@ -126,9 +127,6 @@ export class SquareManager extends ShapeManager {
     draw(ctx: Graphics, shape: Shape) {
         ctx.clear();
         ctx.lineWidth = 0;
-        var px = this.getPx(shape);
-        var py = this.getPy(shape);
-        let center = new Vec2(px, py);
         let halfWidth = this.shapeWidth;
         // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
         ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
@@ -138,9 +136,29 @@ export class SquareManager extends ShapeManager {
         ctx.stroke();
         ctx.fillColor.fromHEX("#3C6338");
         ctx.fill();
+
+        ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5 + 10, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        // ctx.getParent().getPosition()
+        // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        ctx.strokeColor.fromHEX("#ffffff");
+        ctx.stroke();
+        ctx.fillColor.fromHEX("#a4c49f");
+        ctx.fill();
+    }
+    drawBottom(ctx: any, shape: Shape) {
+        ctx.clear();
+        ctx.lineWidth = 0;
+        let halfWidth = this.shapeWidth;
+        ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5 + 10, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        // ctx.getParent().getPosition()
+        // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        ctx.strokeColor.fromHEX("#ffffff");
+        ctx.stroke();
+        ctx.fillColor.fromHEX("#a4c49f");
+        ctx.fill();
     }
     drawDestination(graphics: Graphics, shape: Shape) {
-        this.draw(graphics,shape)
+        this.drawBottom(graphics,shape)
         // 设置五角星的中心点、外接圆半径和内切圆半径（可选）
         const centerX = 0; // 假设中心点在(0, 0)
         const centerY = 0;

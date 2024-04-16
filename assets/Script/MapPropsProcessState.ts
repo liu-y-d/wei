@@ -1,4 +1,4 @@
-import {Node, director, Vec3, Label, tween,Animation} from 'cc';
+import {Node, Vec2, Vec3, misc, tween, Animation,instantiate} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -29,45 +29,46 @@ export class MapPropsProcessState implements IProcessStateNode {
         let coords = new Array<Coord>()
         for (let i = 0; i < LevelDesign.getInstance().getShapeManager().WidthCount - 1; i++) {
             for (let j = 0; j < LevelDesign.getInstance().getShapeManager().WidthCount - 1; j++) {
-                if (!(LevelDesign.getInstance().currentDestination.some(c=>c.x==i&&c.y==j) || Global.getInstance().obstacleCoords.some(c=>c.x==i&&c.y==j))) {
-                    coords.push({x:i,y:j})
+                if (!(LevelDesign.getInstance().currentDestination.some(c => c.x == i && c.y == j) || Global.getInstance().obstacleCoords.some(c => c.x == i && c.y == j))) {
+                    coords.push({x: i, y: j})
                 }
             }
         }
-        let randomUniqueFromArray = this.getRandomUniqueFromArray(coords,5);
+        let randomUniqueFromArray = this.getRandomUniqueFromArray(coords, 5);
         for (let i = 0; i < randomUniqueFromArray.length; i++) {
-            let randomChoice = Math.floor(Math.random() * 3); // 生成0, 1, 或 2
+            // let randomChoice = Math.floor(Math.random() * 3); // 生成0, 1, 或 2
+            let randomChoice = 1;
             switch (randomChoice) {
                 case 0:
                     LevelDesign.getInstance().currentMapProps.push({
-                        coord:randomUniqueFromArray[i],
-                        mapProps:{
-                            id:1,
-                            name:MapPropsMessage.CreateOneDestination,
-                            tip:'创建一个新的目标点',
-                            exec:this.createOneDestination
+                        coord: randomUniqueFromArray[i],
+                        mapProps: {
+                            id: 1,
+                            name: MapPropsMessage.CreateOneDestination,
+                            tip: '创建一个新的目标点',
+                            exec: this.createOneDestination
                         }
                     })
                     break;
                 case 1:
                     LevelDesign.getInstance().currentMapProps.push({
-                        coord:randomUniqueFromArray[i],
-                        mapProps:{
-                            id:2,
-                            name:MapPropsMessage.CreateOneDirection,
-                            tip:'创建一个可让布布继续移动的加速带',
-                            exec:this.createOneDirection
+                        coord: randomUniqueFromArray[i],
+                        mapProps: {
+                            id: 2,
+                            name: MapPropsMessage.CreateOneDirection,
+                            tip: '创建一个可让布布继续移动的加速带,如果目标方向被挡住则会重新选择方向',
+                            exec: this.createOneDirection
                         }
                     })
                     break;
                 case 2:
                     LevelDesign.getInstance().currentMapProps.push({
-                        coord:randomUniqueFromArray[i],
-                        mapProps:{
-                            id:3,
-                            name:MapPropsMessage.CreateStarAbsorb,
-                            tip:'创建一个星星吸收器',
-                            exec:this.createStarAbsorb
+                        coord: randomUniqueFromArray[i],
+                        mapProps: {
+                            id: 3,
+                            name: MapPropsMessage.CreateStarAbsorb,
+                            tip: '创建一个星星吸收器',
+                            exec: this.createStarAbsorb
                         }
                     })
                     break;
@@ -77,10 +78,13 @@ export class MapPropsProcessState implements IProcessStateNode {
 
     }
 
-    createOneDestination(...params){
+    createOneDestination(...params) {
+
         console.log(params)
-            let coord = params[0];
-            if (!LevelDesign.getInstance().currentDestination.some(c=>c.x==coord.x && c.y==coord.y)) {
+        let coord = params[0];
+
+        function f() {
+            if (!LevelDesign.getInstance().currentDestination.some(c => c.x == coord.x && c.y == coord.y)) {
                 LevelDesign.getInstance().currentDestination.push(coord)
             }
             let tile = Global.getInstance().tileMap[coord.x][coord.y];
@@ -88,7 +92,11 @@ export class MapPropsProcessState implements IProcessStateNode {
                 .to(0, {scale: new Vec3(2, 2, 0)})
                 .to(0.1, {scale: new Vec3(1, 1, 0)})
                 .call(() => {
-                    tile.getComponent(Draw).drawDestination({x:coord.x,y:coord.y,shape:LevelDesign.getInstance().currentShapeEnum})
+                    tile.getComponent(Draw).drawDestination({
+                        x: coord.x,
+                        y: coord.y,
+                        shape: LevelDesign.getInstance().currentShapeEnum
+                    })
                     let detailPanel = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName('DetailPanel');
                     detailPanel.setSiblingIndex(99999999999999999999)
                     detailPanel.getComponent(Animation).play();
@@ -106,15 +114,64 @@ export class MapPropsProcessState implements IProcessStateNode {
                     // tween(detailPanel).delay(5).to(0.5,{position:new Vec3(0,260,0)}).start();
 
                 }).start()
+        }
+        UIManager.getInstance().showMapPropsGuide(() => {
+            f()
+        }, coord, "创建一个⭐️")
+
 
     }
-    createOneDirection(params){
+
+    createOneDirection(...params) {
+
+        console.log(params)
+        let coord = params[0];
+
+        function f() {
+            let tile = Global.getInstance().tileMap[coord.x][coord.y];
+            tween(tile)
+                .to(0, {scale: new Vec3(2, 2, 0)})
+                .to(0.1, {scale: new Vec3(1, 1, 0)})
+                .call(() => {
+                    tile.getComponent(Draw).drawBottom({
+                        x: coord.x,
+                        y: coord.y,
+                        shape: LevelDesign.getInstance().currentShapeEnum
+                    })
+                    let nearbyShapeCoords = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords(coord);
+
+
+                    let directionProps = instantiate(tile.getComponent(Draw).directionProps);
+                    let targetCoord = nearbyShapeCoords[Math.floor(Math.random()*nearbyShapeCoords.length)];
+                    tile.getComponent(Draw).mapPropsDirection = targetCoord
+
+                    let targetPoint = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(targetCoord.x,targetCoord.y));
+                    let currentPoint = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x,coord.y));
+                    let angle = Math.atan2(targetPoint.x - currentPoint.x, targetPoint.y - currentPoint.y);
+                    angle = misc.radiansToDegrees(angle);
+                    directionProps.angle = -angle
+
+
+                    tile.getComponent(Draw).isMapPropsDirection = true;
+                    tile.addChild(directionProps);
+
+                    if (params[1]) {
+                        params[1]();
+                    }
+
+                }).start()
+        }
+        UIManager.getInstance().showMapPropsGuide(() => {
+            f()
+        }, coord, "创建一个加速带")
 
     }
-    createStarAbsorb(params){
+
+    createStarAbsorb(params) {
 
     }
-    getRandomUniqueFromArray(arr:Coord[], count) {
+
+    getRandomUniqueFromArray(arr: Coord[], count) {
         // 先对原始数组进行浅复制
         let shuffled = [...arr];
 
@@ -123,7 +180,7 @@ export class MapPropsProcessState implements IProcessStateNode {
         }
 
         // 创建一个新的数组来存储随机选中的不重复元素
-        let result:Coord[] = [];
+        let result: Coord[] = [];
 
         while (result.length < count) {
             // 生成一个随机索引
@@ -134,21 +191,23 @@ export class MapPropsProcessState implements IProcessStateNode {
             shuffled.splice(randomIndex, 1);
 
             // 将取出的元素添加到结果数组中，确保不重复
-            if (!result.some(i=>i.x == item.x && i.y== item.y)) {
+            if (!result.some(i => i.x == item.x && i.y == item.y)) {
                 result.push(item);
             }
         }
 
         return result;
     }
+
     onUpdate() {
     }
 
-    _listener: { [p: string]: ( params) => (void | null) } = {};
+    _listener: { [p: string]: (params) => (void | null) } = {};
 
 }
-export enum MapPropsMessage{
-    CreateOneDestination="CreateOneDestination",
-    CreateOneDirection="CreateOneDirection",
-    CreateStarAbsorb="CreateOneAbsorb"
+
+export enum MapPropsMessage {
+    CreateOneDestination = "CreateOneDestination",
+    CreateOneDirection = "CreateOneDirection",
+    CreateStarAbsorb = "CreateOneAbsorb"
 }

@@ -46,6 +46,7 @@ export abstract class ShapeManager {
 	abstract closeDirect();
 
 	abstract draw(ctx, shape: Shape);
+	abstract drawBottom(ctx, shape: Shape);
 
 	abstract drawDestination(ctx, shape: Shape);
 
@@ -57,6 +58,10 @@ export abstract class ShapeManager {
 
     initDestination(num) {
         LevelDesign.getInstance().currentDestination = this.generateRandomCoordinatesOnSides(this.WidthCount - 1, num);
+    }
+
+    drawMapPropsDirection () {
+
     }
 
 	generateRandomCoordinatesOnSides(length, n) {
