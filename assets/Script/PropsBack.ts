@@ -98,7 +98,7 @@ export class PropsBack implements BaseProps {
                 ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost,GhostMessage.back)
             }
             if (Global.getInstance().getSoundEffectState()) {
-                AudioMgr.inst.playOneShot('audio/swoosh')
+                AudioMgr.inst.playOneShot('swoosh')
             }
             let num = LevelDesign.getInstance().propsUsableConfig.get(GamePropsEnum.BACK);
             num--;

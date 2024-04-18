@@ -29,5 +29,8 @@ export enum GamePropsEnum {
     /**
      * 冻结
      */
-    FREEZE
+    FREEZE,
+    CreateStar,
+    CreateDirection,
+    CreateStarAbsorb
 }

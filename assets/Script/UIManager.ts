@@ -16,6 +16,7 @@ import {PopupShare} from "db://assets/Script/PopupShare";
 import {GhostMessage} from "db://assets/Script/GhostState";
 import {MainMessage} from "db://assets/Script/MainProcessState";
 import {PopupMapPropsGuide} from "db://assets/Script/PopupMapPropsGuide";
+import {ShapeEnum} from "db://assets/Script/ShapeManager";
 
 export enum PopupEnum {
     /**
@@ -70,6 +71,11 @@ export class UIManager{
      */
     maskGlobal:Node;
 
+    /**
+     * 全局遮罩
+     */
+    maskGuideGlobal:Node;
+
     popupMap:Map<number,PopupBase>;
 
     init() {
@@ -85,6 +91,17 @@ export class UIManager{
             }, this);
         }
 
+        if (!canvas.getChildByName("MaskGuideGlobal")) {
+            this.maskGuideGlobal = instantiate(canvas.getComponent(PrefabController).maskGuideGlobal);
+            canvas.addChild(this.maskGuideGlobal)
+            // this.maskGuideGlobal.getChildByPath('Mask/Background').on(Node.EventType.TOUCH_START, function (event) {
+            //     // UIManager.getInstance().closeMaskGlobal();
+            // }, this);
+            // this.maskGuideGlobal.getChildByName('Popup').on(Node.EventType.TOUCH_START, function (event) {
+            //     // UIManager.getInstance().closeMaskGlobal();
+            // }, this);
+        }
+
     }
 
 
@@ -96,6 +113,17 @@ export class UIManager{
     public closeMaskGlobal(){
         if (UIManager.getInstance().maskGlobal) {
             UIManager.getInstance().maskGlobal.active = false;
+        }
+    }
+
+    public openMaskGuideGlobal(){
+        UIManager.getInstance().init();
+        UIManager.getInstance().maskGuideGlobal.active = true;
+    }
+
+    public closeMaskGuideGlobal(){
+        if (UIManager.getInstance().maskGuideGlobal) {
+            UIManager.getInstance().maskGuideGlobal.active = false;
         }
     }
 
@@ -173,7 +201,7 @@ export class UIManager{
     }
 
     public showFistGuide(){
-        this.openMaskGlobal();
+        this.openMaskGuideGlobal();
         let popup = UIManager.getInstance().popupMap.get(PopupEnum.GUIDE) as PopupGuide;
         let guides:Guide[] = [];
         let content = Global.getInstance().gameCanvas.getChildByName("Content");
@@ -181,12 +209,32 @@ export class UIManager{
         let g1p = content.getComponent(UITransform).convertToWorldSpaceAR(detailPanel.getPosition())
         g1p.y = g1p.y-detailPanel.getComponent(UITransform).contentSize.height
 
-        guides.push({pos:{x:g1p.x,y:g1p.y},tip:"这是<b>获胜目标</b>哦!"});
+        let detail = detailPanel.getChildByName("Detail");
+        let width = detail.getComponent(UITransform).width;
+        let height = detail.getComponent(UITransform).height;
+        let maskPos = UIManager.getInstance().maskGuideGlobal.getChildByName("Mask").getComponent(UITransform).convertToNodeSpaceAR(detail.getWorldPosition());
+        guides.push({pos:{x:g1p.x,y:g1p.y},tip:"这是<b>获胜目标</b>哦!",draw:(grp)=>{
+                grp.clear()
+                grp.lineWidth = 10;
+                grp.strokeColor.fromHEX("#d54444");
+                grp.rect(maskPos.x - width/2,maskPos.y - height/2,width,height,10)
+                grp.stroke();
+                grp.fill();
+            }});
         if (LevelDesign.getInstance().showGhostDirection) {
             let g2p = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(Global.getInstance().predictCoord.x, Global.getInstance().predictCoord.y))
+
             let g2p1 = Global.getInstance().playArea.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(g2p.x,g2p.y,0))
+            let maskPos = UIManager.getInstance().maskGuideGlobal.getChildByName("Mask").getComponent(UITransform).convertToNodeSpaceAR(g2p1);
             let angle = g2p1.y > Global.getInstance().currentGhostVec2.y?180:0;
-            guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:"这是布布的<b>下一步位置</b>哦!",angle:angle});
+            guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:"这是布布的<b>下一步位置</b>哦!",angle:angle,draw:(grp)=>{
+                    grp.clear()
+                    grp.lineWidth = 10;
+                    grp.strokeColor.fromHEX("#d54444");
+                    grp.circle(maskPos.x,maskPos.y + 10,LevelDesign.getInstance().currentShapeEnum == ShapeEnum.FOUR? LevelDesign.getInstance().getShapeManager().innerCircleRadius + 10: LevelDesign.getInstance().getShapeManager().innerCircleRadius*2+ 10)
+                    grp.stroke();
+                    grp.fill();
+                }});
         }
 
         // let gamePros = content.getChildByName("GameProps");
@@ -198,19 +246,48 @@ export class UIManager{
         let view = content.getChildByName("GameProps").getChildByName("ScrollView").getChildByName("view").getChildByName("content");
 
         let rest = view.getChildByName("障碍物重置");
+        let restWidth = rest.getComponent(UITransform).width;
         let g3p = view.getComponent(UITransform).convertToWorldSpaceAR(rest.getPosition())
+        let restPos = UIManager.getInstance().maskGuideGlobal.getChildByName("Mask").getComponent(UITransform).convertToNodeSpaceAR(g3p);
         g3p.y = g3p.y + rest.getComponent(UITransform).contentSize.height/2;
-        guides.push({pos:{x:g3p.x,y:g3p.y},tip:"初始障碍物分布不满意，可使用此道具重置",angle:180});
+        guides.push({pos:{x:g3p.x,y:g3p.y},tip:"初始障碍物分布不满意，可使用此道具重置",angle:180,draw:(grp)=>{
+                grp.clear()
+                grp.lineWidth = 10;
+                grp.strokeColor.fromHEX("#d54444");
+                grp.circle(restPos.x,restPos.y,restWidth/2)
+                grp.stroke();
+                grp.fill();
+            }});
 
         let back = view.getChildByName("后退");
+
+        let backWidth = rest.getComponent(UITransform).width;
         let g4p = view.getComponent(UITransform).convertToWorldSpaceAR(back.getPosition())
+        let backPos = UIManager.getInstance().maskGuideGlobal.getChildByName("Mask").getComponent(UITransform).convertToNodeSpaceAR(g4p);
         g4p.y = g4p.y + back.getComponent(UITransform).contentSize.height/2;
-        guides.push({pos:{x:g4p.x,y:g4p.y},tip:"不小心走错了，可使用此道具回退",angle:180});
+        guides.push({pos:{x:g4p.x,y:g4p.y},tip:"不小心走错了，可使用此道具回退",angle:180,draw:(grp)=>{
+                grp.clear()
+                grp.lineWidth = 10;
+                grp.strokeColor.fromHEX("#d54444");
+                grp.circle(backPos.x,backPos.y,backWidth/2)
+                grp.stroke();
+                grp.fill();
+            }});
 
         let freeze = view.getChildByName("冻结");
+        let freezeWidth = rest.getComponent(UITransform).width;
         let g5p = view.getComponent(UITransform).convertToWorldSpaceAR(freeze.getPosition())
+
+        let freezePos = UIManager.getInstance().maskGuideGlobal.getChildByName("Mask").getComponent(UITransform).convertToNodeSpaceAR(g5p);
         g5p.y = g5p.y + freeze.getComponent(UITransform).contentSize.height/2;
-        guides.push({pos:{x:g5p.x,y:g5p.y},tip:"可使用此道具将布布冻结",angle:180,scaleX:-1});
+        guides.push({pos:{x:g5p.x,y:g5p.y},tip:"可使用此道具将布布冻结",angle:180,scaleX:-1,draw:(grp)=>{
+                grp.clear()
+                grp.lineWidth = 10;
+                grp.strokeColor.fromHEX("#d54444");
+                grp.circle(freezePos.x,freezePos.y,freezeWidth/2)
+                grp.stroke();
+                grp.fill();
+            }});
         // let gamePros = content.getChildByName("GameProps");
         // let g3p = content.getComponent(UITransform).convertToWorldSpaceAR(gamePros.getPosition())
         // g3p.y = g3p.y + detailPanel.getComponent(UITransform).contentSize.height/2;
@@ -218,12 +295,12 @@ export class UIManager{
 
 
         popup.guides = guides;
-        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.GUIDE);
+        UIManager.getInstance().maskGuideGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.GUIDE);
 
     }
 
     public showMapPropsGuide(resume:Function,coord,tip) {
-        this.openMaskGlobal();
+        this.openMaskGuideGlobal()
         let popup = UIManager.getInstance().popupMap.get(PopupEnum.mapPropsGuide) as PopupMapPropsGuide;
         popup.resume = resume;
         let guides:Guide[] = [];
@@ -231,17 +308,17 @@ export class UIManager{
         // if (LevelDesign.getInstance().showGhostDirection) {
             let g2p = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x, coord.y))
             let g2p1 = Global.getInstance().playArea.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(g2p.x,g2p.y,0))
-            let angle = g2p1.y > Global.getInstance().currentGhostVec2.y?180:0;
+            // let angle = g2p1.y > Global.getInstance().currentGhostVec2.y?180:0;
             if (coord.x== LevelDesign.getInstance().getShapeManager().WidthCount - 1) {
-                guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:tip,angle:angle,scaleX:-1});
+                guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:tip,scaleX:-1});
             }else {
-                guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:tip,angle:angle});
+                guides.push({pos:{x:g2p1.x,y:g2p1.y},tip:tip});
             }
         // }
 
 
         popup.guides = guides;
-        UIManager.getInstance().maskGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.mapPropsGuide);
+        UIManager.getInstance().maskGuideGlobal.getChildByName('Popup').getComponent(Popup).init(PopupEnum.mapPropsGuide);
     }
 
     public pause(){

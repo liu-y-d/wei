@@ -9,6 +9,8 @@ import {Draw} from "db://assets/Script/Draw";
 import {ShapeEnum} from "db://assets/Script/ShapeManager";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {MainMessage} from "db://assets/Script/MainProcessState";
+import {PrefabController} from "db://assets/Script/PrefabController";
+import {GamePropsEnum} from "db://assets/Script/BaseProps";
 
 export class MapPropsProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.mapProps;
@@ -34,16 +36,16 @@ export class MapPropsProcessState implements IProcessStateNode {
                 }
             }
         }
-        let randomUniqueFromArray = this.getRandomUniqueFromArray(coords, 5);
+        let randomUniqueFromArray = MapPropsProcessState.getRandomUniqueFromArray(coords, 5);
         for (let i = 0; i < randomUniqueFromArray.length; i++) {
-            // let randomChoice = Math.floor(Math.random() * 3); // 生成0, 1, 或 2
-            let randomChoice = 1;
+            let randomChoice = Math.floor(Math.random() * 3); // 生成0, 1, 或 2
+            // let randomChoice = 2;
             switch (randomChoice) {
                 case 0:
                     LevelDesign.getInstance().currentMapProps.push({
                         coord: randomUniqueFromArray[i],
                         mapProps: {
-                            id: 1,
+                            id: GamePropsEnum.CreateStar,
                             name: MapPropsMessage.CreateOneDestination,
                             tip: '创建一个新的目标点',
                             exec: this.createOneDestination
@@ -54,9 +56,9 @@ export class MapPropsProcessState implements IProcessStateNode {
                     LevelDesign.getInstance().currentMapProps.push({
                         coord: randomUniqueFromArray[i],
                         mapProps: {
-                            id: 2,
+                            id: GamePropsEnum.CreateDirection,
                             name: MapPropsMessage.CreateOneDirection,
-                            tip: '创建一个可让布布继续移动的加速带,如果目标方向被挡住则会重新选择方向',
+                            tip: '创建一个可让布布继续移动的加速带',
                             exec: this.createOneDirection
                         }
                     })
@@ -65,7 +67,7 @@ export class MapPropsProcessState implements IProcessStateNode {
                     LevelDesign.getInstance().currentMapProps.push({
                         coord: randomUniqueFromArray[i],
                         mapProps: {
-                            id: 3,
+                            id: GamePropsEnum.CreateStarAbsorb,
                             name: MapPropsMessage.CreateStarAbsorb,
                             tip: '创建一个星星吸收器',
                             exec: this.createStarAbsorb
@@ -84,6 +86,8 @@ export class MapPropsProcessState implements IProcessStateNode {
         let coord = params[0];
 
         function f() {
+            Global.getInstance().moveLock.active = true;
+
             if (!LevelDesign.getInstance().currentDestination.some(c => c.x == coord.x && c.y == coord.y)) {
                 LevelDesign.getInstance().currentDestination.push(coord)
             }
@@ -103,6 +107,7 @@ export class MapPropsProcessState implements IProcessStateNode {
 
                     if (params[1]) {
                         params[1]();
+                        Global.getInstance().moveLock.active = false;
                     }
                     // detailPanel.schedule(function() {
                     //     // 这里的 this 指向 component
@@ -123,11 +128,12 @@ export class MapPropsProcessState implements IProcessStateNode {
     }
 
     createOneDirection(...params) {
-
         console.log(params)
         let coord = params[0];
 
         function f() {
+            Global.getInstance().moveLock.active = true;
+
             let tile = Global.getInstance().tileMap[coord.x][coord.y];
             tween(tile)
                 .to(0, {scale: new Vec3(2, 2, 0)})
@@ -157,6 +163,7 @@ export class MapPropsProcessState implements IProcessStateNode {
 
                     if (params[1]) {
                         params[1]();
+                        Global.getInstance().moveLock.active = false;
                     }
 
                 }).start()
@@ -167,11 +174,69 @@ export class MapPropsProcessState implements IProcessStateNode {
 
     }
 
-    createStarAbsorb(params) {
+    createStarAbsorb(...params) {
+        console.log(params)
+        let coord = params[0];
 
+        function f() {
+            Global.getInstance().moveLock.active = true;
+
+            let tile = Global.getInstance().tileMap[coord.x][coord.y];
+            let whirl = Global.getInstance().playArea.getChildByName("Whirl");
+            whirl.setSiblingIndex(9999999)
+            whirl.setPosition(new Vec3(tile.getPosition().x,tile.getPosition().y + 10))
+            whirl.active = true;
+            whirl.getComponent(Animation).play()
+
+            let index = 0;
+            let destinationArray = MapPropsProcessState.getRandomUniqueFromArray(LevelDesign.getInstance().currentDestination,3);
+            let destinationPrefab = Global.getInstance().gameCanvas.getComponent(PrefabController).destination;
+            function f1() {
+                if (index < destinationArray.length) {
+                    let destinationCoord = destinationArray[index];
+                    let destinationTile = Global.getInstance().tileMap[destinationCoord.x][destinationCoord.y];
+
+                    let prefab = instantiate(destinationPrefab);
+                    prefab.setSiblingIndex(9999999999)
+                    Global.getInstance().playArea.addChild(prefab)
+                    prefab.setPosition(destinationTile.getPosition())
+                    tween(prefab).to(1,{position:tile.getPosition()}).call(()=>{
+                        prefab.removeFromParent();
+                        destinationTile.getComponent(Draw).draw({
+                            x: destinationCoord.x,
+                            y: destinationCoord.y,
+                            shape: LevelDesign.getInstance().currentShapeEnum
+                        })
+                        index++
+                        if (index == destinationArray.length) {
+                            whirl.active = false;
+                            tile.getComponent(Draw).drawDestination({
+                                x: coord.x,
+                                y: coord.y,
+                                shape: LevelDesign.getInstance().currentShapeEnum
+                            })
+
+                            LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.filter(c=>  !destinationArray.some(d=>c.x == d.x && c.y == d.y))
+                            LevelDesign.getInstance().currentDestination.push(coord)
+                            if (params[1]) {
+                                params[1]();
+                                Global.getInstance().moveLock.active = false;
+                            }
+                        }else {
+                            f1()
+                        }
+                    }).start();
+                }
+
+            }
+            f1();
+        }
+        UIManager.getInstance().showMapPropsGuide(() => {
+            f()
+        }, coord, "创建一个星星吸收器")
     }
 
-    getRandomUniqueFromArray(arr: Coord[], count) {
+    static getRandomUniqueFromArray(arr: Coord[], count) {
         // 先对原始数组进行浅复制
         let shuffled = [...arr];
 

@@ -17,6 +17,8 @@ export class PrefabController extends Component {
     public maskGlobal:Prefab;
 
     @property(Prefab)
+    public maskGuideGlobal:Prefab;
+    @property(Prefab)
     public obstacleEmit:Prefab;
 
     @property(Prefab)
@@ -33,6 +35,9 @@ export class PrefabController extends Component {
 
     @property(Prefab)
     public Star_8:Prefab;
+
+    @property(Prefab)
+    public destination:Prefab
     start() {
 
     }

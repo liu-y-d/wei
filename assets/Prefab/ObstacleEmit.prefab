@@ -33,7 +33,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": -36.013,
       "z": 0
     },
     "_lrot": {
@@ -115,9 +115,9 @@
     "lifeVar": 0.5,
     "angle": 360,
     "angleVar": 360,
-    "startSize": 40,
-    "startSizeVar": 40,
-    "endSize": 30,
+    "startSize": 3.369999885559082,
+    "startSizeVar": 50,
+    "endSize": 30.31999969482422,
     "endSizeVar": 0,
     "startSpin": -47.369998931884766,
     "startSpinVar": 0,
@@ -130,14 +130,14 @@
     },
     "posVar": {
       "__type__": "cc.Vec2",
-      "x": 5,
-      "y": 5
+      "x": 7,
+      "y": 7
     },
     "emitterMode": 0,
     "gravity": {
       "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+      "x": 0.25,
+      "y": 0.8600000143051147
     },
     "speed": 0,
     "speedVar": 190.7899932861328,
@@ -145,7 +145,7 @@
     "tangentialAccelVar": 65.79000091552734,
     "radialAccel": -671.0499877929688,
     "radialAccelVar": 65.79000091552734,
-    "rotationIsDir": true,
+    "rotationIsDir": false,
     "startRadius": 0,
     "startRadiusVar": 0,
     "endRadius": 0,
@@ -157,41 +157,44 @@
     "_preview": true,
     "preview": true,
     "_custom": true,
-    "_file": null,
+    "_file": {
+      "__uuid__": "86f25d5c-9de5-454f-a5f9-ee16603e6701",
+      "__expectedType__": "cc.ParticleAsset"
+    },
     "_spriteFrame": {
-      "__uuid__": "24c419ea-63a8-4ea1-a9d0-7fc469489bbc@f9941",
+      "__uuid__": "26bf1a69-b17f-457b-bf38-bca9606ded93@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_totalParticles": 200,
     "_startColor": {
       "__type__": "cc.Color",
-      "r": 75,
-      "g": 10,
-      "b": 75,
-      "a": 163
+      "r": 94,
+      "g": 50,
+      "b": 0,
+      "a": 255
     },
     "_startColorVar": {
       "__type__": "cc.Color",
-      "r": 3,
-      "g": 111,
-      "b": 255,
-      "a": 198
+      "r": 0,
+      "g": 0,
+      "b": 0,
+      "a": 0
     },
     "_endColor": {
       "__type__": "cc.Color",
       "r": 0,
-      "g": 253,
-      "b": 41,
-      "a": 214
+      "g": 0,
+      "b": 0,
+      "a": 0
     },
     "_endColorVar": {
       "__type__": "cc.Color",
       "r": 0,
-      "g": 250,
-      "b": 250,
-      "a": 188
+      "g": 0,
+      "b": 0,
+      "a": 0
     },
-    "_positionType": 1,
+    "_positionType": 0,
     "_id": ""
   },
   {

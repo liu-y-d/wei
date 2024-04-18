@@ -33,7 +33,7 @@ export class Popup extends Component {
 
     init(popupType:number) {
         if (Global.getInstance().getSoundEffectState()) {
-            AudioMgr.inst.playOneShot('audio/menu')
+            AudioMgr.inst.playOneShot('menu')
         }
         UIManager.getInstance().popupMap.get(popupType).init();
     }

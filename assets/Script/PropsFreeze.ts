@@ -79,7 +79,7 @@ export class PropsFreeze implements BaseProps {
         emit.setPosition(startPosition)
 
         if (Global.getInstance().getSoundEffectState()) {
-            AudioMgr.inst.playOneShot('audio/freeze')
+            AudioMgr.inst.playOneShot('freeze')
         }
         tween(emit).to(0.5,{position:endPosition}).call(()=>{
             emit.destroy();

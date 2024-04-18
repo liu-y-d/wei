@@ -500,7 +500,7 @@ export class GameLevel extends Component {
         let difficultyInfo = LevelDesign.getInstance().getDifficultyInfo();
         let bgColor = new Color();
         Color.fromHEX(bgColor,difficultyInfo.bgColor);
-        let childByName = find('Canvas').getChildByName('DifficultyLevel');
+        let childByName = find('Canvas').getChildByPath('Content/DifficultyLevel');
         childByName.getComponent(Sprite).color = bgColor;
         let fontColor = new Color();
         Color.fromHEX(fontColor,difficultyInfo.fontColor);

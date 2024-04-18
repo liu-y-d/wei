@@ -97,7 +97,7 @@ export class SquareManager extends ShapeManager {
         // this.directNode.setPosition(target.x,target.y)
         this.directNode.active = true;
         this.directNode.getComponent(ParticleSystem2D).resetSystem();
-        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y, 0)}).start()
+        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y + 10, 0)}).start()
         // this.directNode.active = true;
         // let animation = this.directNode.getComponent(Animation);
         // animation.pause();
@@ -114,7 +114,7 @@ export class SquareManager extends ShapeManager {
         // this.directNode.setPosition(target.x,target.y)
         this.directNode.active = true;
         this.directNode.getComponent(ParticleSystem2D).resetSystem();
-        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y, 0)}).start()
+        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y + 10, 0)}).start()
     }
 
     closeDirect() {
@@ -149,12 +149,13 @@ export class SquareManager extends ShapeManager {
         ctx.clear();
         ctx.lineWidth = 0;
         let halfWidth = this.shapeWidth;
-        ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5 + 10, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
         // ctx.getParent().getPosition()
         // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
         ctx.strokeColor.fromHEX("#ffffff");
         ctx.stroke();
-        ctx.fillColor.fromHEX("#a4c49f");
+        ctx.fillColor.fromHEX("#3C6338");
         ctx.fill();
     }
     drawDestination(graphics: Graphics, shape: Shape) {

@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "a3d9ead6-5275-4310-8fb4-1188d1977092",
+  "uuid": "7d334f3e-1f05-4d47-be6f-ff989a3980ba",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "ObstacleEmit"
+    "syncNodeName": "Destination"
   }
 }

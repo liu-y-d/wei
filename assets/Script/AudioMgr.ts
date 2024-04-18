@@ -1,4 +1,4 @@
-import { Node, AudioSource, AudioClip, resources, director } from 'cc';
+import { Node, AudioSource, AudioClip, resources, director,assetManager } from 'cc';
 /**
  * @en
  * this is a sington class for audio play, can be easily called from anywhere in you project.
@@ -52,7 +52,7 @@ export class AudioMgr {
             this._audioSource.playOneShot(sound, volume);
         }
         else {
-            resources.load(sound, (err, clip: AudioClip) => {
+            assetManager.getBundle("audio").load(sound, (err, clip: AudioClip) => {
                 if (err) {
                     console.log(err);
                 }
@@ -80,7 +80,8 @@ export class AudioMgr {
             this.audioSource.volume = volume;
         }
         else {
-            resources.load(sound, (err, clip: AudioClip) => {
+
+            assetManager.getBundle("audio").load(sound, (err, clip: AudioClip) => {
                 if (err) {
                     console.log(err);
                 }
@@ -92,6 +93,8 @@ export class AudioMgr {
                     this.audioSource.volume = volume;
                 }
             });
+
+
         }
     }
 

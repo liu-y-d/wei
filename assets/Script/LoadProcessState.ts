@@ -1,5 +1,5 @@
 
-import { director,find, sys,Node} from "cc";
+import { director,find, sys,Node,assetManager} from "cc";
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import CommonProgressBar from "db://assets/Script/CommonProgressBar";
@@ -26,17 +26,25 @@ export class LoadProcessState implements IProcessStateNode {
         let progressBarNode = find('Canvas/Content/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
         find('Canvas/Content/TypeWriter').getComponent(TypeWriter).begin();
-        director.preloadScene("Main", (completedCount, totalCount, item) =>{
-            progressBar.prevNum = progressBar.num;
-            progressBar.num = completedCount / totalCount;
+        assetManager.loadBundle("audio",()=>{
             progressBar.show();
-        }, function(){
-            progressBar.hide();
-            ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
-            // if (sys.platform === sys.Platform.WECHAT_GAME) {
-            //     ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
-            // }else {
-            // }
+            progressBar.prevNum = progressBar.num;
+            progressBar.num = 0.2;
+            assetManager.loadBundle("img",()=>{
+                progressBar.prevNum = progressBar.num;
+                progressBar.num = 0.6;
+                director.preloadScene("Main", (completedCount, totalCount, item) =>{
+                    progressBar.prevNum = progressBar.num;
+                    progressBar.num = 0.6 + completedCount / totalCount * 0.2;
+                }, function(){
+
+                    ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
+                    // if (sys.platform === sys.Platform.WECHAT_GAME) {
+                    //     ProcessStateMachineManager.getInstance().change(ProcessStateEnum.login);
+                    // }else {
+                    // }
+                })
+            })
         })
     }
     onExit() {

@@ -1,10 +1,11 @@
 import {IProcessStateNode} from "./IProcessStateNode";
 
-import {sys, director, find, Node} from 'cc';
+import {sys, director, find, Node,tween,Vec3} from 'cc';
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {Global} from "db://assets/Script/Global";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {AudioMgr} from "db://assets/Script/AudioMgr";
+import CommonProgressBar from "db://assets/Script/CommonProgressBar";
 
 export class LoginProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.login;
@@ -33,7 +34,7 @@ export class LoginProcessState implements IProcessStateNode {
                 gameLevel: 1
             };
             let enter = find('Canvas/Content/Enter');
-            enter.active = true;
+
             if (sys.platform === sys.Platform.WECHAT_GAME) {
                 wx.login({
                     success(res) {
@@ -72,16 +73,23 @@ export class LoginProcessState implements IProcessStateNode {
                                                         existPlayer.playerId = res.data.data.playerId;
                                                         Global.getInstance().setPlayerInfo(existPlayer)
                                                         Global.getInstance().setToken(res.data.data.token)
-
+                                                        enter.active = true;
                                                         enter.off(Node.EventType.TOUCH_END)
                                                         if (Global.getInstance().getMusicState()) {
-                                                            AudioMgr.inst.play('audio/bgm',0.5)
+                                                            AudioMgr.inst.play('bgm',0.5)
                                                         }
                                                         enter.on(Node.EventType.TOUCH_END, () => {
                                                             director.loadScene("Main", () => {
                                                                 // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
                                                             });
                                                         })
+                                                        let progressBarNode = find('Canvas/Content/ProgressBar');
+                                                        let progressBar = progressBarNode.getComponent(CommonProgressBar);
+                                                        progressBar.prevNum = progressBar.num
+                                                        progressBar.num = 1
+                                                        tween(enter).to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
+                                                            progressBar.hide();
+                                                        }).start();
                                                     }
                                                 })
 
@@ -139,15 +147,24 @@ export class LoginProcessState implements IProcessStateNode {
                                                         let existPlayer = Global.getInstance().getPlayerInfo();
                                                         existPlayer.playerId = res.data.data.playerId;
                                                         Global.getInstance().setPlayerInfo(existPlayer)
+                                                        enter.active = true;
+
                                                         enter.off(Node.EventType.TOUCH_END)
                                                         if (Global.getInstance().getMusicState()) {
-                                                            AudioMgr.inst.play('audio/bgm',0.5)
+                                                            AudioMgr.inst.play('bgm',0.5)
                                                         }
                                                         enter.on(Node.EventType.TOUCH_END, () => {
                                                             director.loadScene("Main", () => {
                                                                 // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
                                                             });
                                                         })
+                                                        let progressBarNode = find('Canvas/Content/ProgressBar');
+                                                        let progressBar = progressBarNode.getComponent(CommonProgressBar);
+                                                        progressBar.prevNum = progressBar.num
+                                                        progressBar.num = 1
+                                                        tween(enter).to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
+                                                            progressBar.hide();
+                                                        }).start();
                                                     }
                                                 })
                                                 // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});

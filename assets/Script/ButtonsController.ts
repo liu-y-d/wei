@@ -126,10 +126,10 @@ export class ButtonsController extends Component {
             if (leaf.infinity && Global.getInstance().dateToSeconds(leaf.infinity) + 1200 - Global.getInstance().dateToSeconds(Date.now()) >= 0) {
                 // 无限体力
                 let canvas = find('Canvas');
-                let power = canvas.getChildByPath("Top/Power");
-                let leafFly = power.getChildByName("LeafFly");
-                let leafSlot = canvas.getChildByPath("Buttons/Begin/LeafSlot");
-                let convertToNodeSpaceAR = leafFly.getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
+                let leafFly = canvas.getChildByPath("Content/LeafFly");
+                // leafFly.setSiblingIndex(99999999999999999)
+                let leafSlot = canvas.getChildByPath("ContentButtons/Begin/LeafSlot");
+                let convertToNodeSpaceAR = canvas.getChildByName('Content').getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
                 tween(leafFly).to(0.5,{position:convertToNodeSpaceAR}).call(()=>{
                     let beginLeafFly = leafSlot.getChildByName("LeafFly");
                     beginLeafFly.active=true;
@@ -144,10 +144,9 @@ export class ButtonsController extends Component {
                 consumeLeaf((status)=>{
                     if (status) {
                         let canvas = find('Canvas');
-                        let power = canvas.getChildByPath("Top/Power");
-                        let leafFly = power.getChildByName("LeafFly");
-                        let leafSlot = canvas.getChildByPath("Buttons/Begin/LeafSlot");
-                        let convertToNodeSpaceAR = leafFly.getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
+                        let leafFly = canvas.getChildByPath("Content/LeafFly");
+                        let leafSlot = canvas.getChildByPath("Content/Buttons/Begin/LeafSlot");
+                        let convertToNodeSpaceAR = canvas.getChildByName('Content').getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
                         tween(leafFly).to(0.5,{position:convertToNodeSpaceAR}).call(()=>{
                             let beginLeafFly = leafSlot.getChildByName("LeafFly");
                             beginLeafFly.active=true;

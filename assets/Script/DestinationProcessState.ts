@@ -47,8 +47,9 @@ export class DestinationProcessState implements IProcessStateNode {
                             // setInterval(toggleChildSequentially, 2);
                             ProcessStateMachineManager.getInstance().change(ProcessStateEnum.obstacle);
                             // tween(detailPanel).delay(5).to(0.5,{position:new Vec3(0,260,0)}).start();
+                        }else {
+                            haha();
                         }
-                        haha();
                     }).start()
             }
         }

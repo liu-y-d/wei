@@ -1,5 +1,5 @@
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
-import {Node, Toggle, Vec2, Vec3,tween,UITransform} from 'cc';
+import {Node, Toggle, Vec2, Vec3,tween,UITransform,ParticleSystem2D} from 'cc';
 import {PropsNum} from "db://assets/Script/PropsNum";
 import {UIManager} from "db://assets/Script/UIManager";
 import {Global, PropsConfig} from "db://assets/Script/Global";
@@ -29,7 +29,7 @@ export class PropsForecast implements BaseProps {
         let num = LevelDesign.getInstance().propsUsableConfig.get(GamePropsEnum.FORECAST);
         let point1 = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(Global.getInstance().predictCoord.x, Global.getInstance().predictCoord.y))
 
-        if (num > 0 && !Global.getInstance().playArea.getChildByName("Direct").getPosition().equals(new Vec3(point1.x, point1.y, 0))) {
+        if (num > 0 && Global.getInstance().playArea.getChildByName("Direct").getComponent(ParticleSystem2D).particleCount == 0 && !Global.getInstance().playArea.getChildByName("Direct").getPosition().equals(new Vec3(point1.x, point1.y, 0))) {
             let propsConfigById = Global.getInstance().getPropsConfigById(this.id);
             if (propsConfigById.showTip) {
                 UIManager.getInstance().showPropsTip(this.name,this.description, this.resume);
@@ -66,7 +66,7 @@ export class PropsForecast implements BaseProps {
 
         }
         if (Global.getInstance().getSoundEffectState()) {
-            AudioMgr.inst.playOneShot('audio/swoosh')
+            AudioMgr.inst.playOneShot('swoosh')
         }
         UIManager.getInstance().closeMaskGlobal();
         let position = LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.FORECAST).target.getPosition();

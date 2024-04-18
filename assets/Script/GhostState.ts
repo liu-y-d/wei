@@ -41,6 +41,7 @@ export class GhostState implements IProcessStateNode {
         Global.getInstance().prevGhostVec2 = Global.getInstance().currentGhostVec2;
         let point = LevelDesign.getInstance().getShapeManager().getCenter(Global.getInstance().currentGhostVec2);
         this.ghostNode.setPosition(point.x, point.y + 10)
+        this.ghostNode.active = true;
         this.ghostNode.angle = 0;
         let  freezeNum = this.ghostNode.getChildByName("FreezeNum");
 

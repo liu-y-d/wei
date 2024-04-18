@@ -93,7 +93,7 @@ fQIDAQAB
 
     public setMusicState(state:boolean) {
         if (state) {
-            AudioMgr.inst.play('audio/bgm',0.5)
+            AudioMgr.inst.play('bgm',0.5)
         }else {
             AudioMgr.inst.stop()
         }
@@ -122,6 +122,7 @@ fQIDAQAB
     public getShakeState(): boolean {
         return sys.localStorage.getItem('shake') == "1";
     }
+
     /**
      * 添加玩家路径
      * @param coord
@@ -212,6 +213,9 @@ fQIDAQAB
                 {propsId:GamePropsEnum.BACK, showTip: true},
                 {propsId:GamePropsEnum.FORECAST, showTip: true},
                 {propsId:GamePropsEnum.FREEZE, showTip: true},
+                {propsId:GamePropsEnum.CreateStar, showTip: true},
+                {propsId:GamePropsEnum.CreateDirection, showTip: true},
+                {propsId:GamePropsEnum.CreateStarAbsorb, showTip: true},
             ];
             this.setPropsConfig(allPropsConfig);
 

@@ -147,7 +147,7 @@ export class HexagonManager extends ShapeManager {
         // this.directNode.setPosition(target.x,target.y)
         this.directNode.active = true;
         this.directNode.getComponent(ParticleSystem2D).resetSystem();
-        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y, 0)}).start()
+        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y + 10, 0)}).start()
         // let animation = this.directNode.getComponent(Animation);
         // animation.pause();
 
@@ -162,7 +162,7 @@ export class HexagonManager extends ShapeManager {
         // this.directNode.setPosition(target.x,target.y)
         this.directNode.active = true;
         this.directNode.getComponent(ParticleSystem2D).resetSystem();
-        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y, 0)}).start()
+        tween(this.directNode).to(duration, {position: new Vec3(target.x, target.y + 10, 0)}).start()
 
     }
 

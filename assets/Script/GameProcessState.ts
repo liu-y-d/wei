@@ -1,4 +1,4 @@
-import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
+import {IProcessStateNode,} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {
     Button,
@@ -18,7 +18,7 @@ import {
     UITransform,
     Vec3,
     Color,
-    Component
+    assetManager
 } from "cc";
 import {GameCtrl} from "db://assets/Script/GameCtrl";
 import {Draw} from "db://assets/Script/Draw";
@@ -32,6 +32,7 @@ import {PrefabController} from "db://assets/Script/PrefabController";
 import {UIManager} from "db://assets/Script/UIManager";
 import {DestinationMessage} from "db://assets/Script/DestinationProcessState";
 import {MapPropsMessage, MapPropsProcessState} from "db://assets/Script/MapPropsProcessState";
+import {GamePropsEnum} from "db://assets/Script/BaseProps";
 
 export class GameProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.game;
@@ -65,8 +66,11 @@ export class GameProcessState implements IProcessStateNode {
         let detailPanel = Global.getInstance().gameCanvas.getChildByName("Content").getChildByName('DetailPanel');
         let Detail = detailPanel.getChildByName("Detail");
         let DetailTip = detailPanel.getChildByName("DetailTip");
-        DetailTip.getChildByName("Label").getComponent(Label).string = "移动方向："+LevelDesign.getInstance().currentMovableDirection
+        let numLabel = DetailTip.getChildByName("Num").getComponent(Label);
+        numLabel.string = ""+LevelDesign.getInstance().currentMovableDirection
+
         let color = new Color();
+        numLabel.color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
         detailPanel.getChildByName("SpriteSplash").getComponent(Sprite).color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
 
         // #288319
@@ -177,19 +181,23 @@ export class GameProcessState implements IProcessStateNode {
                     n.active = true;
                 })
                 propsContent.getComponent(Layout).updateLayout()
-                callback();
+                gamePropsArea.scale = new Vec3(0,0,0)
+                tween(gamePropsArea).to(0.5,{scale:new Vec3(1,1,1)}).call(()=>{
+                    callback();
+                }).start()
                 return;
             }
 
             let props = levelPropsArray.get(currentIndex);
 
             if (props && props.init()) {
-                resources.load(props.spriteFrameUrl, SpriteFrame, (err: any, spriteFrame) => {
+                assetManager.getBundle("img").load(props.spriteFrameUrl, SpriteFrame, (err: any, spriteFrame) => {
                     propsNodeInit(spriteFrame, props, propsContent);
                     currentIndex++;
                     num++;
                     loadPropsResources();
                 });
+
             } else {
                 currentIndex++;
                 loadPropsResources();
@@ -303,9 +311,18 @@ export class GameProcessState implements IProcessStateNode {
             }
         }
         if (hasMapProps&&mapProps) {
-            mapProps.exec(coord,()=>{
-                ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
-            })
+            if (mapProps.id == GamePropsEnum.CreateStarAbsorb) {
+                if (LevelDesign.getInstance().currentDestination.length < 3) {
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+                }else {
+                    mapProps.exec(coord,()=>{
+                    })
+                }
+            }else {
+                mapProps.exec(coord,()=>{
+                })
+            }
         }else {
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)

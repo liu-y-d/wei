@@ -66,7 +66,7 @@ export class PropsObstacleReset implements BaseProps {
 
         }
         if (Global.getInstance().getSoundEffectState()) {
-            AudioMgr.inst.playOneShot('audio/swoosh')
+            AudioMgr.inst.playOneShot('swoosh')
         }
         UIManager.getInstance().closeMaskGlobal();
         Global.getInstance().gameCanvas.getChildByName("Content").getChildByName("DetailPanel").getComponent(Animation).play();

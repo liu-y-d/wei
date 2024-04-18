@@ -1,5 +1,5 @@
 
-import {find,Node,Label,director,ProgressBar} from 'cc';
+import {find,Node,Label,director,ProgressBar,UITransform} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -35,13 +35,13 @@ export class MainProcessState implements IProcessStateNode {
             my.initLeaf()
             LevelDesign.getInstance().init();
             Global.getInstance().propsConfigInit();
-            canvas.getChildByName('BulletScreen').active = true;
-            canvas.getChildByName('GameLevel').getComponent(GameLevel).drawCustomer();
-            canvas.getChildByName('Top').getChildByName("Menu").on(Node.EventType.TOUCH_END, ()=>{
+            canvas.getChildByPath('Content/BulletScreen').active = true;
+            canvas.getChildByPath('Content/GameLevel').getComponent(GameLevel).drawCustomer();
+            canvas.getChildByPath('Content/Top').getChildByName("Menu").on(Node.EventType.TOUCH_END, ()=>{
                 UIManager.getInstance().mainMenu();
             }, this);
         }
-        canvas.getChildByName('BulletScreen').active = false;
+        canvas.getChildByPath('Content/BulletScreen').active = false;
 
         // 本地调试
         // init(5)
@@ -55,7 +55,7 @@ export class MainProcessState implements IProcessStateNode {
 
         let canvas = find('Canvas');
         function callBack(leaf:Leaf) {
-            let power = canvas.getChildByPath("Top/Power");
+            let power = canvas.getChildByPath("Content/Top/Power");
             // power.getChildByName("PowerNum").getComponent(Label).string = leaf.infinity?'MAX':`${leaf.remaining}`
             // power.getChildByName("PowerNum").getComponent(Label).string = leaf.infinity?'MAX':`${leaf.remaining}`
             let progress = power.getChildByName("Progress");
@@ -63,12 +63,9 @@ export class MainProcessState implements IProcessStateNode {
             progress.on(Node.EventType.TOUCH_END,()=>{
                 UIManager.getInstance().openShare()
             },this)
-
+            let leafFly = canvas.getChildByPath("Content/LeafFly");
             if (leaf.infinity) {
                 let seconds = Global.getInstance().dateToSeconds(leaf.infinity);
-                console.log(seconds)
-                console.log(seconds + 1200)
-                console.log(Global.getInstance().dateToSeconds(Date.now()))
                 if (seconds + 1200 - Global.getInstance().dateToSeconds(Date.now()) >= 0) {
                     // power.getChildByName("Time").active = true;
                     // power.getChildByName("Time").getComponent(Label).string = leaf.infinity
@@ -79,8 +76,18 @@ export class MainProcessState implements IProcessStateNode {
                 }else {
                     power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
                 }
+
+
+                leafFly.setPosition(canvas.getChildByName("Content").getComponent(UITransform).convertToNodeSpaceAR(power.getChildByName("Leaf").getWorldPosition()))
+                leafFly.active=true;
             }else {
                 power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
+                if (leaf.remaining > 0) {
+                    leafFly.setPosition(canvas.getChildByName("Content").getComponent(UITransform).convertToNodeSpaceAR(power.getChildByName("Leaf").getWorldPosition()))
+                    leafFly.active=true;
+                }else {
+                    leafFly.active = false;
+                }
             }
         }
         getLeaf(callBack)
