@@ -1,5 +1,29 @@
 import {GameStateEnum, Global} from "db://assets/Script/Global";
+
+import {director} from 'cc';
 const wx = window['wx'];
+
+export function refreshToken() {
+    wx.request({
+        method: 'POST',
+        url: Global.getInstance().getPath('base/refreshToken'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success (res) {
+            Global.getInstance().setToken(res.data.data.token)
+
+            const refreshMargin = 5*60;
+            let expires = res.data.data.expires;
+            const refreshTokenTime = expires - refreshMargin;
+            setTimeout(() => {
+                refreshToken();
+            },Math.max(0, (refreshTokenTime - Date.now()/1000)*1000));
+
+        }
+    })
+}
 export function getCurrentUserGameLevelReq(callback:Function) {
     wx.request({
         method: 'GET',
@@ -23,7 +47,6 @@ export function getLeaf(callback:Function) {
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success (res) {
-            console.log(res)
             callback(res.data.data.leaf as Leaf);
         }
     })

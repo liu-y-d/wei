@@ -30,9 +30,9 @@ export class PropsBack implements BaseProps {
     }
 
     inure() {
-        let prevCoord = Global.getInstance().playerPath.length;
+        let ghostPath = Global.getInstance().ghostPath.length;
         let num = LevelDesign.getInstance().propsUsableConfig.get(GamePropsEnum.BACK);
-        if (prevCoord > 0 && num > 0) {
+        if (ghostPath > 0 && num > 0) {
             let propsConfigById = Global.getInstance().getPropsConfigById(this.id);
             if (propsConfigById.showTip) {
                 UIManager.getInstance().showPropsTip(this.name,this.description, this.resume);
@@ -69,13 +69,13 @@ export class PropsBack implements BaseProps {
 
         }
         UIManager.getInstance().closeMaskGlobal();
-        let prevCoord = Global.getInstance().playerPath.pop();
-        if (prevCoord) {
-            Global.getInstance().tileMap[prevCoord.x][prevCoord.y].getComponent(Draw).clearObstacle({
-                x: prevCoord.x,
-                y: prevCoord.y,
-                shape: LevelDesign.getInstance().currentShapeEnum
-            });
+        // let prevCoord = Global.getInstance().playerPath.pop();
+        // if (prevCoord) {
+        //     Global.getInstance().tileMap[prevCoord.x][prevCoord.y].getComponent(Draw).clearObstacle({
+        //         x: prevCoord.x,
+        //         y: prevCoord.y,
+        //         shape: LevelDesign.getInstance().currentShapeEnum
+        //     });
             if (Global.getInstance().ghostPath.length >= 1) {
                 Global.getInstance().currentGhostVec2.x = Global.getInstance().prevGhostVec2.x;
                 Global.getInstance().currentGhostVec2.y = Global.getInstance().prevGhostVec2.y;
@@ -88,14 +88,18 @@ export class PropsBack implements BaseProps {
                 Global.getInstance().prevGhostVec2.x = prev.x;
                 Global.getInstance().prevGhostVec2.y = prev.y;
                 // Global.getInstance().ghostMoving = true;
+
                 ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost,GhostMessage.back)
+
 
             }else {
 
                 Global.getInstance().prevGhostVec2 = LevelDesign.getInstance().getShapeManager().center;
                 Global.getInstance().currentGhostVec2 = LevelDesign.getInstance().getShapeManager().center;
                 // Global.getInstance().ghostMoving = true;
+
                 ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost,GhostMessage.back)
+
             }
             if (Global.getInstance().getSoundEffectState()) {
                 AudioMgr.inst.playOneShot('swoosh')
@@ -105,7 +109,7 @@ export class PropsBack implements BaseProps {
             LevelDesign.getInstance().propsUsableConfig.set(GamePropsEnum.BACK,num)
             LevelDesign.getInstance().levelPropsArray.get(GamePropsEnum.BACK).setNum(num)
         }
-    }
+    // }
 
 
 }

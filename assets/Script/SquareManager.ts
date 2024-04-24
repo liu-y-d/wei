@@ -21,18 +21,26 @@ export class SquareManager extends ShapeManager {
 
     creatorObstacle(ctx, shape: Shape) {
         this.drawBottom(ctx,shape);
-        ctx.lineWidth = 0;
-        // var px=this.getPx(shape);
-        // var py=this.getPy(shape);
-        // let center = new Vec2(px,py);
-        //    ctx.strokeColor.fromHEX("#ff0000")
-        ctx.fillColor.fromHEX("#E09E50")
-        // ctx.circle(px,py,hexagonheight);
-        // ctx.strokeColor.fromHEX("#363333")
-        ctx.circle(0, 0, this.shapeWidth / 2 - 10);
-        ctx.stroke();
-        ctx.fill();
+        let tile = Global.getInstance().tileMap[shape.x][shape.y];
+
+        let obstacle = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).obstacle);
+        obstacle.getComponent(UITransform).setContentSize(this.shapeWidth-10,(this.shapeWidth-10) / 1.1)
+        tile.addChild(obstacle)
     }
+    // creatorObstacle(ctx, shape: Shape) {
+    //     this.drawBottom(ctx,shape);
+    //     ctx.lineWidth = 0;
+    //     // var px=this.getPx(shape);
+    //     // var py=this.getPy(shape);
+    //     // let center = new Vec2(px,py);
+    //     //    ctx.strokeColor.fromHEX("#ff0000")
+    //     ctx.fillColor.fromHEX("#E09E50")
+    //     // ctx.circle(px,py,hexagonheight);
+    //     // ctx.strokeColor.fromHEX("#363333")
+    //     ctx.circle(0, 0, this.shapeWidth / 2 - 10);
+    //     ctx.stroke();
+    //     ctx.fill();
+    // }
 
     createDefaultObstacle() {
         Global.getInstance().obstacleCoords = new Array<Coord>();
@@ -127,36 +135,74 @@ export class SquareManager extends ShapeManager {
     draw(ctx: Graphics, shape: Shape) {
         ctx.clear();
         ctx.lineWidth = 0;
-        let halfWidth = this.shapeWidth;
-        // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
-        ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
-        // ctx.getParent().getPosition()
-        // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
-        ctx.strokeColor.fromHEX("#ffffff");
-        ctx.stroke();
-        ctx.fillColor.fromHEX("#3C6338");
-        ctx.fill();
+        if (LevelDesign.getInstance().currentMovableDirection == 8) {
+            this.drawEight(ctx,0,0,"#3C6338");
+            this.drawEight(ctx,0,10,"#a4c49f");
+        }else {
+            let halfWidth = this.shapeWidth;
+            // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            // ctx.getParent().getPosition()
+            // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            ctx.strokeColor.fromHEX("#ffffff");
+            ctx.stroke();
+            ctx.fillColor.fromHEX("#3C6338");
+            ctx.fill();
 
-        ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5 + 10, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
-        // ctx.getParent().getPosition()
-        // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
-        ctx.strokeColor.fromHEX("#ffffff");
-        ctx.stroke();
-        ctx.fillColor.fromHEX("#a4c49f");
-        ctx.fill();
+            ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5 + 10, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            // ctx.getParent().getPosition()
+            // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            ctx.strokeColor.fromHEX("#ffffff");
+            ctx.stroke();
+            ctx.fillColor.fromHEX("#a4c49f");
+            ctx.fill();
+        }
+
     }
     drawBottom(ctx: any, shape: Shape) {
         ctx.clear();
         ctx.lineWidth = 0;
-        let halfWidth = this.shapeWidth;
-        // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
-        ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
-        // ctx.getParent().getPosition()
-        // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+        if (LevelDesign.getInstance().currentMovableDirection == 8) {
+            this.drawEight(ctx,0,0,"#3C6338");
+        }else {
+            let halfWidth = this.shapeWidth;
+            // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            // ctx.getParent().getPosition()
+            // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
+            ctx.strokeColor.fromHEX("#ffffff");
+            ctx.stroke();
+            ctx.fillColor.fromHEX("#3C6338");
+            ctx.fill();
+        }
+
+    }
+
+    drawEight(ctx,x,y,hex) {
+        let distanceToEdge = this.shapeWidth/2; // 这里替换为你的 x 值
+        // let sideLength = 2 * distanceToEdge / Math.sqrt(2); // 计算正八边形的边长
+        const startingAngle = -Math.PI / 2/2/2;
+
+        // 从第四个顶点开始遍历所有顶点
+        for (let i = 0; i < 8; ++i) {
+            let actualIndex = (i + 4) % 8; // 确保循环回到第一个顶点
+            let angle = startingAngle + actualIndex * Math.PI / 4;
+
+            let px = x + distanceToEdge * Math.cos(angle);
+            let py = y + distanceToEdge * Math.sin(angle);
+
+            if (i === 0) { // 第一个点
+                ctx.moveTo(px, py);
+            } else {
+                ctx.lineTo(px, py);
+            }
+        }
         ctx.strokeColor.fromHEX("#ffffff");
         ctx.stroke();
-        ctx.fillColor.fromHEX("#3C6338");
+        ctx.fillColor.fromHEX(hex);
         ctx.fill();
+
+
     }
     drawDestination(graphics: Graphics, shape: Shape) {
         this.drawBottom(graphics,shape)

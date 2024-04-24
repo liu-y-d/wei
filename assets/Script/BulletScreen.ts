@@ -9,7 +9,7 @@ export class BulletScreen extends Component {
     @property({type: Prefab})
     bulletPrefab:Prefab;
 
-    bulletsArray = [];
+    bulletsArray:Node[] = [];
     bulletContent = [];
     bulletColor = [
         "#F9DC24",
@@ -38,16 +38,6 @@ export class BulletScreen extends Component {
     update(deltaTime: number) {
         let record = [];
         for (let i=0; i<this.bulletsArray.length; i++) {
-            let compontent = this.bulletsArray[i].getComponent(Bullet);
-            if (this.bulletsArray[i].getPosition().x < -this.node.getComponent(UITransform).contentSize.width/2 && compontent.hoverTime > 0) {
-                if (!director.getScheduler().isScheduled(clear,compontent)) {
-                    compontent.scheduleOnce(clear,compontent.hoverTime)
-                }
-                function clear() {
-                    compontent.hoverTime = 0;
-                }
-                return;
-            }
             this.bulletsArray[i].setPosition(this.bulletsArray[i].getPosition().x - deltaTime*this.bulletsArray[i].getComponent(Bullet).speed, this.bulletsArray[i].getPosition().y)
             // 文本完全移动到屏幕左侧后，回收
             if (this.bulletsArray[i].getPosition().x <= -(this.node.getComponent(UITransform).contentSize.width/2 + this.bulletsArray[i].getComponent(UITransform).contentSize.width)) {
@@ -86,7 +76,7 @@ export class BulletScreen extends Component {
             component.string = this.randomContent();
             if (bullet.getComponent(UITransform).contentSize.width > this.node.getComponent(UITransform).contentSize.width) {
                 component.maxWidth = this.node.getComponent(UITransform).contentSize.width;
-                bullet.getComponent(Bullet).hoverTime = 5;
+                // bullet.getComponent(Bullet).hoverTime = 5;
                 component.fontColor = this.randomColor();
                 bullet.getComponent(Bullet).speed = this.randomSpeed();
                 bullet.setPosition(this.node.getComponent(UITransform).contentSize.width/2,director.getScene().name == 'Load'?0:this.randomStartPosY());

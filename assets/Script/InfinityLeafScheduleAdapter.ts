@@ -27,7 +27,6 @@ export class InfinityLeafScheduleAdapter extends Component {
             return formattedMinutes + ':' + formattedSeconds;
         }
         let nowSeconds = Math.floor(Date.now() / 1000);
-        console.log(nowSeconds)
 
         let stopTime = this.countdownSeconds + 1200
         let remaining = stopTime - nowSeconds;

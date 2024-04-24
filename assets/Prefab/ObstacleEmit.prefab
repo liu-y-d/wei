@@ -33,7 +33,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": -36.013,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -101,7 +101,7 @@
     },
     "_customMaterial": null,
     "_srcBlendFactor": 2,
-    "_dstBlendFactor": 1,
+    "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
       "r": 255,
@@ -110,7 +110,7 @@
       "a": 255
     },
     "duration": -1,
-    "emissionRate": 999.999985098839,
+    "emissionRate": 200,
     "life": 0.20000000298023224,
     "lifeVar": 0.5,
     "angle": 360,
@@ -130,8 +130,8 @@
     },
     "posVar": {
       "__type__": "cc.Vec2",
-      "x": 7,
-      "y": 7
+      "x": 0,
+      "y": 0
     },
     "emitterMode": 0,
     "gravity": {
@@ -162,15 +162,15 @@
       "__expectedType__": "cc.ParticleAsset"
     },
     "_spriteFrame": {
-      "__uuid__": "26bf1a69-b17f-457b-bf38-bca9606ded93@f9941",
+      "__uuid__": "34af875b-6d8d-40d9-a186-f310994833bd@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_totalParticles": 200,
     "_startColor": {
       "__type__": "cc.Color",
-      "r": 94,
-      "g": 50,
-      "b": 0,
+      "r": 242,
+      "g": 204,
+      "b": 147,
       "a": 255
     },
     "_startColorVar": {
@@ -182,9 +182,9 @@
     },
     "_endColor": {
       "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
-      "b": 0,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 0
     },
     "_endColorVar": {

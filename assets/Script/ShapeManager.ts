@@ -15,14 +15,14 @@ export abstract class ShapeManager {
 	abstract getNearbyShapeCoords(point?: Coord): Array<Coord>;
 
 	isDestination(coord: Coord) {
-        if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
-            return (coord.x == 0 && coord.y < this.HeightCount) ||
-                (coord.x < this.WidthCount && coord.y == 0) ||
-                (coord.x == this.WidthCount - 1 && coord.y < this.HeightCount) ||
-                (coord.x < this.WidthCount && coord.y == this.HeightCount - 1);
-        }else {
+        // if (LevelDesign.getInstance().difficultyLevel == DifficultyLevelEnum.Hard) {
+        //     return (coord.x == 0 && coord.y < this.HeightCount) ||
+        //         (coord.x < this.WidthCount && coord.y == 0) ||
+        //         (coord.x == this.WidthCount - 1 && coord.y < this.HeightCount) ||
+        //         (coord.x < this.WidthCount && coord.y == this.HeightCount - 1);
+        // }else {
             return LevelDesign.getInstance().currentDestination.some(d=>d.x == coord.x && d.y == coord.y);
-        }
+        // }
     }
 
 	shapeEnum: ShapeEnum;

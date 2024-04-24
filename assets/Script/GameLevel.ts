@@ -84,6 +84,32 @@ export class GameLevel extends Component {
             .to(0.5,{scale:new Vec3(0,0,1)}).union().repeatForever().start();
     }
 
+    drawEight(ctx,x,y,hex,length) {
+        let distanceToEdge = length/2; // 这里替换为你的 x 值
+        // let sideLength = 2 * distanceToEdge / Math.sqrt(2); // 计算正八边形的边长
+        const startingAngle = -Math.PI / 2/2/2;
+
+        // 从第四个顶点开始遍历所有顶点
+        for (let i = 0; i < 8; ++i) {
+            let actualIndex = (i + 4) % 8; // 确保循环回到第一个顶点
+            let angle = startingAngle + actualIndex * Math.PI / 4;
+
+            let px = x + distanceToEdge * Math.cos(angle);
+            let py = y + distanceToEdge * Math.sin(angle);
+
+            if (i === 0) { // 第一个点
+                ctx.moveTo(px, py);
+            } else {
+                ctx.lineTo(px, py);
+            }
+        }
+        ctx.strokeColor.fromHEX("#ffffff");
+        ctx.stroke();
+        ctx.fillColor.fromHEX(hex);
+        ctx.fill();
+
+
+    }
     initShapeFourNode() {
         let detail = this.node.getChildByName('Detail');
         const graphics = detail.getComponent(Graphics);
@@ -139,7 +165,7 @@ export class GameLevel extends Component {
 
         function animateNodeScale(node: Node, onComplete?: () => void): void {
             tween(node)
-                .to(duration, { scale: new Vec3(1.3, 1.3, 1) })
+                .to(duration, { scale: new Vec3(1.2, 1.2, 1) })
                 .to(duration, { scale: new Vec3(1, 1, 1) })
                 .call(onComplete)
                 .start();
@@ -180,22 +206,32 @@ export class GameLevel extends Component {
         // graphics.beginPath();
 
         // 绘制矩形，参数为左上角坐标x, y以及宽度width和高度height
-        graphics.roundRect(-edgeLength/2, -edgeLength/2, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2, -edgeLength/2, edgeLength, edgeLength,10);
 
-        graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2 + edgeLength +10, edgeLength, edgeLength,10);
-        graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2 + edgeLength +10, edgeLength, edgeLength,10);
-        graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2 - edgeLength -10, edgeLength, edgeLength,10);
-        graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2 - edgeLength -10, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2 + edgeLength +10, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2 + edgeLength +10, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2 - edgeLength -10, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2 - edgeLength -10, edgeLength, edgeLength,10);
+        //
+        // graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2 , -edgeLength/2- edgeLength -10, edgeLength, edgeLength,10);
+        // graphics.roundRect(-edgeLength/2 , -edgeLength/2+ edgeLength +10, edgeLength, edgeLength,10);
 
-        graphics.roundRect(-edgeLength/2 + edgeLength +10, -edgeLength/2, edgeLength, edgeLength,10);
-        graphics.roundRect(-edgeLength/2 - edgeLength -10, -edgeLength/2, edgeLength, edgeLength,10);
-        graphics.roundRect(-edgeLength/2 , -edgeLength/2- edgeLength -10, edgeLength, edgeLength,10);
-        graphics.roundRect(-edgeLength/2 , -edgeLength/2+ edgeLength +10, edgeLength, edgeLength,10);
+        this.drawEight(graphics,0,0,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,edgeLength +10,edgeLength +10,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,- edgeLength -10,edgeLength +10,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,- edgeLength -10,- edgeLength -10,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,edgeLength +10,- edgeLength -10,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,edgeLength +10,0,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,- edgeLength -10,0,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,0,- edgeLength -10,"#FFFFFF",edgeLength)
+        this.drawEight(graphics,0,edgeLength +10,"#FFFFFF",edgeLength)
 
-        // 结束当前路径并填充或描边
-        graphics.fill();
-        // 或者如果你想只描边不填充
-        graphics.stroke();
+        // // 结束当前路径并填充或描边
+        // graphics.fill();
+        // // 或者如果你想只描边不填充
+        // graphics.stroke();
 
         let boolBool = detail.getChildByName('BoolBool');
         tween(boolBool)
@@ -290,11 +326,12 @@ export class GameLevel extends Component {
             node.setPosition(data.position);
             node.addComponent(Graphics);
             let graphics = node.getComponent(Graphics);
-            graphics.roundRect(0 - edgeLength/2, 0- edgeLength/2, edgeLength, edgeLength,10);
-            // 结束当前路径并填充或描边
-            graphics.fill();
-            // 或者如果你想只描边不填充
-            graphics.stroke();
+            // graphics.roundRect(0 - edgeLength/2, 0- edgeLength/2, edgeLength, edgeLength,10);
+            this.drawEight(graphics,0,0,"#FFFFFF",edgeLength)
+            // // 结束当前路径并填充或描边
+            // graphics.fill();
+            // // 或者如果你想只描边不填充
+            // graphics.stroke();
             detail.addChild(node);
             return node;
         });
@@ -321,7 +358,7 @@ export class GameLevel extends Component {
 
         function animateNodeScale(node: Node, onComplete?: () => void): void {
             tween(node)
-                .to(duration, { scale: new Vec3(1.3, 1.3, 1) })
+                .to(duration, { scale: new Vec3(1.2, 1.2, 1) })
                 .to(duration, { scale: new Vec3(1, 1, 1) })
                 .call(onComplete)
                 .start();
@@ -413,7 +450,7 @@ export class GameLevel extends Component {
 
         function animateNodeScale(node: Node, onComplete?: () => void): void {
             tween(node)
-                .to(duration, { scale: new Vec3(1.3, 1.3, 1) })
+                .to(duration, { scale: new Vec3(1.2, 1.2, 1) })
                 .to(duration, { scale: new Vec3(1, 1, 1) })
                 .call(onComplete)
                 .start();

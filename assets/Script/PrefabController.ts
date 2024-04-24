@@ -38,6 +38,9 @@ export class PrefabController extends Component {
 
     @property(Prefab)
     public destination:Prefab
+
+    @property(Prefab)
+    public obstacle:Prefab
     start() {
 
     }

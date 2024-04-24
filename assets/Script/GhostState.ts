@@ -114,6 +114,25 @@ export class GhostState implements IProcessStateNode {
             x = Global.getInstance().predictCoord.x;
             y = Global.getInstance().predictCoord.y;
         }
+        // let component = Global.getInstance().tileMap[Global.getInstance().currentGhostVec2.x][Global.getInstance().currentGhostVec2.y].getComponent(Draw);
+        // if (component.isMapPropsDirection && component.mapPropsDirection.x == Global.getInstance().currentGhostVec2.x && component.mapPropsDirection.y == Global.getInstance().currentGhostVec2.y ) {
+        let nearHexagonCoords = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords();
+        nearHexagonCoords = nearHexagonCoords.filter(n=>n.x >= 0 && n.x < LevelDesign.getInstance().getShapeManager().WidthCount && n.y >= 0 && n.y < LevelDesign.getInstance().getShapeManager().HeightCount )
+        nearHexagonCoords = nearHexagonCoords.filter(n=> !Global.getInstance().tileMap[n.x][n.y].getComponent(Draw).hasObstacle)
+        nearHexagonCoords = nearHexagonCoords.filter(n=>{
+            let component = Global.getInstance().tileMap[n.x][n.y].getComponent(Draw);
+            return !(component.isMapPropsDirection && component.mapPropsDirection.x == Global.getInstance().currentGhostVec2.x &&  component.mapPropsDirection.y == Global.getInstance().currentGhostVec2.y)
+        })
+
+        if (nearHexagonCoords.length == 0) {
+            Global.getInstance().ghostMoving = false;
+            Global.getInstance().moveLock.active = false;
+            target.win();
+            return;
+        }
+
+        // }
+
 
         if (!(Global.getInstance().currentGhostVec2.x == Global.getInstance().prevGhostVec2.x && Global.getInstance().currentGhostVec2.y == Global.getInstance().prevGhostVec2.y)) {
             Global.getInstance().prevGhostVec2.set(Global.getInstance().currentGhostVec2);
@@ -167,6 +186,8 @@ export class GhostState implements IProcessStateNode {
                         x: tile.getComponent(Draw).mapPropsDirection.x,
                         y: tile.getComponent(Draw).mapPropsDirection.y
                     }
+
+                    Global.getInstance().addJiaSuDaiPath({x: x, y: y});
                     ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
                 }
             })
@@ -221,6 +242,14 @@ export class GhostState implements IProcessStateNode {
                 }
                 Global.getInstance().ghostMoving = false;
                 Global.getInstance().moveLock.active = false;
+
+                if (Global.getInstance().jiaSuDaiPath.length >0) {
+                    let coord = Global.getInstance().jiaSuDaiPath[Global.getInstance().jiaSuDaiPath.length - 1];
+                    if (coord.x == Global.getInstance().currentGhostVec2.x && coord.y == Global.getInstance().currentGhostVec2.y) {
+                        Global.getInstance().jiaSuDaiPath.pop();
+                        self.back(self,null)
+                    }
+                }
             })
             .start();
 

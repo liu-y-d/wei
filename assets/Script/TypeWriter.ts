@@ -32,8 +32,17 @@ export class TypeWriter extends Component {
                     this.scheduleOnce(()=>{hover = true},5)
                     return
                 }
-                // 更新富文本内容
-                this.node.getComponent(RichText).string = this.contentArray[this.currentContentIndex].slice(0, this.typeIndex + 1);
+                const codePoint = this.contentArray[this.currentContentIndex].codePointAt(this.typeIndex);
+
+                // 对于代理对（Surrogate Pair），跳过第二个代理字符
+                if (codePoint > 0xFFFF) {
+                    // 更新富文本内容
+                    // this.node.getComponent(RichText).string = this.contentArray[this.currentContentIndex].slice(0, this.typeIndex + 2);
+                }else {
+                    // 更新富文本内容
+                    this.node.getComponent(RichText).string = this.contentArray[this.currentContentIndex].slice(0, this.typeIndex + 1);
+                }
+
                 this.typeIndex++
             }
         }, 0.2)

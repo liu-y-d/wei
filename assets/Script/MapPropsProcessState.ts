@@ -76,13 +76,10 @@ export class MapPropsProcessState implements IProcessStateNode {
                     break;
             }
         }
-        console.log(LevelDesign.getInstance().currentMapProps)
 
     }
 
     createOneDestination(...params) {
-
-        console.log(params)
         let coord = params[0];
 
         function f() {
@@ -120,15 +117,18 @@ export class MapPropsProcessState implements IProcessStateNode {
 
                 }).start()
         }
-        UIManager.getInstance().showMapPropsGuide(() => {
+        if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStarAbsorb)?.showTip) {
+            UIManager.getInstance().showMapPropsGuide(() => {
+                f()
+            }, coord, "创建一个⭐️")
+        }else {
             f()
-        }, coord, "创建一个⭐️")
+        }
 
 
     }
 
     createOneDirection(...params) {
-        console.log(params)
         let coord = params[0];
 
         function f() {
@@ -144,14 +144,15 @@ export class MapPropsProcessState implements IProcessStateNode {
                         y: coord.y,
                         shape: LevelDesign.getInstance().currentShapeEnum
                     })
-                    let nearbyShapeCoords = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords(coord);
+                    // let nearbyShapeCoords = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords(coord);
 
 
                     let directionProps = instantiate(tile.getComponent(Draw).directionProps);
-                    let targetCoord = nearbyShapeCoords[Math.floor(Math.random()*nearbyShapeCoords.length)];
-                    tile.getComponent(Draw).mapPropsDirection = targetCoord
+                    // let targetCoord = nearbyShapeCoords[Math.floor(Math.random()*nearbyShapeCoords.length)];
 
-                    let targetPoint = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(targetCoord.x,targetCoord.y));
+                    tile.getComponent(Draw).mapPropsDirection = params[2]
+
+                    let targetPoint = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(params[2].x,params[2].y));
                     let currentPoint = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(coord.x,coord.y));
                     let angle = Math.atan2(targetPoint.x - currentPoint.x, targetPoint.y - currentPoint.y);
                     angle = misc.radiansToDegrees(angle);
@@ -168,14 +169,16 @@ export class MapPropsProcessState implements IProcessStateNode {
 
                 }).start()
         }
-        UIManager.getInstance().showMapPropsGuide(() => {
+        if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateDirection)?.showTip) {
+            UIManager.getInstance().showMapPropsGuide(() => {
+                f()
+            }, coord, "创建一个加速带")
+        }else {
             f()
-        }, coord, "创建一个加速带")
-
+        }
     }
 
     createStarAbsorb(...params) {
-        console.log(params)
         let coord = params[0];
 
         function f() {
@@ -188,6 +191,7 @@ export class MapPropsProcessState implements IProcessStateNode {
             whirl.active = true;
             whirl.getComponent(Animation).play()
 
+            tween(whirl).to(0.5,{scale:new Vec3(1,1,1)}).start()
             let index = 0;
             let destinationArray = MapPropsProcessState.getRandomUniqueFromArray(LevelDesign.getInstance().currentDestination,3);
             let destinationPrefab = Global.getInstance().gameCanvas.getComponent(PrefabController).destination;
@@ -231,9 +235,13 @@ export class MapPropsProcessState implements IProcessStateNode {
             }
             f1();
         }
-        UIManager.getInstance().showMapPropsGuide(() => {
+        if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStarAbsorb)?.showTip) {
+            UIManager.getInstance().showMapPropsGuide(() => {
+                f()
+            }, coord, "创建一个星星吸收器")
+        }else {
             f()
-        }, coord, "创建一个星星吸收器")
+        }
     }
 
     static getRandomUniqueFromArray(arr: Coord[], count) {

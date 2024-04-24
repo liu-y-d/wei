@@ -68,7 +68,6 @@ export class ButtonsController extends Component {
         window['wx'].getUserInteractiveStorage({
             keyList :["friendRank"],
             success: (res)=>{
-                console.log(res)
                 let canvas = find('Canvas');
                 let childByName = canvas.getChildByName("RankPanel");
                 if (childByName) {
@@ -81,7 +80,6 @@ export class ButtonsController extends Component {
                 // 检查授权状态
                 window['wx'].getSetting({
                     success(res) {
-                        console.log(res)
                         if (!res.authSetting['scope.getUserInteractiveStorage']) {
                             // 授权被拒绝
                             window['wx'].showModal({
@@ -128,7 +126,7 @@ export class ButtonsController extends Component {
                 let canvas = find('Canvas');
                 let leafFly = canvas.getChildByPath("Content/LeafFly");
                 // leafFly.setSiblingIndex(99999999999999999)
-                let leafSlot = canvas.getChildByPath("ContentButtons/Begin/LeafSlot");
+                let leafSlot = canvas.getChildByPath("Content/Buttons/Begin/LeafSlot");
                 let convertToNodeSpaceAR = canvas.getChildByName('Content').getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
                 tween(leafFly).to(0.5,{position:convertToNodeSpaceAR}).call(()=>{
                     let beginLeafFly = leafSlot.getChildByName("LeafFly");

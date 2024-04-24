@@ -1,5 +1,5 @@
 
-import { director,find, sys,Node,assetManager} from "cc";
+import { director,find, Vec3,Node,assetManager,tween} from "cc";
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import CommonProgressBar from "db://assets/Script/CommonProgressBar";
@@ -33,6 +33,11 @@ export class LoadProcessState implements IProcessStateNode {
             assetManager.loadBundle("img",()=>{
                 progressBar.prevNum = progressBar.num;
                 progressBar.num = 0.6;
+                // let mascot = find('Canvas/Content/logo/mascot');
+                // let targetPos = mascot.getPosition();
+                // tween(mascot).to(0,{position:new Vec3(targetPos.x,0,0)})
+                //     .to(0.5,{scale:new Vec3(1,1,1)})
+                //     .to(0.5,{position:targetPos}).union().start()
                 director.preloadScene("Main", (completedCount, totalCount, item) =>{
                     progressBar.prevNum = progressBar.num;
                     progressBar.num = 0.6 + completedCount / totalCount * 0.2;

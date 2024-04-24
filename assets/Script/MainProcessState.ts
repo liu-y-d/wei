@@ -30,7 +30,6 @@ export class MainProcessState implements IProcessStateNode {
         let canvas = find('Canvas');
 
         function init(gameLevel) {
-            console.log("gameLevel",gameLevel)
             my.simulation(gameLevel);
             my.initLeaf()
             LevelDesign.getInstance().init();

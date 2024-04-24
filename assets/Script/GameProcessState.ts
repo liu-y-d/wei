@@ -319,6 +319,27 @@ export class GameProcessState implements IProcessStateNode {
                     mapProps.exec(coord,()=>{
                     })
                 }
+            } else if(mapProps.id == GamePropsEnum.CreateDirection) {
+                let nearbyShapeCoords = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords(coord);
+                nearbyShapeCoords = nearbyShapeCoords.filter(n=>n.x >= 0 && n.x < LevelDesign.getInstance().getShapeManager().WidthCount && n.y >= 0 && n.y < LevelDesign.getInstance().getShapeManager().HeightCount )
+                nearbyShapeCoords = nearbyShapeCoords.filter(n=> !Global.getInstance().tileMap[n.x][n.y].getComponent(Draw).hasObstacle)
+                if (nearbyShapeCoords.length > 0) {
+                    // 如果附近图块全是加速带并且加速带的方向都指向当前位置 则不创建道具
+                    nearbyShapeCoords = nearbyShapeCoords.filter(n=>{
+                        let component = Global.getInstance().tileMap[n.x][n.y].getComponent(Draw);
+                        return !(component.isMapPropsDirection && component.mapPropsDirection.x == coord.x &&  component.mapPropsDirection.y == coord.y)
+                    })
+                    if (nearbyShapeCoords.length > 0) {
+                        mapProps.exec(coord,()=>{
+                        },MapPropsProcessState.getRandomUniqueFromArray(nearbyShapeCoords,1)[0])
+                    }else {
+                        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
+                        ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+                    }
+                }else {
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
+                    ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
+                }
             }else {
                 mapProps.exec(coord,()=>{
                 })

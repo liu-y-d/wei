@@ -1,6 +1,7 @@
-import {Global} from "db://assets/Script/Global";
+import {Coord, Global} from "db://assets/Script/Global";
 import {Draw} from "db://assets/Script/Draw";
 import {DifficultyLevelEnum, LevelDesign} from "db://assets/Script/LevelDesign";
+import {GamePropsEnum} from "db://assets/Script/BaseProps";
 
 
 export class Block {
@@ -8,6 +9,9 @@ export class Block {
     public readonly y: number;
     public readonly isWall: boolean;
     public readonly isDestination: boolean;
+    // 是加速带
+    public readonly isDirection: boolean;
+    public readonly mapPropsDirection: Coord;
     public distance: number;
     private parent: Blocks;
 
@@ -18,7 +22,8 @@ export class Block {
         this.distance = Infinity;
         this.parent = parent;
         this.isDestination = LevelDesign.getInstance().currentDestination.some(d=>d.x == i && d.y == j);
-
+        this.isDirection = Global.getInstance().tileMap[i][j].getComponent(Draw).isDestination
+        this.mapPropsDirection = Global.getInstance().tileMap[i][j].getComponent(Draw).mapPropsDirection
     }
 
     private _routesCount: number;
@@ -56,6 +61,7 @@ export class Block {
 
     get directions(): number[] {
         let result = [];
+        // 找到地图中的道具
 
         this.neighbours.forEach((neighbour, direction) => {
             if (neighbour !== null && !neighbour.isWall) {
@@ -64,7 +70,12 @@ export class Block {
                 }
             }
         });
-        return result;
+        // 当所剩方向都是加速带并且加速带的方向是原方向
+        if (result.length > 0 && result.every(r=>r.isDirection && r.mapPropsDirection.x == this.x && r.mapPropsDirection.y == this.y)) {
+            return [];
+        } else {
+            return result;
+        }
     }
 
     get direction(): number {

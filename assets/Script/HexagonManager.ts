@@ -539,24 +539,27 @@ export class HexagonManager extends ShapeManager {
         // ctx.fill();
     }
 
+    // creatorObstacle(ctx, shape: Shape) {
+    //     this.drawBottom(ctx,shape);
+    //     ctx.lineWidth = 0;
+    //     // var px=this.getPx(shape);
+    //     // var py=this.getPy(shape);
+    //     // let center = new Vec2(px,py);
+    //     //    ctx.strokeColor.fromHEX("#ff0000")
+    //     ctx.fillColor.fromHEX("#BD9A8C")
+    //     // ctx.circle(px,py,hexagonheight);
+    //     // ctx.strokeColor.fromHEX("#363333")
+    //     ctx.circle(0, 0 , this.hexagonHeight - 10);
+    //     ctx.stroke();
+    //     ctx.fill();
+    // }
     creatorObstacle(ctx, shape: Shape) {
         this.drawBottom(ctx,shape);
-        ctx.lineWidth = 0;
-        // var px=this.getPx(shape);
-        // var py=this.getPy(shape);
-        // let center = new Vec2(px,py);
-        //    ctx.strokeColor.fromHEX("#ff0000")
-        ctx.fillColor.fromHEX("#BD9A8C")
-        // ctx.circle(px,py,hexagonheight);
-        // ctx.strokeColor.fromHEX("#363333")
-        ctx.circle(0, 0 , this.hexagonHeight - 10);
-        ctx.stroke();
-        ctx.fill();
-        // this.node.getChildByName('Pianyi').getComponent(Label).string = "x:"+hexagon.x+",y:"+hexagon.y;
-        // console.log("pianyi:" +"x:"+hexagon.x+",y:"+hexagon.y)
-        // let cube = HexagonManager.pianyi_cube(hexagon.x,hexagon.y)
-        // this.node.getChildByName('Zhou').getComponent(Label).string = "x:"+cube.x+",y:"+cube.y+",z:"+cube.z;
-        // console.log("Zhou:" +"x:"+cube.x+",y:"+cube.y+",z:"+cube.z)
+
+        let tile = Global.getInstance().tileMap[shape.x][shape.y];
+
+        let obstacle = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).obstacle);
+        tile.addChild(obstacle)
     }
 
     // initDestination() {

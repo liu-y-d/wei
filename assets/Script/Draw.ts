@@ -90,6 +90,10 @@ export class Draw extends Component {
 
     clearObstacle(shape:Shape){
         this.hasObstacle = false;
+        let obstacle = Global.getInstance().tileMap[shape.x][shape.y].getChildByName("Obstacle");
+        if (obstacle) {
+            obstacle.removeFromParent();
+        }
         if (this.isDestination) {
             this.drawDestination(shape);
         }else {

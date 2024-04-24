@@ -36,7 +36,7 @@ export class Global {
     public serverAddrDev:string = 'http://localhost:8088/api/'
 
     public getPath(path:string){
-        return this.serverAddrDev + path;
+        return this.serverAddrProd + path;
     }
     gameState:GameStateEnum = GameStateEnum.ready;
     public gameCanvas:Node;
@@ -86,6 +86,7 @@ fQIDAQAB
     public playerPath:Array<Coord>;
 
     public ghostPath:Array<Coord>;
+    public jiaSuDaiPath:Array<Coord>;
 
     public music:boolean;
     public soundEffect:boolean;
@@ -146,11 +147,23 @@ fQIDAQAB
     }
 
     /**
+     * 添加鬼路径
+     * @param coord
+     */
+    public addJiaSuDaiPath(coord:Coord){
+        if (!this.jiaSuDaiPath) {
+            this.jiaSuDaiPath = new Array<Coord>();
+        }
+        this.jiaSuDaiPath.push(coord);
+    }
+
+    /**
      * 路径初始化
      */
     public pathInit() {
         this.playerPath = new Array<Coord>();
         this.ghostPath = new Array<Coord>();
+        this.jiaSuDaiPath = new Array<Coord>();
     }
 
     public setPlayerInfo(playerInfo: PlayerInfo) {

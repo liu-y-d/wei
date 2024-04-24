@@ -109,7 +109,6 @@ export class PanelProcessState implements IProcessStateNode {
             })
                 .start();
             function clickCallBack(e) {
-                console.log(e)
                 movableTip.active = !movableTip.active;
             }
         }).start();

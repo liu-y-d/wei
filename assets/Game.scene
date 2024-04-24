@@ -581,7 +581,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 135.1875,
+      "width": 100,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -611,14 +611,14 @@
       "b": 255,
       "a": 255
     },
-    "_string": "第8888关",
+    "_string": "asdfasdf",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 32,
+    "_actualFontSize": 26,
     "_fontSize": 32,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
-    "_overflow": 0,
+    "_overflow": 2,
     "_enableWrapText": true,
     "_font": null,
     "_isSystemFontUsed": true,
@@ -3295,7 +3295,7 @@
       "__id__": 69
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 85
@@ -3323,8 +3323,8 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 0,
+      "y": 0,
       "z": 1
     },
     "_mobility": 0,
@@ -3349,8 +3349,8 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 100,
-      "height": 93
+      "width": 80,
+      "height": 80
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3380,7 +3380,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "8c31d239-6d5e-4579-a11f-ad306bf1910a@f9941",
+      "__uuid__": "96d611d8-0c48-46dd-8793-07bf279b2fb6@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -3412,6 +3412,10 @@
     "_clips": [
       {
         "__uuid__": "82edceff-b6a2-4d80-a8ce-a4e3d990beff",
+        "__expectedType__": "cc.AnimationClip"
+      },
+      {
+        "__uuid__": "5eda3141-e70d-465a-bf96-7cd767c03860",
         "__expectedType__": "cc.AnimationClip"
       }
     ],
@@ -4663,6 +4667,10 @@
     "Star_8": null,
     "destination": {
       "__uuid__": "7d334f3e-1f05-4d47-be6f-ff989a3980ba",
+      "__expectedType__": "cc.Prefab"
+    },
+    "obstacle": {
+      "__uuid__": "a93e165f-b590-471e-a4d3-3c79573226c9",
       "__expectedType__": "cc.Prefab"
     },
     "_id": "c4ZcOiuvFPlIEvzWHRqDL8"

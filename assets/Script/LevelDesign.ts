@@ -26,6 +26,8 @@ export type MapProps = {
     name:string,
     tip:string,
     exec:Function
+    // 加速带指向方向
+    nextDirection?:Coord
 }
 export type MapPropsConfig = {
     coord:Coord,
@@ -57,9 +59,9 @@ export class LevelDesign{
     public bulletArray:Array<string>;
 
     public difficultyDetails: { [key in keyof typeof DifficultyLevelEnum]: DifficultyInfo } = {
-        Easy: { bgColor: '#90EE90',fontColor: '#333333', description: '简单' },
-        Medium: { bgColor: '#4682B4',fontColor: '#FFFFFF', description: '普通' },
-        Hard: { bgColor: '#C0392B',fontColor: '#FFFFFF', description: '困难' },
+        Easy: { bgColor: '#aeecae',fontColor: '#333333', description: '简单' },
+        Medium: { bgColor: '#4999e1',fontColor: '#FFFFFF', description: '普通' },
+        Hard: { bgColor: '#830a00',fontColor: '#FFFFFF', description: '困难' },
     };
 
     // 定义难度循环周期

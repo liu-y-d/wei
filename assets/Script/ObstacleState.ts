@@ -39,6 +39,28 @@ export class ObstacleState implements IProcessStateNode{
         if (coord) {
             let tile = Global.getInstance().tileMap[coord.x][coord.y].getComponent(Draw);
             tile.creatorObstacle();
+            let nearbyShapeCoords = LevelDesign.getInstance().getShapeManager().getNearbyShapeCoords(coord);
+            if (nearbyShapeCoords.length > 0) {
+                nearbyShapeCoords = nearbyShapeCoords.filter(n=>n.x >= 0 && n.x < LevelDesign.getInstance().getShapeManager().WidthCount && n.y >= 0 &&n.y < LevelDesign.getInstance().getShapeManager().HeightCount)
+                nearbyShapeCoords.forEach(n=>{
+                    let tile = Global.getInstance().tileMap[n.x][n.y];
+                    let component = tile.getComponent(Draw);
+                    if (component.isMapPropsDirection && component.mapPropsDirection.x == coord.x && component.mapPropsDirection.y == coord.y) {
+                        component.draw({
+                            x: n.x,
+                            y: n.y,
+                            shape: LevelDesign.getInstance().currentShapeEnum
+                        })
+
+                        component.isMapPropsDirection = false;
+                        component.mapPropsDirection = null;
+                        let direction = tile.getChildByName("MapPropsDirection");
+                        if (direction){
+                            direction.removeFromParent();
+                        }
+                    }
+                })
+            }
             Global.getInstance().obstacleCoords.push(coord)
             Global.getInstance().addPlayerPath(coord);
 
