@@ -11,6 +11,7 @@ import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachine
 import {MainMessage} from "db://assets/Script/MainProcessState";
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {GamePropsEnum} from "db://assets/Script/BaseProps";
+import {GetGlobalPropsConfig, GlobalProps} from "db://assets/Script/Request";
 
 export class MapPropsProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.mapProps;
@@ -22,11 +23,25 @@ export class MapPropsProcessState implements IProcessStateNode {
         this._listener[code](params);
     }
 
+    getRandomByWeight(weightArray) {
+        // 计算权重的总和
+        weightArray = weightArray.sort((a, b) => b.randomPropsWeight - a.randomPropsWeight);
+        let totalWeight = weightArray.reduce((acc, obj) => acc + obj.randomPropsWeight, 0);
+        // 生成一个0到权重总和之间的随机数
+        let randomNum = Math.random();
+        // 初始化当前累加的权重
+        let currentSum = 0;
+        for (const obj of weightArray) {
+            currentSum += obj.randomPropsWeight;
+            if (currentSum >= randomNum * totalWeight) {
+                return obj.id;
+            }
+        }
+    }
     onInit() {
         this._listener[MapPropsMessage.CreateOneDestination] = this.createOneDestination;
         this._listener[MapPropsMessage.CreateOneDirection] = this.createOneDirection;
         this._listener[MapPropsMessage.CreateStarAbsorb] = this.createStarAbsorb;
-
         LevelDesign.getInstance().currentMapProps = []
         let coords = new Array<Coord>()
         for (let i = 0; i < LevelDesign.getInstance().getShapeManager().WidthCount - 1; i++) {
@@ -36,46 +51,60 @@ export class MapPropsProcessState implements IProcessStateNode {
                 }
             }
         }
-        let randomUniqueFromArray = MapPropsProcessState.getRandomUniqueFromArray(coords, 5);
-        for (let i = 0; i < randomUniqueFromArray.length; i++) {
-            let randomChoice = Math.floor(Math.random() * 3); // 生成0, 1, 或 2
-            // let randomChoice = 2;
-            switch (randomChoice) {
-                case 0:
-                    LevelDesign.getInstance().currentMapProps.push({
-                        coord: randomUniqueFromArray[i],
-                        mapProps: {
-                            id: GamePropsEnum.CreateStar,
-                            name: MapPropsMessage.CreateOneDestination,
-                            tip: '创建一个新的目标点',
-                            exec: this.createOneDestination
-                        }
-                    })
-                    break;
-                case 1:
-                    LevelDesign.getInstance().currentMapProps.push({
-                        coord: randomUniqueFromArray[i],
-                        mapProps: {
-                            id: GamePropsEnum.CreateDirection,
-                            name: MapPropsMessage.CreateOneDirection,
-                            tip: '创建一个可让布布继续移动的加速带',
-                            exec: this.createOneDirection
-                        }
-                    })
-                    break;
-                case 2:
-                    LevelDesign.getInstance().currentMapProps.push({
-                        coord: randomUniqueFromArray[i],
-                        mapProps: {
-                            id: GamePropsEnum.CreateStarAbsorb,
-                            name: MapPropsMessage.CreateStarAbsorb,
-                            tip: '创建一个星星吸收器',
-                            exec: this.createStarAbsorb
-                        }
-                    })
-                    break;
+        // let globalPropsConfigMap = Global.getInstance().getGlobalPropsConfig().reduce((map:Map<number,GlobalProps>, obj) => {
+        //     map.set(obj.id, obj);
+        //     return map;
+        // }, new Map());
+        // let weightArr = []
+        let mapProps = Global.getInstance().getGlobalPropsConfig().filter(p=>p.show == 0 && p.type == 2);
+        if (!mapProps) {
+            return
+        }else {
+            // mapProps.forEach(p=>{weightArr.push({value:p.id,weight:p.randomPropsWeight})})
+            // console.log(weightArr);
+            let randomUniqueFromArray = MapPropsProcessState.getRandomUniqueFromArray(coords, 5);
+            for (let i = 0; i < randomUniqueFromArray.length; i++) {
+                let randomChoice = this.getRandomByWeight(mapProps)
+                switch (randomChoice) {
+                    case GamePropsEnum.CreateStar:
+                        LevelDesign.getInstance().currentMapProps.push({
+                            coord: randomUniqueFromArray[i],
+                            mapProps: {
+                                id: GamePropsEnum.CreateStar,
+                                name: MapPropsMessage.CreateOneDestination,
+                                tip: '创建一个新的目标点',
+                                exec: this.createOneDestination
+                            }
+                        })
+                        break;
+                    case GamePropsEnum.CreateDirection:
+                        LevelDesign.getInstance().currentMapProps.push({
+                            coord: randomUniqueFromArray[i],
+                            mapProps: {
+                                id: GamePropsEnum.CreateDirection,
+                                name: MapPropsMessage.CreateOneDirection,
+                                tip: '创建一个可让布布继续移动的加速带',
+                                exec: this.createOneDirection
+                            }
+                        })
+                        break;
+                    case GamePropsEnum.CreateStarAbsorb:
+                        LevelDesign.getInstance().currentMapProps.push({
+                            coord: randomUniqueFromArray[i],
+                            mapProps: {
+                                id: GamePropsEnum.CreateStarAbsorb,
+                                name: MapPropsMessage.CreateStarAbsorb,
+                                tip: '创建一个星星吸收器',
+                                exec: this.createStarAbsorb
+                            }
+                        })
+                        break;
+                }
             }
+            console.log(LevelDesign.getInstance().currentMapProps);
         }
+
+
 
     }
 
@@ -120,7 +149,7 @@ export class MapPropsProcessState implements IProcessStateNode {
         if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStarAbsorb)?.showTip) {
             UIManager.getInstance().showMapPropsGuide(() => {
                 f()
-            }, coord, "创建一个⭐️")
+            }, coord, "创建一个⭐️",GamePropsEnum.CreateStar)
         }else {
             f()
         }
@@ -172,7 +201,7 @@ export class MapPropsProcessState implements IProcessStateNode {
         if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateDirection)?.showTip) {
             UIManager.getInstance().showMapPropsGuide(() => {
                 f()
-            }, coord, "创建一个加速带")
+            }, coord, "创建一个加速带",GamePropsEnum.CreateDirection)
         }else {
             f()
         }
@@ -238,7 +267,7 @@ export class MapPropsProcessState implements IProcessStateNode {
         if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStarAbsorb)?.showTip) {
             UIManager.getInstance().showMapPropsGuide(() => {
                 f()
-            }, coord, "创建一个星星吸收器")
+            }, coord, "创建一个星星吸收器",GamePropsEnum.CreateStarAbsorb)
         }else {
             f()
         }

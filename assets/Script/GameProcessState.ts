@@ -70,7 +70,7 @@ export class GameProcessState implements IProcessStateNode {
         numLabel.string = ""+LevelDesign.getInstance().currentMovableDirection
 
         let color = new Color();
-        numLabel.color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
+        // numLabel.color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
         detailPanel.getChildByName("SpriteSplash").getComponent(Sprite).color = Color.fromHEX(color, LevelDesign.getInstance().getDifficultyInfo().bgColor)
 
         // #288319

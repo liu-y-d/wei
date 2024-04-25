@@ -299,9 +299,10 @@ export class UIManager{
 
     }
 
-    public showMapPropsGuide(resume:Function,coord,tip) {
+    public showMapPropsGuide(resume:Function,coord,tip,propsId) {
         this.openMaskGuideGlobal()
         let popup = UIManager.getInstance().popupMap.get(PopupEnum.mapPropsGuide) as PopupMapPropsGuide;
+        popup.propsId = propsId
         popup.resume = resume;
         let guides:Guide[] = [];
         // let content = Global.getInstance().gameCanvas.getChildByName("Content");

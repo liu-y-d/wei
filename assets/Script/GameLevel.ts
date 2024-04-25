@@ -49,6 +49,7 @@ export class GameLevel extends Component {
         graphics.fill();
         // 或者如果你想只描边不填充
         graphics.stroke();
+        boolBool.active = true;
         tween(boolBool)
             .to(0,{angle:0})
             .to(0,{position:new Vec3(0,0,0)})
@@ -148,6 +149,7 @@ export class GameLevel extends Component {
             nodesMap[nodesData[index].name] = node;
         });
         let boolBool = detail.getChildByName('BoolBool');
+        boolBool.active = true;
         boolBool.setSiblingIndex(999)
         boolBool.setPosition(nodesMap["rightNode"].getPosition())
         let duration = 0.5;
@@ -234,6 +236,7 @@ export class GameLevel extends Component {
         // graphics.stroke();
 
         let boolBool = detail.getChildByName('BoolBool');
+        boolBool.active = true;
         tween(boolBool)
             .to(0,{angle:0})
             .to(0,{position:new Vec3(0,0,0)})
@@ -341,6 +344,7 @@ export class GameLevel extends Component {
             nodesMap[nodesData[index].name] = node;
         });
         let boolBool = detail.getChildByName('BoolBool');
+        boolBool.active = true;
         boolBool.setSiblingIndex(999)
         boolBool.setPosition(nodesMap["rightNode"].getPosition())
         let duration = 0.5;
@@ -400,6 +404,7 @@ export class GameLevel extends Component {
         let hexagonCenters1 = this.getCirclePoints(0,0,110);
         let detail = this.node.getChildByName('Detail');
         let boolBool = detail.getChildByName('BoolBool');
+        boolBool.active = true;
         const graphics = detail.getComponent(Graphics);
         graphics.clear();
         this.drawShapeSix(graphics,new Vec2(0,0),50,this.hex_corner)
@@ -445,6 +450,7 @@ export class GameLevel extends Component {
             return node;
         });
         let boolBool = detail.getChildByName('BoolBool');
+        boolBool.active = true;
         boolBool.setSiblingIndex(9999999)
         boolBool.setPosition(hexagonCenters1[0].x,hexagonCenters1[0].y)
 

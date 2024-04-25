@@ -25,7 +25,7 @@ export class BulletScreen extends Component {
     ]
     start() {
         if (director.getScene().name == 'Load') {
-            this.bulletContent.push(BulletEnum.load_tip);
+            // this.bulletContent.push(BulletEnum.load_tip);
             this.bulletContent.push(BulletEnum.load_1);
             this.bulletContent.push(BulletEnum.load_2);
             this.bulletContent.push(BulletEnum.load_3);

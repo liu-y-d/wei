@@ -11,6 +11,7 @@ import {GamePropsEnum} from "db://assets/Script/BaseProps";
 export class PopupMapPropsGuide implements PopupBase {
     type: number = PopupEnum.mapPropsGuide;
 
+    propsId:number
     resume:Function
     guides: Guide[]
     init() {
@@ -102,7 +103,7 @@ export class PopupMapPropsGuide implements PopupBase {
             popup.addChild(guide)
             guide.getChildByPath("Node/Toggle").on('toggle', (node)=>{
                 let config: PropsConfig = {
-                    propsId: GamePropsEnum.BACK,
+                    propsId: self.propsId,
                     showTip: !node.isChecked
                 }
                 Global.getInstance().setPropsConfigSingle(config);

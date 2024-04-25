@@ -1,12 +1,13 @@
 import {IProcessStateNode} from "./IProcessStateNode";
 
-import {sys, director, find, Node,tween,Vec3,Scheduler} from 'cc';
+import {sys, director, find, Node,tween,Vec3,Scheduler,Widget} from 'cc';
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {Global} from "db://assets/Script/Global";
 import {ProcessStateMachineManager} from "db://assets/Script/ProcessStateMachineManager";
 import {AudioMgr} from "db://assets/Script/AudioMgr";
 import CommonProgressBar from "db://assets/Script/CommonProgressBar";
 import {refreshToken} from "db://assets/Script/Request";
+import {TypeWriter} from "db://assets/Script/TypeWriter";
 
 export class LoginProcessState implements IProcessStateNode {
     readonly key = ProcessStateEnum.login;
@@ -90,13 +91,23 @@ export class LoginProcessState implements IProcessStateNode {
                                                         if (Global.getInstance().getMusicState()) {
                                                             AudioMgr.inst.play('bgm',0.5)
                                                         }
-                                                        let progressBarNode = find('Canvas/Content/ProgressBar');
+                                                        let progressBarNode = find('Canvas/Content/TV/ProgressBar');
                                                         let progressBar = progressBarNode.getComponent(CommonProgressBar);
                                                         progressBar.prevNum = progressBar.num
                                                         progressBar.num = 1
+                                                        // let logo = find('Canvas/Content/logo');
+                                                        let tvBackground = find('Canvas/Content/TV/TVBackground');
                                                         tween(enter).to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
-                                                            progressBar.hide();
-                                                        }).start();
+                                                                progressBar.hide();
+                                                                tween(tvBackground).to(0.2,{scale:new Vec3(0,0,0)}).call(()=>{
+                                                                    find('Canvas/Content/TV/TypeWriter').getComponent(TypeWriter).begin();
+                                                                }).start();
+                                                                // let widget = logo.getComponent(Widget);
+                                                                // // 设置对齐单位是 %
+                                                                // widget!.isAbsoluteTop = false;
+                                                                // widget!.top = 0.12;
+                                                            }
+                                                        ).start();
                                                     }
                                                 })
 
@@ -177,9 +188,28 @@ export class LoginProcessState implements IProcessStateNode {
                                                                 // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
                                                             });
                                                         })
+
+
                                                         if (Global.getInstance().getMusicState()) {
                                                             AudioMgr.inst.play('bgm',0.5)
                                                         }
+                                                        let progressBarNode = find('Canvas/Content/TV/ProgressBar');
+                                                        let progressBar = progressBarNode.getComponent(CommonProgressBar);
+                                                        progressBar.prevNum = progressBar.num
+                                                        progressBar.num = 1
+                                                        // let logo = find('Canvas/Content/TV/logo');
+                                                        let tvBackground = find('Canvas/Content/TV/TVBackground');
+                                                        tween(enter).to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
+                                                            progressBar.hide();
+                                                            tween(tvBackground).to(0.2,{scale:new Vec3(0,0,0)}).call(()=>{
+                                                                find('Canvas/Content/TV/TypeWriter').getComponent(TypeWriter).begin();
+                                                            }).start();
+                                                            // let widget = logo.getComponent(Widget);
+                                                            // // 设置对齐单位是 %
+                                                            // widget!.isAbsoluteTop = false;
+                                                            // widget!.top = 0.12;
+                                                        }
+                                                        ).start();
 
                                                     }
                                                 })

@@ -1,6 +1,6 @@
 import {GameStateEnum, Global} from "db://assets/Script/Global";
 
-import {director} from 'cc';
+import {sys} from 'cc';
 const wx = window['wx'];
 
 export function refreshToken() {
@@ -64,6 +64,28 @@ export function consumeLeaf(callback:Function) {
         }
     })
 }
+export type GlobalProps={
+    id:number,
+    type:number,
+    fixedPropsNum:number,
+    randomPropsWeight:number,
+    show:number
+}
+export function GetGlobalPropsConfig(){
+    let props
+    wx.request({
+        method: 'GET',
+        url: Global.getInstance().getPath('game/propsConfig'),
+        header: {
+            'content-type': 'application/json',
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success(res) {
+            props = res.data.data.props as GlobalProps[];
+            sys.localStorage.setItem("GlobalProps", JSON.stringify(props))
+        }
+    });
+}
 export function infinityLeaf(callback:Function) {
     wx.request({
         method: 'GET',
@@ -74,6 +96,37 @@ export function infinityLeaf(callback:Function) {
         },
         success (res) {
             callback(res.data.data.status);
+        }
+    })
+}
+export function getAllPropsGuide(callback:Function) {
+    wx.request({
+        method: 'GET',
+        url: Global.getInstance().getPath('game/getAllPropsGuide'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        success (res) {
+            callback(res.data.data.guides);
+        }
+    })
+}
+
+export function saveUserPropsGuide(propsId, show: boolean) {
+    wx.request({
+        method: 'POST',
+        url: Global.getInstance().getPath('game/savePropsGuide'),
+        header: {
+            'content-type': 'application/json', // 默认值
+            'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
+        },
+        data: {
+            propsId: propsId,
+            showTip: show?0:1
+        },
+        success(res) {
+
         }
     })
 }

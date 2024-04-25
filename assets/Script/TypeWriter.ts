@@ -14,7 +14,7 @@ export class TypeWriter extends Component {
     }
 
     begin() {
-        this.contentArray.push(BulletEnum.load_tip);
+        // this.contentArray.push(BulletEnum.load_tip);
         this.contentArray.push(BulletEnum.load_1);
         this.contentArray.push(BulletEnum.load_2);
         this.contentArray.push(BulletEnum.load_3);

@@ -42,7 +42,7 @@ export class WorldRankController extends Component {
                     });
                     let base = no1.getChildByName("Base");
                     base.getChildByName("Name").getComponent(Label).string = datas[0].username;
-                    base.getChildByName("Level").getComponent(Label).string = datas[0].gameLevel + "关";
+                    base.getChildByName("Level").getComponent(Label).string = datas[0].gameLevel + 1 + "关";
                 }
                 let no2 = self.node.getChildByPath("Panel/2");
                 if (datas[1]) {
@@ -56,7 +56,7 @@ export class WorldRankController extends Component {
                     });
                     let base = no2.getChildByName("Base");
                     base.getChildByName("Name").getComponent(Label).string = datas[1].username;
-                    base.getChildByName("Level").getComponent(Label).string = datas[1].gameLevel + "关";
+                    base.getChildByName("Level").getComponent(Label).string = datas[1].gameLevel + 1+ "关";
                 }
                 let no3 = self.node.getChildByPath("Panel/3");
                 if (datas[2]) {
@@ -70,14 +70,14 @@ export class WorldRankController extends Component {
                     });
                     let base = no3.getChildByName("Base");
                     base.getChildByName("Name").getComponent(Label).string = datas[1].username;
-                    base.getChildByName("Level").getComponent(Label).string = datas[1].gameLevel + "关";
+                    base.getChildByName("Level").getComponent(Label).string = datas[1].gameLevel + 1 + "关";
                 }
                 for (let i = datas.length >= 3? 3: 0; i < datas.length; i++) {
                     let datum = datas[i];
                     let rankItem = instantiate(self.RankItem);
                     rankItem.getChildByName("Index").getComponent(Label).string = i + 1 + ""
                     rankItem.getChildByName("Username").getComponent(Label).string = datum.username
-                    rankItem.getChildByName("Number").getComponent(Label).string = datum.gameLevel + "关"
+                    rankItem.getChildByName("Number").getComponent(Label).string = datum.gameLevel + 1 + "关"
                     let sp = rankItem.getChildByPath("Avatar/Img").getComponent(Sprite);
                     assetManager.loadRemote<ImageAsset>(datum.avatar, {ext: '.png'}, function (err, imageAsset) {
                         const spriteFrame = new SpriteFrame();

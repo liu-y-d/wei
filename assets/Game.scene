@@ -611,10 +611,10 @@
       "b": 255,
       "a": 255
     },
-    "_string": "asdfasdf",
+    "_string": "",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 26,
+    "_actualFontSize": 33,
     "_fontSize": 32,
     "_fontFamily": "Arial",
     "_lineHeight": 40,

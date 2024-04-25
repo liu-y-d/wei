@@ -2,6 +2,7 @@ import {Node,Vec2,sys} from "cc";
 import {HexagonManager} from "db://assets/Script/HexagonManager";
 import {BaseProps, GamePropsEnum} from "db://assets/Script/BaseProps";
 import {AudioMgr} from "db://assets/Script/AudioMgr";
+import {getAllPropsGuide, GetGlobalPropsConfig, GlobalProps, saveUserPropsGuide} from "db://assets/Script/Request";
 
 export type Coord= {x:number,y:number}
 export type resume = (instance: BaseProps)=>void
@@ -192,12 +193,13 @@ fQIDAQAB
                 }
             }
             sys.localStorage.setItem("propsConfig", JSON.stringify(allConfig));
+            saveUserPropsGuide(config.propsId,config.showTip)
         }
     }
     public getPropsConfig(): PropsConfig[] {
         let item = sys.localStorage.getItem('propsConfig');
         if (item){
-            return item as PropsConfig[]
+            return JSON.parse(item) as PropsConfig[]
         }
     }
     public getPropsConfigById(id:number): PropsConfig {
@@ -217,25 +219,55 @@ fQIDAQAB
         sys.localStorage.setItem("playerInfo", JSON.stringify(playerInfo));
     }
 
+
     propsConfigInit() {
 
         let custom = this.getPropsConfig();
         if (!custom){
-            let allPropsConfig: PropsConfig[]= [
-                {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: true},
-                {propsId:GamePropsEnum.BACK, showTip: true},
-                {propsId:GamePropsEnum.FORECAST, showTip: true},
-                {propsId:GamePropsEnum.FREEZE, showTip: true},
-                {propsId:GamePropsEnum.CreateStar, showTip: true},
-                {propsId:GamePropsEnum.CreateDirection, showTip: true},
-                {propsId:GamePropsEnum.CreateStarAbsorb, showTip: true},
-            ];
-            this.setPropsConfig(allPropsConfig);
+            getAllPropsGuide((guides)=>{
+                if (guides && guides.length > 0) {
+                    let propsMap = guides.reduce((map:Map<number,GlobalProps>, obj) => {
+                            map.set(obj.propsOd, obj.show);
+                            return map;
+                        }, new Map());
+                    let allPropsConfig: PropsConfig[]= [
+                        {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: propsMap.get(GamePropsEnum.OBSTACLE_RESET)?propsMap.get(GamePropsEnum.OBSTACLE_RESET):true},
+                        {propsId:GamePropsEnum.BACK, showTip: propsMap.get(GamePropsEnum.BACK)?propsMap.get(GamePropsEnum.BACK):true},
+                        {propsId:GamePropsEnum.FORECAST, showTip: propsMap.get(GamePropsEnum.FORECAST)?propsMap.get(GamePropsEnum.FORECAST):true},
+                        {propsId:GamePropsEnum.FREEZE, showTip: propsMap.get(GamePropsEnum.FREEZE)?propsMap.get(GamePropsEnum.FREEZE):true},
+                        {propsId:GamePropsEnum.CreateStar, showTip: propsMap.get(GamePropsEnum.CreateStar)?propsMap.get(GamePropsEnum.CreateStar):true},
+                        {propsId:GamePropsEnum.CreateDirection, showTip: propsMap.get(GamePropsEnum.CreateDirection)?propsMap.get(GamePropsEnum.CreateDirection):true},
+                        {propsId:GamePropsEnum.CreateStarAbsorb, showTip: propsMap.get(GamePropsEnum.CreateStarAbsorb)?propsMap.get(GamePropsEnum.CreateStarAbsorb):true},
+                    ];
+                    this.setPropsConfig(allPropsConfig);
+
+                }else {
+
+                    let allPropsConfig: PropsConfig[]= [
+                        {propsId:GamePropsEnum.OBSTACLE_RESET, showTip: true},
+                        {propsId:GamePropsEnum.BACK, showTip: true},
+                        {propsId:GamePropsEnum.FORECAST, showTip: true},
+                        {propsId:GamePropsEnum.FREEZE, showTip: true},
+                        {propsId:GamePropsEnum.CreateStar, showTip: true},
+                        {propsId:GamePropsEnum.CreateDirection, showTip: true},
+                        {propsId:GamePropsEnum.CreateStarAbsorb, showTip: true},
+                    ];
+                    this.setPropsConfig(allPropsConfig);
+                }
+            })
+
 
         }
     }
     dateToSeconds(dateString) {
         const date = new Date(dateString);
         return Math.floor(date.getTime() / 1000);
+    }
+
+    getGlobalPropsConfig() {
+        let item = sys.localStorage.getItem('GlobalProps');
+        if (item){
+            return JSON.parse(item) as GlobalProps[]
+        }
     }
 }

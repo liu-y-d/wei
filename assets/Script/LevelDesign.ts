@@ -162,15 +162,15 @@ export class LevelDesign{
             switch (this.difficultyLevel) {
                 case DifficultyLevelEnum.Easy:
                     this.currentShapeEnum = ShapeEnum.FOUR;
-                    this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.SmartMove,BulletEnum.RandomMove)
+                    this.bulletArray.push(BulletEnum.FourDirection,BulletEnum.SmartMove,BulletEnum.RandomMove,BulletEnum.StarAbsorb,BulletEnum.Star,BulletEnum.Direction)
                     break;
                 case DifficultyLevelEnum.Medium:
                     this.currentShapeEnum = ShapeEnum.SIX;
-                    this.bulletArray.push(BulletEnum.SixDirection,BulletEnum.SmartMove,BulletEnum.RandomMove)
+                    this.bulletArray.push(BulletEnum.SixDirection,BulletEnum.SmartMove,BulletEnum.RandomMove,BulletEnum.StarAbsorb,BulletEnum.Star,BulletEnum.Direction)
                     break;
                 case DifficultyLevelEnum.Hard:
                     this.currentShapeEnum = ShapeEnum.FOUR;
-                    this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove,BulletEnum.RandomMove)
+                    this.bulletArray.push(BulletEnum.EightDirection,BulletEnum.SmartMove,BulletEnum.RandomMove,BulletEnum.StarAbsorb,BulletEnum.Star,BulletEnum.Direction)
                     break;
             }
             Global.getInstance().defaultObstacleNum = difficultyParametersForLevel.initialObstacleCount;
@@ -286,7 +286,10 @@ export enum BulletEnum{
     SmartMove='智能移动',
     load_tip = '🌈友情提示：在试运营阶段，我们将暂不储存用户数据信息。',
     load_1 = '🌳这里是一个结合休闲益智与策略布局的游戏世界。',
-    load_4 = '🐨布布已经准备好在棋局中与您一决高下，谁能笑到最后？让我们共同探索这片神秘棋盘森林！',
+    load_4 = '🐨布布已经准备好与您一决高下，谁能笑到最后？让我们共同探索这个神秘世界！',
     load_3 = '🌈您已进入布布的地盘！在这片轻松愉快的益智乐园里，发挥您的机智与谋略，看准时机，步步为营，让布布无处可逃！',
-    load_2 = '🐨布布：我是一只时而机灵、时而迷糊的考拉。'
+    load_2 = '🐨布布：我是一只时而机灵、时而迷糊的考拉。',
+    StarAbsorb = '随机出现星星收集器',
+    Star = '随机出现目标点',
+    Direction = '随机出现加速带',
 }

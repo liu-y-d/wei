@@ -6,7 +6,7 @@ import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {GameLevel} from "db://assets/Script/GameLevel";
 import {Global} from "db://assets/Script/Global";
 import {UIManager} from "db://assets/Script/UIManager";
-import {getCurrentUserGameLevelReq, getLeaf, Leaf} from "db://assets/Script/Request";
+import {getCurrentUserGameLevelReq, GetGlobalPropsConfig, getLeaf, Leaf} from "db://assets/Script/Request";
 import {InfinityLeafScheduleAdapter} from "db://assets/Script/InfinityLeafScheduleAdapter";
 import {GhostMessage} from "db://assets/Script/GhostState";
 export class MainProcessState implements IProcessStateNode {
@@ -32,6 +32,7 @@ export class MainProcessState implements IProcessStateNode {
         function init(gameLevel) {
             my.simulation(gameLevel);
             my.initLeaf()
+            GetGlobalPropsConfig()
             LevelDesign.getInstance().init();
             Global.getInstance().propsConfigInit();
             canvas.getChildByPath('Content/BulletScreen').active = true;
@@ -50,6 +51,9 @@ export class MainProcessState implements IProcessStateNode {
 
     }
 
+    // initGlobalProps(){
+    //
+    // }
     initLeaf(){
 
         let canvas = find('Canvas');

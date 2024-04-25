@@ -23,9 +23,8 @@ export class LoadProcessState implements IProcessStateNode {
         //
         // });
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
-        let progressBarNode = find('Canvas/Content/ProgressBar');
+        let progressBarNode = find('Canvas/Content/TV/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
-        find('Canvas/Content/TypeWriter').getComponent(TypeWriter).begin();
         assetManager.loadBundle("audio",()=>{
             progressBar.show();
             progressBar.prevNum = progressBar.num;
