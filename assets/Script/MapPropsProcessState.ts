@@ -83,7 +83,7 @@ export class MapPropsProcessState implements IProcessStateNode {
                             mapProps: {
                                 id: GamePropsEnum.CreateDirection,
                                 name: MapPropsMessage.CreateOneDirection,
-                                tip: '创建一个可让布布继续移动的加速带',
+                                tip: '创建一个布布可继续移动的加速带',
                                 exec: this.createOneDirection
                             }
                         })
@@ -110,7 +110,7 @@ export class MapPropsProcessState implements IProcessStateNode {
 
     createOneDestination(...params) {
         let coord = params[0];
-
+        let self = this;
         function f() {
             Global.getInstance().moveLock.active = true;
 
@@ -149,7 +149,7 @@ export class MapPropsProcessState implements IProcessStateNode {
         if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStarAbsorb)?.showTip) {
             UIManager.getInstance().showMapPropsGuide(() => {
                 f()
-            }, coord, "创建一个⭐️",GamePropsEnum.CreateStar)
+            }, coord, self.tip,GamePropsEnum.CreateStar)
         }else {
             f()
         }
@@ -160,6 +160,7 @@ export class MapPropsProcessState implements IProcessStateNode {
     createOneDirection(...params) {
         let coord = params[0];
 
+        let self = this;
         function f() {
             Global.getInstance().moveLock.active = true;
 
@@ -201,7 +202,7 @@ export class MapPropsProcessState implements IProcessStateNode {
         if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateDirection)?.showTip) {
             UIManager.getInstance().showMapPropsGuide(() => {
                 f()
-            }, coord, "创建一个加速带",GamePropsEnum.CreateDirection)
+            }, coord, self.tip,GamePropsEnum.CreateDirection)
         }else {
             f()
         }
@@ -209,7 +210,7 @@ export class MapPropsProcessState implements IProcessStateNode {
 
     createStarAbsorb(...params) {
         let coord = params[0];
-
+        let self = this;
         function f() {
             Global.getInstance().moveLock.active = true;
 
@@ -243,14 +244,16 @@ export class MapPropsProcessState implements IProcessStateNode {
                         index++
                         if (index == destinationArray.length) {
                             whirl.active = false;
-                            tile.getComponent(Draw).drawDestination({
-                                x: coord.x,
-                                y: coord.y,
-                                shape: LevelDesign.getInstance().currentShapeEnum
-                            })
+                            // 取消星星收集器会在道具位置创建星星
+                            // tile.getComponent(Draw).drawDestination({
+                            //     x: coord.x,
+                            //     y: coord.y,
+                            //     shape: LevelDesign.getInstance().currentShapeEnum
+                            // })
 
+                            LevelDesign.getInstance().currentMapProps = LevelDesign.getInstance().currentMapProps.filter(p=>p.coord.x != coord.x && p.coord.y != coord.y);
                             LevelDesign.getInstance().currentDestination = LevelDesign.getInstance().currentDestination.filter(c=>  !destinationArray.some(d=>c.x == d.x && c.y == d.y))
-                            LevelDesign.getInstance().currentDestination.push(coord)
+                            // LevelDesign.getInstance().currentDestination.push(coord)
                             if (params[1]) {
                                 params[1]();
                                 Global.getInstance().moveLock.active = false;
@@ -267,7 +270,7 @@ export class MapPropsProcessState implements IProcessStateNode {
         if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStarAbsorb)?.showTip) {
             UIManager.getInstance().showMapPropsGuide(() => {
                 f()
-            }, coord, "创建一个星星吸收器",GamePropsEnum.CreateStarAbsorb)
+            }, coord, self.tip,GamePropsEnum.CreateStarAbsorb)
         }else {
             f()
         }

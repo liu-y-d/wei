@@ -10,6 +10,8 @@ export class PopupShare implements PopupBase {
     resume:Function
     init() {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
+
+        UIManager.getInstance().maskGlobal.getChildByName("Firework").active = false
         popup.removeAllChildren();
         let tooltip = popup.getChildByName(popup.getComponent(Popup).menuTooltip.name)
         popup.scale = new Vec3(0,0,1);

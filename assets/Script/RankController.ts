@@ -10,20 +10,26 @@ export class RankController extends Component {
     private closeBtnNode: Node = null;
 
     public onLoad() {
-
-        window['wx'].setUserCloudStorage({
-            KVDataList: [{"key":'friendRank', "value": `{"actual_score":"${Global.getInstance().getPlayerInfo().gameLevel}"}`}]
-            // KVDataList: [{"key":'friendRank', "value": '19'}]
-        }).then(res=>{
-            /**
-             * 向开放数据域发送消息
-             */
-            window['wx'].getOpenDataContext().postMessage({
-                value: 'rankData',
-                userId: Global.getInstance().getPlayerInfo().playerId
+        // window['wx'].removeUserCloudStorage({
+        //     keyList: ['friendRank']
+        //     // KVDataList: [{"key":'friendRank', "value": '19'}]
+        // })
+        if (Global.getInstance().getPlayerInfo().gameLevel -1 >0) {
+            window['wx'].setUserCloudStorage({
+                KVDataList: [{"key":'friendRank_1', "value": `${Global.getInstance().getPlayerInfo().gameLevel -1}`}]
+                // KVDataList: [{"key":'friendRank', "value": '19'}]
+            }).then(res=>{
+                /**
+                 * 向开放数据域发送消息
+                 */
+                window['wx'].getOpenDataContext().postMessage({
+                    value: 'rankData',
+                    userId: Global.getInstance().getPlayerInfo().playerId
+                });
+            }).catch(err=>{
             });
-        }).catch(err=>{
-        });
+        }
+
 
         // RankController.instance.node.addChild(instantiate(find('Canvas').getComponent(PrefabController).loading));
 

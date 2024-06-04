@@ -16,8 +16,10 @@ export class PopupGameOver implements PopupBase {
         let tooltip;
         if (this.overType) {
             tooltip = popup.getChildByName(popup.getComponent(Popup).gameOverWinTooltip.name)
+            UIManager.getInstance().maskGlobal.getChildByName("Firework").active = true
         }else {
             tooltip = popup.getChildByName(popup.getComponent(Popup).gameOverLoseTooltip.name)
+            UIManager.getInstance().maskGlobal.getChildByName("Firework").active = false
         }
 
         if (!tooltip) {

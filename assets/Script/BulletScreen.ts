@@ -41,7 +41,7 @@ export class BulletScreen extends Component {
             this.bulletsArray[i].setPosition(this.bulletsArray[i].getPosition().x - deltaTime*this.bulletsArray[i].getComponent(Bullet).speed, this.bulletsArray[i].getPosition().y)
             // 文本完全移动到屏幕左侧后，回收
             if (this.bulletsArray[i].getPosition().x <= -(this.node.getComponent(UITransform).contentSize.width/2 + this.bulletsArray[i].getComponent(UITransform).contentSize.width)) {
-                this.bulletsArray[i].removeFromParent();
+                this.bulletsArray[i].destroy();
                 record.push(i);
             }
         }

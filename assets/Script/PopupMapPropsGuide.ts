@@ -1,6 +1,6 @@
 import {PopupBase} from "db://assets/Script/PopupBase";
 import {PopupEnum, UIManager} from "db://assets/Script/UIManager";
-import {Node, instantiate, Prefab, RichText, tween, UITransform,Vec3,Graphics} from 'cc';
+import {Node, instantiate, Prefab, RichText, tween, UITransform,Vec3,Graphics,Widget} from 'cc';
 import {GameStateEnum, Global, PropsConfig} from "db://assets/Script/Global";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {Popup} from "db://assets/Script/Popup";
@@ -23,7 +23,7 @@ export class PopupMapPropsGuide implements PopupBase {
         if (!guide) {
             // 实例化预制体
             guide = instantiate(UIManager.getInstance().maskGuideGlobal.getChildByName("Popup").getComponent(Popup).mapPropsGuide);
-            guide.scale = new Vec3(0,0,1);
+            guide.scale = new Vec3(0,1,1);
             let guideIndex = 0;
             let self = this;
 
@@ -32,21 +32,21 @@ export class PopupMapPropsGuide implements PopupBase {
                     let guideMode = self.guides[guideIndex];
                     let text = guide.getChildByName("Text");
                     let toggle = guide.getChildByPath("Node/Toggle");
-                    if (guideMode.angle) {
-                        // guide.angle = guideMode.angle
-                        // let textPos = text.getPosition();
-                        // let togglePos = toggle.getPosition().clone();
-                        text.angle = guideMode.angle
-                        toggle.angle = guideMode.angle
-                        // toggle.setPosition(textPos)
-                        // text.setPosition(togglePos)
-
-                    }
-                    if (guideMode.scaleX) {
-                        guide.scale = new Vec3(guideMode.scaleX,0,1)
-                        text.scale = new Vec3(guideMode.scaleX,1,1)
-                        toggle.scale = new Vec3(guideMode.scaleX,1,1)
-                    }
+                    // if (guideMode.angle) {
+                    //     // guide.angle = guideMode.angle
+                    //     // let textPos = text.getPosition();
+                    //     // let togglePos = toggle.getPosition().clone();
+                    //     text.angle = guideMode.angle
+                    //     toggle.angle = guideMode.angle
+                    //     // toggle.setPosition(textPos)
+                    //     // text.setPosition(togglePos)
+                    //
+                    // }
+                    // if (guideMode.scaleX) {
+                    //     guide.scale = new Vec3(guideMode.scaleX,0,1)
+                    //     text.scale = new Vec3(guideMode.scaleX,1,1)
+                    //     toggle.scale = new Vec3(guideMode.scaleX,1,1)
+                    // }
                     text.getChildByName("RichText").getComponent(RichText).string = guideMode.tip;
                     let pos = popup.getComponent(UITransform).convertToNodeSpaceAR(new Vec3(guideMode.pos.x, guideMode.pos.y,0))
                     let gra = UIManager.getInstance().maskGuideGlobal.getChildByName("Mask").getComponent(Graphics);
@@ -74,17 +74,18 @@ export class PopupMapPropsGuide implements PopupBase {
 
 
                     }
-                    adjustPos()
+                    // adjustPos()
                     let tween1 = tween(guide);
-                    if (guide.scale.x != 0) {
-                        tween1.to(0.2, {scale: new Vec3(0, 0, 1)});
-                    }
-                    if (guideMode.angle) {
-                        tween1.to(0, {angle: guideMode.angle})
-                    }
+                    // if (guide.scale.x != 0) {
+                    //     tween1.to(0.2, {scale: new Vec3(0, 0, 1)});
+                    // }
+                    // if (guideMode.angle) {
+                    //     tween1.to(0, {angle: guideMode.angle})
+                    // }
                     tween1
-                        .to(0, {position: pos})
-                        .to(0.2, {scale: new Vec3(guideMode.scaleX?guideMode.scaleX:1, 1, 1)}).call(() => {
+                        // .to(0, {position: pos})
+                        // .to(0.2, {scale: new Vec3(guideMode.scaleX?guideMode.scaleX:1, 1, 1)}).call(() => {
+                        .to(0.2, {scale: new Vec3(1,1,1)}).call(() => {
                         guideIndex++;
                     }).call(()=>{
                         // let gra = guide.getParent().getParent().getComponent(Graphics);
@@ -101,6 +102,10 @@ export class PopupMapPropsGuide implements PopupBase {
             }
             // 将实例化的预制体添加到场景中
             popup.addChild(guide)
+            let widget = guide.getComponent(Widget);
+            // // 设置对齐单位是 %
+            widget!.isAbsoluteTop = false;
+            widget!.top = 0.1;
             guide.getChildByPath("Node/Toggle").on('toggle', (node)=>{
                 let config: PropsConfig = {
                     propsId: self.propsId,
@@ -129,7 +134,7 @@ export class PopupMapPropsGuide implements PopupBase {
             // tween(popup)
             //     .to(0.2,{scale:new Vec3(1,1,1)}).call(()=>{
             // }).start();
-            guide.getParent().getComponent(UITransform).setContentSize(guide.getComponent(UITransform).contentSize)
+            guide.getParent().getComponent(UITransform).setContentSize(guide.getParent().getParent().getComponent(UITransform).contentSize)
             // });
         }
 

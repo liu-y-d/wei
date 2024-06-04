@@ -167,10 +167,13 @@ export class HexagonManager extends ShapeManager {
     }
 
     closeDirect() {
-        if (this.directNode) {
-            this.directNode.getComponent(ParticleSystem2D).stopSystem();
+        // if (this.directNode) {
+
+            // Global.getInstance().playArea.getChildByName('Direct').active=false
+            Global.getInstance().playArea.getChildByName('Direct').getComponent(ParticleSystem2D).stopSystem();
+        // console.log(Global.getInstance().playArea.getChildByName('Direct'))
             // this.directNode.active = false;
-        }
+        // }
     }
 
     /**
@@ -559,6 +562,7 @@ export class HexagonManager extends ShapeManager {
         let tile = Global.getInstance().tileMap[shape.x][shape.y];
 
         let obstacle = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).obstacle);
+        obstacle.getComponent(UITransform).setContentSize(this.shapeWidth + 12,(this.shapeWidth + 12) / 1.1)
         tile.addChild(obstacle)
     }
 

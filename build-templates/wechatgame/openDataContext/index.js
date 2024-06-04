@@ -30,7 +30,7 @@ __env.onMessage(data => {
         showLoading();
     } else if (data.value === 'rankData') {
         // showLoading();
-        getFriendRankData("friendRank", data.userId, draw)
+        getFriendRankData("friendRank_1", data.userId, draw)
     } else if (data.value === 'worldData') {
         getFriendRankData("worldRank", data.userId, draw)
     }

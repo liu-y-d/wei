@@ -59,9 +59,9 @@ export class LevelDesign{
     public bulletArray:Array<string>;
 
     public difficultyDetails: { [key in keyof typeof DifficultyLevelEnum]: DifficultyInfo } = {
-        Easy: { bgColor: '#aeecae',fontColor: '#333333', description: '简单' },
-        Medium: { bgColor: '#4999e1',fontColor: '#FFFFFF', description: '普通' },
-        Hard: { bgColor: '#830a00',fontColor: '#FFFFFF', description: '困难' },
+        Easy: { bgColor: '#7A7A7A',fontColor: '#aeecae', description: '简单' },
+        Medium: { bgColor: '#7A7A7A',fontColor: '#4999e1', description: '普通' },
+        Hard: { bgColor: '#7A7A7A',fontColor: '#830a00', description: '困难' },
     };
 
     // 定义难度循环周期
@@ -248,9 +248,9 @@ export class LevelDesign{
         const withinCycleLevel = currentLevel % this.difficultyCycleLength;
 
         // 根据循环内关卡数决定难度等级
-        if (withinCycleLevel < this.difficultyCycleLength / 3) {
+        if (withinCycleLevel <= this.difficultyCycleLength / 3) {
             return DifficultyLevelEnum.Easy;
-        } else if (withinCycleLevel < 2 * this.difficultyCycleLength / 3) {
+        } else if (withinCycleLevel <= 2 * this.difficultyCycleLength / 3) {
             return DifficultyLevelEnum.Medium;
         } else {
             return DifficultyLevelEnum.Hard;

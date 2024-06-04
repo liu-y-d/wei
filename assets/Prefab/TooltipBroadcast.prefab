@@ -32,15 +32,18 @@
       },
       {
         "__id__": 48
+      },
+      {
+        "__id__": 50
       }
     ],
     "_prefab": {
-      "__id__": 50
+      "__id__": 52
     },
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 569,
       "z": 0
     },
     "_lrot": {
@@ -94,7 +97,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 30.059,
       "z": 0
     },
     "_lrot": {
@@ -147,7 +150,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": 9.266,
       "z": 0
     },
     "_lrot": {
@@ -187,8 +190,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 160,
-      "height": 27.72
+      "width": 450,
+      "height": 39.06
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -213,11 +216,11 @@
     "__prefab": {
       "__id__": 7
     },
-    "_lineHeight": 22,
+    "_lineHeight": 31,
     "_string": "阿斯顿发送到",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_fontSize": 20,
+    "_fontSize": 30,
     "_fontColor": {
       "__type__": "cc.Color",
       "r": 1,
@@ -225,7 +228,7 @@
       "b": 7,
       "a": 255
     },
-    "_maxWidth": 160,
+    "_maxWidth": 450,
     "_fontFamily": "Arial",
     "_font": null,
     "_isSystemFontUsed": true,
@@ -258,7 +261,7 @@
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
-    "_verticalCenter": 0,
+    "_verticalCenter": 9.266,
     "_isAbsLeft": true,
     "_isAbsRight": true,
     "_isAbsTop": true,
@@ -302,8 +305,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 100
+      "width": 450,
+      "height": 60
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -328,14 +331,14 @@
     "__prefab": {
       "__id__": 14
     },
-    "_alignFlags": 0,
+    "_alignFlags": 18,
     "_target": null,
     "_left": 0,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
     "_horizontalCenter": 0,
-    "_verticalCenter": 0,
+    "_verticalCenter": 30.059,
     "_isAbsLeft": true,
     "_isAbsRight": true,
     "_isAbsTop": true,
@@ -392,8 +395,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -7.5,
-      "y": -68.988,
+      "x": -2.90300000000002,
+      "y": -14.669,
       "z": 0
     },
     "_lrot": {
@@ -1046,7 +1049,7 @@
     },
     "_alignFlags": 8,
     "_target": null,
-    "_left": 90,
+    "_left": 294.597,
     "_right": 0,
     "_top": 0,
     "_bottom": 0,
@@ -1095,8 +1098,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 200,
-      "height": 200
+      "width": 600,
+      "height": 142
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1132,7 +1135,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "6fbe75bc-03a8-4d63-b8b9-e70a7d13808a@f9941",
+      "__uuid__": "f82aebda-6db4-433c-b951-7a405d179327@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -1153,6 +1156,42 @@
   {
     "__type__": "cc.CompPrefabInfo",
     "fileId": "18/6ht9wRE36IEWNeSpRJq"
+  },
+  {
+    "__type__": "cc.Widget",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 51
+    },
+    "_alignFlags": 1,
+    "_target": null,
+    "_left": 0,
+    "_right": 0,
+    "_top": 0,
+    "_bottom": 0,
+    "_horizontalCenter": 0,
+    "_verticalCenter": 0,
+    "_isAbsLeft": true,
+    "_isAbsRight": true,
+    "_isAbsTop": false,
+    "_isAbsBottom": true,
+    "_isAbsHorizontalCenter": true,
+    "_isAbsVerticalCenter": true,
+    "_originalWidth": 0,
+    "_originalHeight": 0,
+    "_alignMode": 2,
+    "_lockFlags": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "04ptx24opHi6kuhfa5ryek"
   },
   {
     "__type__": "cc.PrefabInfo",

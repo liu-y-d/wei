@@ -1,6 +1,7 @@
-import { _decorator, Component, Node, Button,find,Prefab,instantiate,Sprite,Label,assetManager,ImageAsset,SpriteFrame,Texture2D } from 'cc';
+import { _decorator, Component, Node, Button,find,Prefab,instantiate,Sprite,Label,assetManager,ImageAsset,SpriteFrame,Texture2D,Color } from 'cc';
 import {Global} from "db://assets/Script/Global";
 import {getWorldRank} from "db://assets/Script/Request";
+import {LevelDesign} from "db://assets/Script/LevelDesign";
 
 const { ccclass, property } = _decorator;
 
@@ -30,68 +31,49 @@ export class WorldRankController extends Component {
             // }
             if (datas && datas.length > 0) {
                 let content = self.node.getChildByPath("Panel/ScrollView/view/content");
-                let no1 = self.node.getChildByPath("Panel/1");
-                if (datas[0]) {
-                    let sp = no1.getChildByPath("Avatar/Node").getComponent(Sprite);
-                    assetManager.loadRemote<ImageAsset>(datas[0].avatar, {ext: '.png'}, function (err, imageAsset) {
-                        const spriteFrame = new SpriteFrame();
-                        const texture = new Texture2D();
-                        texture.image = imageAsset;
-                        spriteFrame.texture = texture;
-                        sp.spriteFrame = spriteFrame;
-                    });
-                    let base = no1.getChildByName("Base");
-                    base.getChildByName("Name").getComponent(Label).string = datas[0].username;
-                    base.getChildByName("Level").getComponent(Label).string = datas[0].gameLevel + 1 + "关";
-                }
-                let no2 = self.node.getChildByPath("Panel/2");
-                if (datas[1]) {
-                    let sp = no2.getChildByPath("Avatar/Node").getComponent(Sprite);
-                    assetManager.loadRemote<ImageAsset>(datas[1].avatar, {ext: '.png'}, function (err, imageAsset) {
-                        const spriteFrame = new SpriteFrame();
-                        const texture = new Texture2D();
-                        texture.image = imageAsset;
-                        spriteFrame.texture = texture;
-                        sp.spriteFrame = spriteFrame;
-                    });
-                    let base = no2.getChildByName("Base");
-                    base.getChildByName("Name").getComponent(Label).string = datas[1].username;
-                    base.getChildByName("Level").getComponent(Label).string = datas[1].gameLevel + 1+ "关";
-                }
-                let no3 = self.node.getChildByPath("Panel/3");
-                if (datas[2]) {
-                    let sp = no3.getChildByPath("Avatar/Node").getComponent(Sprite);
-                    assetManager.loadRemote<ImageAsset>(datas[2].avatar, {ext: '.png'}, function (err, imageAsset) {
-                        const spriteFrame = new SpriteFrame();
-                        const texture = new Texture2D();
-                        texture.image = imageAsset;
-                        spriteFrame.texture = texture;
-                        sp.spriteFrame = spriteFrame;
-                    });
-                    let base = no3.getChildByName("Base");
-                    base.getChildByName("Name").getComponent(Label).string = datas[1].username;
-                    base.getChildByName("Level").getComponent(Label).string = datas[1].gameLevel + 1 + "关";
-                }
-                for (let i = datas.length >= 3? 3: 0; i < datas.length; i++) {
+                for (let i = 0; i < datas.length; i++) {
                     let datum = datas[i];
                     let rankItem = instantiate(self.RankItem);
-                    rankItem.getChildByName("Index").getComponent(Label).string = i + 1 + ""
+
+                    let crown = rankItem.getChildByName("Crown");
+                    let color = new Color();
+                    if (i == 0) {
+                        rankItem.getChildByName("Index").active = false
+                        crown.active = true;
+                        crown.getComponent(Sprite).color = Color.fromHEX(color, '#FFD700')
+                    }else if (i== 1) {
+                        rankItem.getChildByName("Index").active = false
+                        crown.active = true;
+                        crown.getComponent(Sprite).color = Color.fromHEX(color, '#C0C0C0')
+                    }else if (i==2) {
+                        rankItem.getChildByName("Index").active = false
+                        crown.active = true;
+                        crown.getComponent(Sprite).color = Color.fromHEX(color, '#B87333')
+                    }else {
+                        rankItem.getChildByName("Index").getComponent(Label).string = i + 1 + ""
+                    }
                     rankItem.getChildByName("Username").getComponent(Label).string = datum.username
-                    rankItem.getChildByName("Number").getComponent(Label).string = datum.gameLevel + 1 + "关"
+                    rankItem.getChildByName("Number").getComponent(Label).string = datum.gameLevel + "关"
                     let sp = rankItem.getChildByPath("Avatar/Img").getComponent(Sprite);
-                    assetManager.loadRemote<ImageAsset>(datum.avatar, {ext: '.png'}, function (err, imageAsset) {
-                        const spriteFrame = new SpriteFrame();
-                        const texture = new Texture2D();
-                        texture.image = imageAsset;
-                        spriteFrame.texture = texture;
-                        sp.spriteFrame = spriteFrame;
-                    });
+                    if (datum.avatar) {
+                        assetManager.loadRemote<ImageAsset>(datum.avatar, {ext: '.png'}, function (err, imageAsset) {
+                            if (err) {
+                                console.log(err)
+                                return
+                            }
+                            const spriteFrame = new SpriteFrame();
+                            const texture = new Texture2D();
+                            texture.image = imageAsset;
+                            spriteFrame.texture = texture;
+                            sp.spriteFrame = spriteFrame;
+                        });
+                    }
                     content.addChild(rankItem);
                 }
 
                 let selfRankNum;
                 for (let i = 0; i < datas.length; i++) {
-                    if (datas[0].playerId == Global.getInstance().getPlayerInfo().playerId) {
+                    if (datas[i].playerId == Global.getInstance().getPlayerInfo().playerId) {
                         selfRankNum =  i + 1;
                         break;
                     }
@@ -100,10 +82,14 @@ export class WorldRankController extends Component {
                 let selfNode = self.node.getChildByPath("Panel/Self");
                 selfNode.getChildByName("Index").getComponent(Label).string = selfRankNum?selfRankNum:"未上榜"
                 selfNode.getChildByName("Username").getComponent(Label).string = Global.getInstance().getPlayerInfo().nickName
-                selfNode.getChildByName("Number").getComponent(Label).string = Global.getInstance().getPlayerInfo().gameLevel + "关"
+                selfNode.getChildByName("Number").getComponent(Label).string = Global.getInstance().getPlayerInfo().gameLevel - 1 <0 ? '--': Global.getInstance().getPlayerInfo().gameLevel - 1+ "关"
                 let sp = selfNode.getChildByPath("Avatar/Img").getComponent(Sprite);
                 if (Global.getInstance().getPlayerInfo().avatarUrl) {
                     assetManager.loadRemote<ImageAsset>(Global.getInstance().getPlayerInfo().avatarUrl, {ext: '.png'}, function (err, imageAsset) {
+                        if (err) {
+                            console.log(err)
+                            return
+                        }
                         const spriteFrame = new SpriteFrame();
                         const texture = new Texture2D();
                         texture.image = imageAsset;

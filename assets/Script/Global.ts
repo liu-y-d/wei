@@ -227,7 +227,7 @@ fQIDAQAB
             getAllPropsGuide((guides)=>{
                 if (guides && guides.length > 0) {
                     let propsMap = guides.reduce((map:Map<number,GlobalProps>, obj) => {
-                            map.set(obj.propsOd, obj.show);
+                            map.set(obj.propsId, obj.show);
                             return map;
                         }, new Map());
                     let allPropsConfig: PropsConfig[]= [

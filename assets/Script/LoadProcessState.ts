@@ -1,5 +1,5 @@
 
-import { director,find, Vec3,Node,assetManager,tween} from "cc";
+import { director,find, Vec3,Node,assetManager,Label} from "cc";
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import CommonProgressBar from "db://assets/Script/CommonProgressBar";
@@ -23,8 +23,11 @@ export class LoadProcessState implements IProcessStateNode {
         //
         // });
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
-        let progressBarNode = find('Canvas/Content/TV/ProgressBar');
+        let progressBarNode = find('Canvas/Content/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
+        let enter = find('Canvas/Content/Enter');
+
+        enter.getChildByName("Label").getComponent(Label).string="正在加载资源……"
         assetManager.loadBundle("audio",()=>{
             progressBar.show();
             progressBar.prevNum = progressBar.num;

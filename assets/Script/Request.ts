@@ -3,7 +3,7 @@ import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {sys} from 'cc';
 const wx = window['wx'];
 
-export function refreshToken() {
+export function refreshToken(call:Function) {
     wx.request({
         method: 'POST',
         url: Global.getInstance().getPath('base/refreshToken'),
@@ -13,13 +13,13 @@ export function refreshToken() {
         },
         success (res) {
             Global.getInstance().setToken(res.data.data.token)
-
-            const refreshMargin = 5*60;
-            let expires = res.data.data.expires;
-            const refreshTokenTime = expires - refreshMargin;
-            setTimeout(() => {
-                refreshToken();
-            },Math.max(0, (refreshTokenTime - Date.now()/1000)*1000));
+            call()
+            // const refreshMargin = 5*60;
+            // let expires = res.data.data.expires;
+            // const refreshTokenTime = expires - refreshMargin;
+            // setTimeout(() => {
+            //     refreshToken();
+            // },Math.max(0, (refreshTokenTime - Date.now()/1000)*1000));
 
         }
     })
@@ -33,7 +33,11 @@ export function getCurrentUserGameLevelReq(callback:Function) {
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success (res) {
-            callback(res.data.data.gameLevel);
+            if (res.statusCode == 401) {
+                refreshToken(()=>{getCurrentUserGameLevelReq(callback)})
+            }else {
+                callback(res.data.data.gameLevel);
+            }
         }
     })
 }
@@ -47,7 +51,11 @@ export function getLeaf(callback:Function) {
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success (res) {
-            callback(res.data.data.leaf as Leaf);
+            if (res.statusCode == 401) {
+                refreshToken(()=>{getLeaf(callback)})
+            }else {
+                callback(res.data.data.leaf as Leaf);
+            }
         }
     })
 }
@@ -60,7 +68,11 @@ export function consumeLeaf(callback:Function) {
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success (res) {
-            callback(res.data.data.status);
+            if (res.statusCode == 401) {
+                refreshToken(()=>{consumeLeaf(callback)})
+            }else {
+                callback(res.data.data.status);
+            }
         }
     })
 }
@@ -81,8 +93,12 @@ export function GetGlobalPropsConfig(){
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success(res) {
-            props = res.data.data.props as GlobalProps[];
-            sys.localStorage.setItem("GlobalProps", JSON.stringify(props))
+            if (res.statusCode == 401) {
+                refreshToken(()=>{GetGlobalPropsConfig()})
+            }else {
+                props = res.data.data.props as GlobalProps[];
+                sys.localStorage.setItem("GlobalProps", JSON.stringify(props))
+            }
         }
     });
 }
@@ -95,7 +111,11 @@ export function infinityLeaf(callback:Function) {
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success (res) {
-            callback(res.data.data.status);
+            if (res.statusCode == 401) {
+                refreshToken(()=>{infinityLeaf(callback)})
+            }else {
+                callback(res.data.data.status);
+            }
         }
     })
 }
@@ -108,7 +128,11 @@ export function getAllPropsGuide(callback:Function) {
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success (res) {
-            callback(res.data.data.guides);
+            if (res.statusCode == 401) {
+                refreshToken(()=>{getAllPropsGuide(callback)})
+            }else {
+                callback(res.data.data.guides);
+            }
         }
     })
 }
@@ -126,7 +150,9 @@ export function saveUserPropsGuide(propsId, show: boolean) {
             showTip: show?0:1
         },
         success(res) {
-
+            if (res.statusCode == 401) {
+                refreshToken(()=>{saveUserPropsGuide(propsId,show)})
+            }
         }
     })
 }
@@ -152,8 +178,11 @@ export function gameOverReq(gameLevel, status, callback:Function) {
             param: base64ReplaceSpecialChar(param)
         },
         success (res) {
-
-            callback(res.data.data.status);
+            if (res.statusCode == 401) {
+                refreshToken(()=>{gameOverReq(gameLevel,status,callback)})
+            }else {
+                callback(res.data.data.status);
+            }
         }
     })
 }
@@ -167,7 +196,11 @@ export function getWorldRank(callback:Function) {
             'AuthorizationGame': "Bearer " + Global.getInstance().getToken()
         },
         success (res) {
-            callback(res.data.data.worldRank);
+            if (res.statusCode == 401) {
+                refreshToken(()=>{getWorldRank(callback)})
+            }else {
+                callback(res.data.data.worldRank);
+            }
         }
     })
 }

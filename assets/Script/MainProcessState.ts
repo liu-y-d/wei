@@ -1,5 +1,5 @@
 
-import {find,Node,Label,director,ProgressBar,UITransform} from 'cc';
+import {find,Node,Label,director,ProgressBar,UITransform,ParticleSystem2D} from 'cc';
 import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
@@ -62,7 +62,6 @@ export class MainProcessState implements IProcessStateNode {
             // power.getChildByName("PowerNum").getComponent(Label).string = leaf.infinity?'MAX':`${leaf.remaining}`
             // power.getChildByName("PowerNum").getComponent(Label).string = leaf.infinity?'MAX':`${leaf.remaining}`
             let progress = power.getChildByName("Progress");
-            progress.getComponent(ProgressBar).progress = leaf.infinity?1:leaf.remaining/100
             progress.on(Node.EventType.TOUCH_END,()=>{
                 UIManager.getInstance().openShare()
             },this)
@@ -73,11 +72,22 @@ export class MainProcessState implements IProcessStateNode {
                     // power.getChildByName("Time").active = true;
                     // power.getChildByName("Time").getComponent(Label).string = leaf.infinity
                     let component = power.getChildByName("PowerNum").getComponent(InfinityLeafScheduleAdapter);
+                    progress.getComponent(ProgressBar).progress = 1
                     component.countDown(seconds,()=>{
                         power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
                     });
                 }else {
                     power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
+                    if (leaf.remaining > 0) {
+                        progress.getComponent(ProgressBar).progress = leaf.remaining/100
+                        leafFly.setPosition(canvas.getChildByName("Content").getComponent(UITransform).convertToNodeSpaceAR(power.getChildByName("Leaf").getWorldPosition()))
+                        leafFly.active=true;
+                        leafFly.getComponent(ParticleSystem2D).resetSystem();
+                    }else {
+                        progress.getComponent(ProgressBar).progress = 0
+                        leafFly.active = false;
+                        leafFly.getComponent(ParticleSystem2D).stopSystem();
+                    }
                 }
 
 
@@ -86,10 +96,14 @@ export class MainProcessState implements IProcessStateNode {
             }else {
                 power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
                 if (leaf.remaining > 0) {
+                    progress.getComponent(ProgressBar).progress = leaf.remaining/100
                     leafFly.setPosition(canvas.getChildByName("Content").getComponent(UITransform).convertToNodeSpaceAR(power.getChildByName("Leaf").getWorldPosition()))
                     leafFly.active=true;
+                    leafFly.getComponent(ParticleSystem2D).resetSystem();
                 }else {
+                    progress.getComponent(ProgressBar).progress = 0
                     leafFly.active = false;
+                    leafFly.getComponent(ParticleSystem2D).stopSystem();
                 }
             }
         }

@@ -53,10 +53,10 @@ export function setRankTemplate(it) {
                 out += ' nox"'
             }
 
-                out +=' src="' + (item.avatarUrl) + '"></image> <text class="listItemName" value="' + (item.nickname) + '"></text> <text class="listItemScore" value="' + (JSON.parse(item.KVDataList[0].value).actual_score) + '关"></text></view> ';
+                out +=' src="' + (item.avatarUrl) + '"></image> <text class="listItemName" value="' + (item.nickname) + '"></text> <text class="listItemScore" value="' + item.KVDataList[0].value + '关"></text></view> ';
         }
     }
-    out += ' </scrollview> <text class="listTips" value="仅展示前50位好友排名"></text> <view class="listItem selfListItem"> <text  class="listItemNum" value="' + (it.selfIndex + 1) + '"></text> <image class="listHeadImg" src="' + (it.self.avatarUrl) + '"></image> <text class="listItemName" value="' + (it.self.nickname) + '"></text> <text class="listItemScore" value="' + (JSON.parse(it.self.KVDataList[0].value).actual_score) + '关"></text></view> </view></view>';
+    out += ' </scrollview> <text class="listTips" value="仅展示前50位好友排名"></text> <view class="listItem selfListItem"> <text  class="listItemNum" value="' + (it.selfIndex + 1) + '"></text> <image class="listHeadImg" src="' + (it.self.avatarUrl) + '"></image> <text class="listItemName" value="' + (it.self.nickname) + '"></text> <text class="listItemScore" value="' + it.self.KVDataList[0].value + '关"></text></view> </view></view>';
     // out += '<view id="container" class="loading_container"><image class="loading" src="render/loading.png" id="loading"></image></view>'
     console.log(out)
     return out;

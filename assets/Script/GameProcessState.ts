@@ -218,7 +218,7 @@ export class GameProcessState implements IProcessStateNode {
         moveLock.on(Node.EventType.TOUCH_START, () => {
         }, this);
         Global.getInstance().moveLock = moveLock;
-        playArea.getChildByName('Direct').setPosition(320, 1050)
+        // playArea.getChildByName('Direct').setPosition(0 , 1050)
         let size: Size = playArea.getComponent(UITransform).contentSize;
         // playArea.getComponent(Graphics)
         Global.getInstance().pathInit();

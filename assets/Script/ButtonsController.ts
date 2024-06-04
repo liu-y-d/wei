@@ -1,7 +1,8 @@
-import {_decorator, Button, Component, director, find, instantiate, Node, tween, UITransform, Vec3} from 'cc';
+import {_decorator, Button, Component, director, find, instantiate, Node, tween, UITransform, Vec3,ProgressBar} from 'cc';
 import {PrefabController} from "db://assets/Script/PrefabController";
 import {consumeLeaf, getLeaf, Leaf} from "db://assets/Script/Request";
 import {Global} from "db://assets/Script/Global";
+import {UIManager} from "db://assets/Script/UIManager";
 
 const { ccclass, property } = _decorator;
 
@@ -137,8 +138,7 @@ export class ButtonsController extends Component {
                         // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
                     });
                 }).start()
-            }
-            if (leaf.remaining >= 5) {
+            } else if (leaf.remaining >= 5) {
                 consumeLeaf((status)=>{
                     if (status) {
                         let canvas = find('Canvas');
@@ -149,7 +149,6 @@ export class ButtonsController extends Component {
                             let beginLeafFly = leafSlot.getChildByName("LeafFly");
                             beginLeafFly.active=true;
                             tween(beginLeafFly).to(0.5,{scale:new Vec3(1,1,1)}).call(()=>{}).start();
-
                             director.loadScene("Game",()=>{
                                 // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
                             });
@@ -157,6 +156,8 @@ export class ButtonsController extends Component {
                     }
                 })
 
+            }else {
+                UIManager.getInstance().openShare()
             }
         }
         getLeaf(f)

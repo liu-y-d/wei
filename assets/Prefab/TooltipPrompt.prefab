@@ -1111,7 +1111,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "返回",
+    "_string": "取消",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,
@@ -1474,7 +1474,7 @@
       "b": 0,
       "a": 255
     },
-    "_string": "继续",
+    "_string": "确定",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 30,

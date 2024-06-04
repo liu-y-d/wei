@@ -13,6 +13,8 @@ export class PopupPropsPrompt implements PopupBase {
     resume:Function
     init() {
         let popup = UIManager.getInstance().maskGlobal.getChildByName("Popup");
+
+        UIManager.getInstance().maskGlobal.getChildByName("Firework").active = false
         popup.removeAllChildren();
         popup.scale = new Vec3(0,0,1);
         // let tooltip = popup.getChildByName(popup.getComponent(Popup).promptTooltip.name)

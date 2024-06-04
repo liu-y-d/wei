@@ -47,6 +47,7 @@ export class Draw extends Component {
         let center = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(shape.x,shape.y));
         this.node.setPosition(center.x,center.y)
         this.isDestination = false;
+        this.hasObstacle = false;
         LevelDesign.getInstance().getShapeManager().drawBottom(ctx,shape)
     }
 
@@ -56,6 +57,7 @@ export class Draw extends Component {
         let center = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(shape.x,shape.y));
         this.node.setPosition(center.x,center.y)
         this.isDestination = true;
+        this.hasObstacle = false;
         LevelDesign.getInstance().getShapeManager().drawDestination(ctx,shape)
     }
 
@@ -68,6 +70,7 @@ export class Draw extends Component {
         if (!this.hasObstacle){
             var ctx = this.getComponent(Graphics);
             this.hasObstacle = true;
+            this.isDestination = false;
             LevelDesign.getInstance().getShapeManager().creatorObstacle(ctx,this.shape)
 
         }
@@ -82,6 +85,7 @@ export class Draw extends Component {
         if (!this.hasObstacle){
             // console.log(this.emit)
             this.hasObstacle = true;
+            this.isDestination = false;
             var ctx = this.getComponent(Graphics);
             LevelDesign.getInstance().getShapeManager().creatorObstacle(ctx,this.shape)
             Global.getInstance().moveLock.active = false;

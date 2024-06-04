@@ -299,8 +299,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 7.16,
-      "y": -18.858000000000004,
+      "x": 18.34,
+      "y": -30.038999999999987,
       "z": 0
     },
     "_lrot": {
@@ -340,7 +340,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 400,
+      "width": 349.9,
       "height": 100
     },
     "_anchorPoint": {
@@ -376,7 +376,7 @@
       "b": 96,
       "a": 255
     },
-    "_string": "每天可获取20分钟无限树叶",
+    "_string": "每10分钟自动恢复5树叶\n每天可获取20分钟无限树叶",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 25,
@@ -438,9 +438,9 @@
     "_target": null,
     "_left": 0,
     "_right": 0,
-    "_top": 168.858,
+    "_top": 180.039,
     "_bottom": 0,
-    "_horizontalCenter": 7.16,
+    "_horizontalCenter": 18.34,
     "_verticalCenter": 0,
     "_isAbsLeft": true,
     "_isAbsRight": true,
@@ -906,8 +906,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 47.33984375,
-      "height": 41.8
+      "width": 43,
+      "height": 20
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -921,7 +921,7 @@
     "fileId": "adWn3RfcxNfZX+p4aH8xXl"
   },
   {
-    "__type__": "cc.Label",
+    "__type__": "cc.Sprite",
     "_name": "",
     "_objFlags": 0,
     "__editorExtras__": {},
@@ -937,56 +937,33 @@
     "_dstBlendFactor": 4,
     "_color": {
       "__type__": "cc.Color",
-      "r": 22,
-      "g": 8,
-      "b": 8,
+      "r": 255,
+      "g": 255,
+      "b": 255,
       "a": 255
     },
-    "_string": "MAX",
-    "_horizontalAlign": 1,
-    "_verticalAlign": 1,
-    "_actualFontSize": 20,
-    "_fontSize": 20,
-    "_fontFamily": "Arial",
-    "_lineHeight": 30,
-    "_overflow": 0,
-    "_enableWrapText": true,
-    "_font": null,
-    "_isSystemFontUsed": true,
-    "_spacingX": 0,
-    "_isItalic": false,
-    "_isBold": false,
-    "_isUnderline": false,
-    "_underlineHeight": 2,
-    "_cacheMode": 0,
-    "_enableOutline": true,
-    "_outlineColor": {
-      "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
-      "b": 0,
-      "a": 255
+    "_spriteFrame": {
+      "__uuid__": "df691efa-6e1c-4730-8318-803b157dbc74@f9941",
+      "__expectedType__": "cc.SpriteFrame"
     },
-    "_outlineWidth": 2,
-    "_enableShadow": false,
-    "_shadowColor": {
-      "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
-      "b": 0,
-      "a": 255
-    },
-    "_shadowOffset": {
+    "_type": 0,
+    "_fillType": 0,
+    "_sizeMode": 0,
+    "_fillCenter": {
       "__type__": "cc.Vec2",
-      "x": 2,
-      "y": 2
+      "x": 0,
+      "y": 0
     },
-    "_shadowBlur": 2,
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_useGrayscale": false,
+    "_atlas": null,
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
-    "fileId": "73NIyWPiRL/4wVZPgT1utL"
+    "fileId": "c0E0Y5nopMEZ8IYIgenAGn"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -997,8 +974,6 @@
       "__id__": 0
     },
     "fileId": "dcXKoXKSBEbZZj0NiUWNOT",
-    "instance": null,
-    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -1435,8 +1410,6 @@
       "__id__": 0
     },
     "fileId": "ebjeveeJ5GzrnSdL4Gyf4N",
-    "instance": null,
-    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {

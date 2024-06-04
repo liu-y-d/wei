@@ -4,7 +4,7 @@ import {IProcessStateNode} from "db://assets/Script/IProcessStateNode";
 import {ProcessStateEnum} from "db://assets/Script/ProcessStateEnum";
 import {LevelDesign} from "db://assets/Script/LevelDesign";
 import {GameLevel} from "db://assets/Script/GameLevel";
-import {Global} from "db://assets/Script/Global";
+import {GameStateEnum, Global} from "db://assets/Script/Global";
 import {UIManager} from "db://assets/Script/UIManager";
 import {PrefabController} from "db://assets/Script/PrefabController";
 export class PanelProcessState implements IProcessStateNode {
@@ -33,6 +33,7 @@ export class PanelProcessState implements IProcessStateNode {
         levelInfo.getChildByName("Label").getComponent(Label).string = `第${Global.getInstance().getPlayerInfo().gameLevel}关`;
         levelInfo.getChildByName("Pause").on(Node.EventType.TOUCH_END, ()=>{
             UIManager.getInstance().pause();
+            // UIManager.getInstance().gameOver(GameStateEnum.win);
         }, this);
     }
     // drawMovableDirection() {

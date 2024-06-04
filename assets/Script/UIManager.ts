@@ -138,7 +138,7 @@ export class UIManager{
                     Global.getInstance().playerNext();
                     // 目前单机
                     window['wx'].setUserCloudStorage({
-                        KVDataList: [{"key":'friendRank', "value": `{"actual_rank":"大神1", "actual_score":"${orgLevel}"}`}]
+                        KVDataList: [{"key":'friendRank_1', "value": `${orgLevel}`}]
                         // KVDataList: [{"key":'friendRank', "value": '19'}]
                     }).then(res=>{
                         console.log("上传成功")
@@ -170,6 +170,7 @@ export class UIManager{
     }
     public gameContinue() {
 
+        LevelDesign.getInstance().getShapeManager().closeDirect();
         let self = this;
         function f(leaf:Leaf) {
             if ((leaf.infinity && Global.getInstance().dateToSeconds(leaf.infinity) + 1200 - Global.getInstance().dateToSeconds(Date.now()) >= 0)||leaf.remaining >= 5) {
