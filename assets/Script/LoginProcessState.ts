@@ -92,14 +92,17 @@ export class LoginProcessState implements IProcessStateNode {
                                                         progressBar.prevNum = progressBar.num
                                                         progressBar.num = 1
                                                         // let logo = find('Canvas/Content/logo');
-                                                        enter.on(Node.EventType.TOUCH_END, () => {
-                                                            director.loadScene("Main", () => {
-                                                                // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
-                                                            });
-                                                        })
+                                                        // enter.on(Node.EventType.TOUCH_END, () => {
+                                                        //     director.loadScene("Main", () => {
+                                                        //         // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
+                                                        //     });
+                                                        // })
                                                         enter.getChildByName("Label").getComponent(Label).string = "进入游戏"
                                                         enter.getComponent(Button).interactable = true
                                                         progressBar.hide();
+                                                        director.loadScene("Main", () => {
+                                                            // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
+                                                        });
                                                     }
                                                 })
 
@@ -183,15 +186,17 @@ export class LoginProcessState implements IProcessStateNode {
                                                         let progressBar = progressBarNode.getComponent(CommonProgressBar);
                                                         progressBar.prevNum = progressBar.num
                                                         progressBar.num = 1
-                                                        enter.on(Node.EventType.TOUCH_END, () => {
-                                                            director.loadScene("Main", () => {
-                                                                // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
-                                                            });
-                                                        })
+                                                        // enter.on(Node.EventType.TOUCH_END, () => {
+                                                        //     director.loadScene("Main", () => {
+                                                        //         // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
+                                                        //     });
+                                                        // })
                                                         enter.getChildByName("Label").getComponent(Label).string = "进入游戏"
                                                         enter.getComponent(Button).interactable = true
                                                         progressBar.hide();
-
+                                                        director.loadScene("Main", () => {
+                                                            // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)
+                                                        });
 
                                                     }
                                                 })

@@ -85,7 +85,6 @@ export class Draw extends Component {
         if (!this.hasObstacle){
             // console.log(this.emit)
             this.hasObstacle = true;
-            this.isDestination = false;
             var ctx = this.getComponent(Graphics);
             LevelDesign.getInstance().getShapeManager().creatorObstacle(ctx,this.shape)
             Global.getInstance().moveLock.active = false;

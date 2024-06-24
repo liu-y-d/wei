@@ -65,6 +65,7 @@ export class MapPropsProcessState implements IProcessStateNode {
             let randomUniqueFromArray = MapPropsProcessState.getRandomUniqueFromArray(coords, 5);
             for (let i = 0; i < randomUniqueFromArray.length; i++) {
                 let randomChoice = this.getRandomByWeight(mapProps)
+                // let randomChoice = GamePropsEnum.CreateStar
                 switch (randomChoice) {
                     case GamePropsEnum.CreateStar:
                         LevelDesign.getInstance().currentMapProps.push({
@@ -146,7 +147,7 @@ export class MapPropsProcessState implements IProcessStateNode {
 
                 }).start()
         }
-        if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStarAbsorb)?.showTip) {
+        if (Global.getInstance().getPropsConfigById(GamePropsEnum.CreateStar)?.showTip) {
             UIManager.getInstance().showMapPropsGuide(() => {
                 f()
             }, coord, self.tip,GamePropsEnum.CreateStar)

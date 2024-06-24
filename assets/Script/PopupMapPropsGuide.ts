@@ -71,8 +71,6 @@ export class PopupMapPropsGuide implements PopupBase {
                                 pos.x = pos.x - guide.getComponent(UITransform).width * 0.2;
                             }
                         }
-
-
                     }
                     // adjustPos()
                     let tween1 = tween(guide);
