@@ -35,13 +35,13 @@ export class MainProcessState implements IProcessStateNode {
             GetGlobalPropsConfig()
             LevelDesign.getInstance().init();
             Global.getInstance().propsConfigInit();
-            canvas.getChildByPath('Content/BulletScreen').active = true;
+            // canvas.getChildByPath('Content/BulletScreen').active = true;
             canvas.getChildByPath('Content/GameLevel').getComponent(GameLevel).drawCustomer();
             canvas.getChildByPath('Content/Top').getChildByName("Menu").on(Node.EventType.TOUCH_END, ()=>{
                 UIManager.getInstance().mainMenu();
             }, this);
         }
-        canvas.getChildByPath('Content/BulletScreen').active = false;
+        // canvas.getChildByPath('Content/BulletScreen').active = false;
 
         // 本地调试
         // init(5)
@@ -66,6 +66,7 @@ export class MainProcessState implements IProcessStateNode {
                 UIManager.getInstance().openShare()
             },this)
             let leafFly = canvas.getChildByPath("Content/LeafFly");
+            leafFly.active = false;
             if (leaf.infinity) {
                 let seconds = Global.getInstance().dateToSeconds(leaf.infinity);
                 if (seconds + 1200 - Global.getInstance().dateToSeconds(Date.now()) >= 0) {
@@ -76,6 +77,8 @@ export class MainProcessState implements IProcessStateNode {
                     component.countDown(seconds,()=>{
                         power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
                     });
+                    leafFly.setPosition(canvas.getChildByName("Content").getComponent(UITransform).convertToNodeSpaceAR(power.getChildByName("Leaf").getWorldPosition()))
+                    leafFly.active=true;
                 }else {
                     power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
                     if (leaf.remaining > 0) {
@@ -91,8 +94,6 @@ export class MainProcessState implements IProcessStateNode {
                 }
 
 
-                leafFly.setPosition(canvas.getChildByName("Content").getComponent(UITransform).convertToNodeSpaceAR(power.getChildByName("Leaf").getWorldPosition()))
-                leafFly.active=true;
             }else {
                 power.getChildByName("PowerNum").getComponent(Label).string = `${leaf.remaining}/100`
                 if (leaf.remaining > 0) {

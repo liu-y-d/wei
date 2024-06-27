@@ -26,7 +26,7 @@
 //     return out;
 // }
 export function setRankTemplate(it) {
-    var out = '<view class="container" id="main"> <view class="header"> <text class="title" value="好友榜"></text> </view> <view class="rankList"> <scrollview class="list" scrollY="true"> ';
+    var out = '<view class="container" id="main"> <view class="header"> <text class="title" value="好友榜"></text> </view> <view class="rankList"> <scrollview id = "list" class="list" scrollY="true"> ';
     var arr1 = it.data;
     if (arr1) {
         var item, index = -1,

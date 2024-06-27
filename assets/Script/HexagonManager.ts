@@ -394,7 +394,7 @@ export class HexagonManager extends ShapeManager {
         ctx.stroke();
         //4边
         // ctx.fillColor.fromHEX("#212529");
-        ctx.fillColor.fromHEX("#3C6338");
+        ctx.fillColor.fromHEX("#435343");
         ctx.fill();
 
         let center1 = new Vec2(0, 10);
@@ -468,7 +468,7 @@ export class HexagonManager extends ShapeManager {
         ctx.stroke();
         //4边
         // ctx.fillColor.fromHEX("#212529");
-        ctx.fillColor.fromHEX("#3C6338");
+        ctx.fillColor.fromHEX("#435343");
         ctx.fill();
     }
 
@@ -538,7 +538,7 @@ export class HexagonManager extends ShapeManager {
         // ctx.stroke();
         // //4边
         // // ctx.fillColor.fromHEX("#212529");
-        // ctx.fillColor.fromHEX("#3C6338");
+        // ctx.fillColor.fromHEX("#435343");
         // ctx.fill();
     }
 
@@ -562,7 +562,7 @@ export class HexagonManager extends ShapeManager {
         let tile = Global.getInstance().tileMap[shape.x][shape.y];
 
         let obstacle = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).obstacle);
-        obstacle.getComponent(UITransform).setContentSize(this.shapeWidth + 12,(this.shapeWidth + 12) / 1.1)
+        obstacle.getComponent(UITransform).setContentSize(this.shapeWidth + 12,(this.shapeWidth + 12))
         tile.addChild(obstacle)
     }
 

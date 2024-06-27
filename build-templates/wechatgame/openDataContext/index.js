@@ -11,6 +11,20 @@ function draw() {
     Layout.clear();
     Layout.init(setRankTemplate(friendRankData), rankStyle);
     Layout.layout(sharedContext);
+    const list = Layout.getElementById('list');
+
+
+    // 在 init 之后内部有些异步逻辑取不到 vertivalScrollbar，需要延迟一帧执行
+    Layout.ticker.next(() => {
+        // 隐藏滚动条
+        list.vertivalScrollbar.hide();
+
+        // // 改变滚动条的宽度
+        // list.vertivalScrollbar.width = 20;
+        //
+        // // 改变滚动条的背景颜色
+        // list.vertivalScrollbar.style.backgroundColor = 'red';
+    });
 
 }
 
@@ -31,8 +45,7 @@ __env.onMessage(data => {
     } else if (data.value === 'rankData') {
         // showLoading();
         getFriendRankData("friendRank_1", data.userId, draw)
-    } else if (data.value === 'worldData') {
-        getFriendRankData("worldRank", data.userId, draw)
+
     }
 });
 

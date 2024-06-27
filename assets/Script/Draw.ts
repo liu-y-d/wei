@@ -38,7 +38,9 @@ export class Draw extends Component {
         let center = LevelDesign.getInstance().getShapeManager().getCenter(new Vec2(shape.x,shape.y));
         this.node.setPosition(center.x,center.y)
         this.isDestination = false;
+        this.hasObstacle = false;
         LevelDesign.getInstance().getShapeManager().draw(ctx,shape)
+
     }
 
     drawBottom(shape:Shape){

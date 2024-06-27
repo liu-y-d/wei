@@ -235,13 +235,17 @@ export class MapPropsProcessState implements IProcessStateNode {
                     prefab.setSiblingIndex(9999999999)
                     Global.getInstance().playArea.addChild(prefab)
                     prefab.setPosition(destinationTile.getPosition())
-                    tween(prefab).to(1,{position:tile.getPosition()}).call(()=>{
+                    tween(prefab).to(0.5,{position:tile.getPosition()}).call(()=>{
                         prefab.removeFromParent();
                         destinationTile.getComponent(Draw).draw({
                             x: destinationCoord.x,
                             y: destinationCoord.y,
                             shape: LevelDesign.getInstance().currentShapeEnum
                         })
+                        let obstacle = destinationTile.getChildByName("Obstacle");
+                        if (obstacle) {
+                            obstacle.removeFromParent();
+                        }
                         index++
                         if (index == destinationArray.length) {
                             whirl.active = false;

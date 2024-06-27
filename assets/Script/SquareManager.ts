@@ -24,7 +24,7 @@ export class SquareManager extends ShapeManager {
         let tile = Global.getInstance().tileMap[shape.x][shape.y];
 
         let obstacle = instantiate(Global.getInstance().gameCanvas.getComponent(PrefabController).obstacle);
-        obstacle.getComponent(UITransform).setContentSize(this.shapeWidth-10,(this.shapeWidth-10) / 1.1)
+        obstacle.getComponent(UITransform).setContentSize(this.shapeWidth-10,(this.shapeWidth-10))
         tile.addChild(obstacle)
     }
     // creatorObstacle(ctx, shape: Shape) {
@@ -136,7 +136,7 @@ export class SquareManager extends ShapeManager {
         ctx.clear();
         ctx.lineWidth = 0;
         if (LevelDesign.getInstance().currentMovableDirection == 8) {
-            this.drawEight(ctx,0,0,"#3C6338");
+            this.drawEight(ctx,0,0,"#435343");
             this.drawEight(ctx,0,10,"#a4c49f");
         }else {
             let halfWidth = this.shapeWidth;
@@ -146,7 +146,7 @@ export class SquareManager extends ShapeManager {
             // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
             ctx.strokeColor.fromHEX("#ffffff");
             ctx.stroke();
-            ctx.fillColor.fromHEX("#3C6338");
+            ctx.fillColor.fromHEX("#435343");
             ctx.fill();
 
             ctx.roundRect(-this.shapeWidth / 2 + 5, -this.shapeWidth / 2 + 5 + 10, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
@@ -163,7 +163,7 @@ export class SquareManager extends ShapeManager {
         ctx.clear();
         ctx.lineWidth = 0;
         if (LevelDesign.getInstance().currentMovableDirection == 8) {
-            this.drawEight(ctx,0,0,"#3C6338");
+            this.drawEight(ctx,0,0,"#435343");
         }else {
             let halfWidth = this.shapeWidth;
             // ctx.roundRect(center.x - this.shapeWidth/2 + 5, center.y - this.shapeWidth/2 + 5, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
@@ -172,7 +172,7 @@ export class SquareManager extends ShapeManager {
             // ctx.roundRect(ctx.getParent().getPosition().x, ctx.getParent().getPosition().y, halfWidth - 10, halfWidth - 10, 5); // 圆角半径为20
             ctx.strokeColor.fromHEX("#ffffff");
             ctx.stroke();
-            ctx.fillColor.fromHEX("#3C6338");
+            ctx.fillColor.fromHEX("#435343");
             ctx.fill();
         }
 
