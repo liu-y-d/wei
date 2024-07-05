@@ -27,7 +27,7 @@ export class ButtonsController extends Component {
         this.FriendRankBtn.on(Button.EventType.CLICK, this.friendRankOnClick, this);
         this.WorldRankBtn.on(Button.EventType.CLICK, this.worldRankOnClick, this);
         this.RankBtn.on(Button.EventType.CLICK, this.rankOnClick, this);
-        this.BeginBtn.on(Button.EventType.CLICK, this.begin, this);
+        // this.BeginBtn.on(Button.EventType.CLICK, this.begin, this);
     }
     start() {
 
@@ -127,12 +127,13 @@ export class ButtonsController extends Component {
                 let canvas = find('Canvas');
                 let leafFly = canvas.getChildByPath("Content/LeafFly");
                 // leafFly.setSiblingIndex(99999999999999999)
-                let leafSlot = canvas.getChildByPath("Content/Buttons/Begin/LeafSlot");
+                // let leafSlot = canvas.getChildByPath("Content/Buttons/Begin/LeafSlot");
+                let leafSlot = canvas.getChildByPath("Content/MainHole");
                 let convertToNodeSpaceAR = canvas.getChildByName('Content').getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
                 tween(leafFly).to(0.5,{position:convertToNodeSpaceAR}).call(()=>{
-                    let beginLeafFly = leafSlot.getChildByName("LeafFly");
-                    beginLeafFly.active=true;
-                    tween(beginLeafFly).to(0.1,{scale:new Vec3(1,1,1)}).call(()=>{}).start();
+                    // let beginLeafFly = leafSlot.getChildByName("LeafFly");
+                    // beginLeafFly.active=true;
+                    // tween(beginLeafFly).to(0.1,{scale:new Vec3(1,1,1)}).call(()=>{}).start();
 
                     director.loadScene("Game",()=>{
                         // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
@@ -143,12 +144,13 @@ export class ButtonsController extends Component {
                     if (status) {
                         let canvas = find('Canvas');
                         let leafFly = canvas.getChildByPath("Content/LeafFly");
-                        let leafSlot = canvas.getChildByPath("Content/Buttons/Begin/LeafSlot");
+                        // let leafSlot = canvas.getChildByPath("Content/Buttons/Begin/LeafSlot");
+                        let leafSlot = canvas.getChildByPath("Content/MainHole");
                         let convertToNodeSpaceAR = canvas.getChildByName('Content').getComponent(UITransform).convertToNodeSpaceAR(leafSlot.getWorldPosition());
                         tween(leafFly).to(0.5,{position:convertToNodeSpaceAR}).call(()=>{
-                            let beginLeafFly = leafSlot.getChildByName("LeafFly");
-                            beginLeafFly.active=true;
-                            tween(beginLeafFly).to(0.5,{scale:new Vec3(1,1,1)}).call(()=>{}).start();
+                            // let beginLeafFly = leafSlot.getChildByName("LeafFly");
+                            // beginLeafFly.active=true;
+                            // tween(beginLeafFly).to(0.5,{scale:new Vec3(1,1,1)}).call(()=>{}).start();
                             director.loadScene("Game",()=>{
                                 // ProcessStateMachineManager.getInstance().change(ProcessStateEnum.game)
                             });

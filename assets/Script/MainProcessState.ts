@@ -9,6 +9,7 @@ import {UIManager} from "db://assets/Script/UIManager";
 import {getCurrentUserGameLevelReq, GetGlobalPropsConfig, getLeaf, Leaf} from "db://assets/Script/Request";
 import {InfinityLeafScheduleAdapter} from "db://assets/Script/InfinityLeafScheduleAdapter";
 import {GhostMessage} from "db://assets/Script/GhostState";
+import {TollGateComponent} from "db://assets/Script/TollGateComponent";
 export class MainProcessState implements IProcessStateNode {
     readonly key =  ProcessStateEnum.main;
 
@@ -35,8 +36,9 @@ export class MainProcessState implements IProcessStateNode {
             GetGlobalPropsConfig()
             LevelDesign.getInstance().init();
             Global.getInstance().propsConfigInit();
+            canvas.getChildByPath('Content/TollGate').getComponent(TollGateComponent).initTollGate(gameLevel)
             // canvas.getChildByPath('Content/BulletScreen').active = true;
-            canvas.getChildByPath('Content/GameLevel').getComponent(GameLevel).drawCustomer();
+            // canvas.getChildByPath('Content/GameLevel').getComponent(GameLevel).drawCustomer();
             canvas.getChildByPath('Content/Top').getChildByName("Menu").on(Node.EventType.TOUCH_END, ()=>{
                 UIManager.getInstance().mainMenu();
             }, this);

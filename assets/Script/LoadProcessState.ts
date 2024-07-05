@@ -23,6 +23,15 @@ export class LoadProcessState implements IProcessStateNode {
         //
         // });
         // director.loadScene("Main",()=>{ProcessStateMachineManager.getInstance().change(ProcessStateEnum.main)});
+
+
+        //要在Start方法中开启
+        window['wx'].showShareMenu(
+            {withShareTicket: true,
+                menus: ['shareAppMessage', 'shareTimeline']}
+        )//开启右上角的分享按钮
+
+
         let progressBarNode = find('Canvas/Content/ProgressBar');
         let progressBar = progressBarNode.getComponent(CommonProgressBar);
         let enter = find('Canvas/Content/Enter');

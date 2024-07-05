@@ -1,0 +1,88 @@
+{
+  "ver": "1.0.6",
+  "importer": "bitmap-font",
+  "imported": true,
+  "uuid": "a0659165-3b41-48fd-810f-8a0e3d679d92",
+  "files": [
+    ".json"
+  ],
+  "subMetas": {},
+  "userData": {
+    "_fntConfig": {
+      "commonHeight": 160,
+      "fontSize": 160,
+      "atlasName": "difficultyFnt.png",
+      "fontDefDictionary": {
+        "20013": {
+          "rect": {
+            "x": 204,
+            "y": 164,
+            "width": 200,
+            "height": 160
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 80
+        },
+        "21333": {
+          "rect": {
+            "x": 2,
+            "y": 2,
+            "width": 200,
+            "height": 160
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 80
+        },
+        "22256": {
+          "rect": {
+            "x": 406,
+            "y": 2,
+            "width": 200,
+            "height": 160
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 80
+        },
+        "31561": {
+          "rect": {
+            "x": 204,
+            "y": 2,
+            "width": 200,
+            "height": 160
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 80
+        },
+        "31616": {
+          "rect": {
+            "x": 2,
+            "y": 164,
+            "width": 200,
+            "height": 160
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 80
+        },
+        "38590": {
+          "rect": {
+            "x": 406,
+            "y": 164,
+            "width": 200,
+            "height": 160
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 80
+        }
+      },
+      "kerningDict": {}
+    },
+    "fontSize": 160,
+    "textureUuid": "d7561080-801c-4d54-aff3-32102eb6f2e1"
+  }
+}

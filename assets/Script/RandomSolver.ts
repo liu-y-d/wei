@@ -10,6 +10,7 @@ export default function randomSolver(x: number, y: number): number {
     blocks.calcAllDistances();
     let block = blocks.getBlock(x, y);
     let directions = block.directions;
+    // console.log(blocks.toString2());
     if (directions.length <= 0) {
         return -1;
     } else {

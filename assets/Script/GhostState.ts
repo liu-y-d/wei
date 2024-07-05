@@ -90,6 +90,13 @@ export class GhostState implements IProcessStateNode {
 
     move(target, params: any[]) {
         if (Global.getInstance().ghostFreezeNum > 0) {
+            let randomIndex = LevelDesign.getInstance().ghostMoveAlgorithms(Global.getInstance().currentGhostVec2.x, Global.getInstance().currentGhostVec2.y);
+            if (randomIndex == -1) {
+                Global.getInstance().ghostMoving = false;
+                Global.getInstance().moveLock.active = false;
+                target.win();
+                return;
+            }
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.unfreeze)
             return;
         }
@@ -197,6 +204,13 @@ export class GhostState implements IProcessStateNode {
 
     back(target, params: any[]) {
         if (Global.getInstance().ghostFreezeNum > 0) {
+            let randomIndex = LevelDesign.getInstance().ghostMoveAlgorithms(Global.getInstance().currentGhostVec2.x, Global.getInstance().currentGhostVec2.y);
+            if (randomIndex == -1) {
+                Global.getInstance().ghostMoving = false;
+                Global.getInstance().moveLock.active = false;
+                target.win();
+                return;
+            }
             ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.unfreeze)
             return;
         }

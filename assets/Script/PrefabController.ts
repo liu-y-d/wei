@@ -41,6 +41,12 @@ export class PrefabController extends Component {
 
     @property(Prefab)
     public obstacle:Prefab
+    @property(Prefab)
+    public mainTollgate4:Prefab
+    @property(Prefab)
+    public mainTollgate6:Prefab
+    @property(Prefab)
+    public mainTollgate8:Prefab
     start() {
 
     }

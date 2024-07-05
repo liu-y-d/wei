@@ -65,7 +65,7 @@ export class MapPropsProcessState implements IProcessStateNode {
             let randomUniqueFromArray = MapPropsProcessState.getRandomUniqueFromArray(coords, 5);
             for (let i = 0; i < randomUniqueFromArray.length; i++) {
                 let randomChoice = this.getRandomByWeight(mapProps)
-                // let randomChoice = GamePropsEnum.CreateStar
+                // let randomChoice = GamePropsEnum.CreateDirection
                 switch (randomChoice) {
                     case GamePropsEnum.CreateStar:
                         LevelDesign.getInstance().currentMapProps.push({

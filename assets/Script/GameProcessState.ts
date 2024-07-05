@@ -317,6 +317,13 @@ export class GameProcessState implements IProcessStateNode {
                     ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.ghost, GhostMessage.move)
                 }else {
                     mapProps.exec(coord,()=>{
+                        let randomIndex = LevelDesign.getInstance().ghostMoveAlgorithms(Global.getInstance().currentGhostVec2.x, Global.getInstance().currentGhostVec2.y);
+                        if (randomIndex == -1) {
+                            Global.getInstance().ghostMoving = false;
+                            Global.getInstance().moveLock.active = false;
+                            ProcessStateMachineManager.getInstance().get(ProcessStateEnum.ghost).win()
+                            return;
+                        }
                     })
                 }
             } else if(mapProps.id == GamePropsEnum.CreateDirection) {
@@ -331,6 +338,13 @@ export class GameProcessState implements IProcessStateNode {
                     })
                     if (nearbyShapeCoords.length > 0) {
                         mapProps.exec(coord,()=>{
+                            let randomIndex = LevelDesign.getInstance().ghostMoveAlgorithms(Global.getInstance().currentGhostVec2.x, Global.getInstance().currentGhostVec2.y);
+                            if (randomIndex == -1) {
+                                Global.getInstance().ghostMoving = false;
+                                Global.getInstance().moveLock.active = false;
+                                ProcessStateMachineManager.getInstance().get(ProcessStateEnum.ghost).win()
+                                return;
+                            }
                         },MapPropsProcessState.getRandomUniqueFromArray(nearbyShapeCoords,1)[0])
                     }else {
                         ProcessStateMachineManager.getInstance().putMessage(ProcessStateEnum.obstacle, ObstacleMessage.create, coord);
@@ -342,6 +356,13 @@ export class GameProcessState implements IProcessStateNode {
                 }
             }else {
                 mapProps.exec(coord,()=>{
+                    let randomIndex = LevelDesign.getInstance().ghostMoveAlgorithms(Global.getInstance().currentGhostVec2.x, Global.getInstance().currentGhostVec2.y);
+                    if (randomIndex == -1) {
+                        Global.getInstance().ghostMoving = false;
+                        Global.getInstance().moveLock.active = false;
+                        ProcessStateMachineManager.getInstance().get(ProcessStateEnum.ghost).win()
+                        return;
+                    }
                 })
             }
         }else {

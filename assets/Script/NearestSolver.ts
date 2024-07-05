@@ -7,7 +7,7 @@ import {GamePropsEnum} from "db://assets/Script/BaseProps";
 export class Block {
     public readonly x: number;
     public readonly y: number;
-    public readonly isWall: boolean;
+    public isWall: boolean;
     public readonly isDestination: boolean;
     // 是加速带
     public readonly isDirection: boolean;
@@ -22,7 +22,7 @@ export class Block {
         this.distance = Infinity;
         this.parent = parent;
         this.isDestination = LevelDesign.getInstance().currentDestination.some(d=>d.x == i && d.y == j);
-        this.isDirection = Global.getInstance().tileMap[i][j].getComponent(Draw).isDestination
+        this.isDirection = Global.getInstance().tileMap[i][j].getComponent(Draw).isMapPropsDirection
         this.mapPropsDirection = Global.getInstance().tileMap[i][j].getComponent(Draw).mapPropsDirection
     }
 
@@ -62,16 +62,18 @@ export class Block {
     get directions(): number[] {
         let result = [];
         // 找到地图中的道具
+        let resultBlock = [];
 
         this.neighbours.forEach((neighbour, direction) => {
             if (neighbour !== null && !neighbour.isWall) {
                 if (neighbour.distance < this.distance) {
                     result.push(direction);
+                    resultBlock.push(neighbour);
                 }
             }
         });
         // 当所剩方向都是加速带并且加速带的方向是原方向
-        if (result.length > 0 && result.every(r=>r.isDirection && r.mapPropsDirection.x == this.x && r.mapPropsDirection.y == this.y)) {
+        if (resultBlock.length > 0 && resultBlock.every(r=>r.isDirection && r.mapPropsDirection.x == this.x && r.mapPropsDirection.y == this.y)) {
             return [];
         } else {
             return result;
@@ -138,9 +140,11 @@ export class Blocks {
                 }
             });
         });
+
+
         while (queue.length > 0) {
             let block = queue.shift();
-            block.neighbours.forEach(neighbour => {
+            for (let neighbour of block.neighbours) {
                 if (neighbour !== null && !neighbour.isDestination && !neighbour.isWall) {
                     if (neighbour.distance > block.distance + 1) {
                         neighbour.distance = block.distance + 1;
@@ -149,8 +153,42 @@ export class Blocks {
                         }
                     }
                 }
-            });
+            }
         }
+        // 先不考虑加速带直接设置快，设置完后，遍历所有加速带 判断加速带的方向点是否可达 目标点，不可达将加速带当作墙重新计算
+        this.blocks.forEach(col => {
+            col.forEach(block => {
+                if (block.isDirection) {
+                    let directions = this.blocks[block.mapPropsDirection.x][block.mapPropsDirection.y].directions
+                    if (directions.length <= 0) {
+                        block.isWall = true;
+                    }
+                }
+            });
+        });
+        queue = [];
+        this.blocks.forEach(col => {
+            col.forEach(block => {
+                if (block.isDestination && !block.isWall) {
+                    block.distance = 0;
+                    queue.push(block);
+                }
+            });
+        });
+        while (queue.length > 0) {
+            let block = queue.shift();
+            for (let neighbour of block.neighbours) {
+                if (neighbour !== null && !neighbour.isDestination && !neighbour.isWall) {
+                    if (neighbour.distance > block.distance + 1) {
+                        neighbour.distance = block.distance + 1;
+                        if (queue.indexOf(neighbour) < 0) {
+                            queue.push(neighbour);
+                        }
+                    }
+                }
+            }
+        }
+        // console.log(JSON.stringify(this.blocks));
     };
 
     toString(): string {
@@ -178,7 +216,7 @@ export class Blocks {
 
     toString2(): string {
         let lines = [];
-        for (let j = 0; j < this.h; j++) {
+        for (let j = this.h - 1; j >= 0 ; j--) {
             let distances = [];
             for (let i = 0; i < this.w; i++) {
                 let block = this.getBlock(i, j);
@@ -205,6 +243,7 @@ export function nearestSolver( x: number, y: number): number {
     blocks.calcAllDistances();
     let block = blocks.getBlock(x, y);
     let directions = block.directions;
+    // console.log(blocks.toString2());
     if (directions.length > 0) {
         return directions[0];
     } else {
@@ -216,5 +255,6 @@ export default function nearestAndMoreRoutesSolver(x: number, y: number): number
     let blocks = new Blocks();
     blocks.calcAllDistances();
     let block = blocks.getBlock(x, y);
+    // console.log(blocks.toString2());
     return block.direction;
 }
